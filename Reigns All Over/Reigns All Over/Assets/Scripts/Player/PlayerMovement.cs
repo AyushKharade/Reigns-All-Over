@@ -6,13 +6,14 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Variables")]
     public float runSpeed;
-    public float sprintSpeed;
+    public float sprintMultiplier = 1f;
     public float alignSpeed;
 
     [Header("Character States")]
     public bool isGrounded;
     public bool isRunning;
     public bool isDodging;
+    public bool isDead;
 
     // Private stuff
     Vector3 FaceDirection;                             // Input Direction, match forward vector with this
@@ -20,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     // camera reference:
     [Header("Object References")]
     public Transform CamRef;
+    public Transform FeetRef;
     public Transform PlayerMesh;
     Transform TargetRef;
 
@@ -35,7 +37,14 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         transform.rotation = Quaternion.identity;                 // Make sure that PlayerHolder Never rotates.
-        PMovement();
+
+        // to make camera follow on jumps and fall
+        TargetRef.transform.position = new Vector3(transform.position.x, PlayerMesh.position.y, transform.position.z);     
+        // make same thing for PlayerHolder too if any thing bugs out
+
+        if(!isDead)
+            PMovement();
+        CheckGrounded();
     }
 
     /// <summary>
@@ -45,23 +54,37 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 PlayerDirection = Vector3.zero;
 
+        // Movement Input --------------------------------------------------------------------
         // Front & Back.
-        if(Input.GetKey(KeyCode.W))
-            PlayerDirection = TargetRef.forward;
+        if(Input.GetKey(KeyCode.W))                                                     // Takes in player input and set PlayerDirection
+            PlayerDirection += TargetRef.forward;
         else if(Input.GetKey(KeyCode.S))
-            PlayerDirection = TargetRef.forward * -1;
+            PlayerDirection += TargetRef.forward * -1;
         // Sideways
         if (Input.GetKey(KeyCode.A))
-            PlayerDirection = TargetRef.right * -1;
+            PlayerDirection += TargetRef.right * -1;
         else if(Input.GetKey(KeyCode.D))
-            PlayerDirection = TargetRef.right;
+            PlayerDirection += TargetRef.right;
+        //--------------------------------------------------------------------------------------
+        // Sprint
+        if (Input.GetKey(KeyCode.LeftShift))
+        { sprintMultiplier = 1.4f; }
+        else
+            sprintMultiplier = 1f;
+                
+        //---------------------------------------------------------------------------------------
 
 
         PlayerDirection = PlayerDirection.normalized;
         PlayerDirection.y = 0;
 
-        transform.Translate(PlayerDirection * runSpeed * Time.deltaTime);
+        // Translation
+        if(Vector3.Angle(PlayerDirection,PlayerMesh.forward) < 35)
+            transform.Translate(PlayerDirection * runSpeed * sprintMultiplier* Time.deltaTime);
+        else
+            transform.Translate(PlayerDirection * runSpeed * sprintMultiplier * 0.4f* Time.deltaTime);
 
+        // Anim Update && Alignment
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
             // animation stuff
@@ -75,10 +98,30 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-        // testing alignment
-        Vector3 faceDir = TargetRef.forward;
-        faceDir.y = 0;
-        //AlignOrientation(TargetRef.forward);
+
+
+        // Jumping
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            PlayerMesh.GetComponent<Rigidbody>().AddForce(40f*Vector3.up,ForceMode.Impulse);
+        }
+
+    }
+
+    void CheckGrounded()
+    {
+        // Use Physics raycast to determine if player is grounded or not.
+        Vector3 CastPoint = FeetRef.transform.position;
+        if (Physics.Raycast(CastPoint, Vector3.down, 0.3f))
+        {
+            isGrounded = true;
+            //animator.SetBool("isGrounded", true);
+        }
+        else
+        {
+            isGrounded = false;
+            //animator.SetBool("isGrounded", false);
+        }
     }
     
  
