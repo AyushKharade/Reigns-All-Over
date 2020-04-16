@@ -11,8 +11,8 @@ public class PlayerMovement : MonoBehaviour
     public float alignSpeed;
 
     // Private Variables
-    public float fallDuration = 0f;
-    public bool jumped;
+    float fallDuration = 0f;
+    bool jumped;
 
     [Header("Character States")]
     public bool isGrounded;

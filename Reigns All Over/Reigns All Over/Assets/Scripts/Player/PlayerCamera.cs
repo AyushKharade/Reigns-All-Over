@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Camera : MonoBehaviour
+public class PlayerCamera : MonoBehaviour
 {
     // Follow Player on X-Z
     public Transform Target;
@@ -13,9 +13,12 @@ public class Camera : MonoBehaviour
     [Header("Adjustable Camera")]
     public float HeightOffset;
     public float XOffset;
+    public float clampDown = -15f;
+    public float clampUp = 30f;
 
-    float mouseX;
-    float mouseY;
+    [Header("MouseInput")]
+    public float mouseX;
+    public float mouseY;
     
     void Start()
     {
@@ -28,14 +31,14 @@ public class Camera : MonoBehaviour
     {
         CamControl();    
     }
-
+    
 
     void CamControl()
     {
         mouseX += Input.GetAxis("Mouse X") * rotationSpeed;
         mouseY -= Input.GetAxis("Mouse Y") * rotationSpeed;     // non inverted controls thats why -=
 
-        mouseY = Mathf.Clamp(mouseY, -35f, 60f);
+        mouseY = Mathf.Clamp(mouseY, clampDown, clampUp);
 
         Vector3 LookAtTarget = Target.position;
         LookAtTarget.y += HeightOffset;

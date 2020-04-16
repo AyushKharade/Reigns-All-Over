@@ -69,7 +69,8 @@
     <Compile Include="Assets\Animation\Asset Store\rpg animations\scripts\UI_no_weapon.cs" />
     <Compile Include="Assets\Animation\Asset Store\rpg animations\scripts\UI_sword.cs" />
     <Compile Include="Assets\Animation\Asset Store\rpg animations\scripts\WeaponHide.cs" />
-    <Compile Include="Assets\Scripts\Player\Camera.cs" />
+    <Compile Include="Assets\Scripts\Player\Interaction.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerCamera.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/ASUS/Documents/Unity Projects/Regins All Over RPG/Reigns-All-Over/Reigns All Over/Reigns All Over/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
