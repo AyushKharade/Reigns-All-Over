@@ -10,12 +10,18 @@ public class PlayerMovement : MonoBehaviour
     public float sprintMultiplier = 1f;
     public float alignSpeed;
 
+    // Private Variables
+    public float fallDuration = 0f;
+    public bool jumped;
+
     [Header("Character States")]
     public bool isGrounded;
     public bool isRunning;
     public bool isDodging;
     public bool isDead;
     public bool isWalking;
+    public bool controlLock;
+
 
     // Private stuff
     Vector3 FaceDirection;                             // Input Direction, match forward vector with this
@@ -40,9 +46,9 @@ public class PlayerMovement : MonoBehaviour
     {
 
         // to make camera follow on jumps and fall
-        //TargetRef.transform.position = new Vector3(transform.position.x, PlayerMesh.position.y, transform.position.z);     
+        TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);     
 
-        if(!isDead)
+        if(!isDead && !controlLock)
             PMovement();
         CheckGrounded();
     }
@@ -90,10 +96,11 @@ public class PlayerMovement : MonoBehaviour
         
 
 
-        // Jumping
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        // Jumping -- need to fix double jumping issue
+        if (Input.GetKeyDown(KeyCode.Space) && fallDuration<0.1f && !jumped)
         {
-            GetComponent<Rigidbody>().AddForce(55f*Vector3.up,ForceMode.Impulse);
+            jumped = true;
+            GetComponent<Rigidbody>().AddForce(50f*Vector3.up,ForceMode.Impulse);
         }
 
 
@@ -122,12 +129,18 @@ public class PlayerMovement : MonoBehaviour
         else
             slowdownMultipier = 0.4f;
 
-        // check whether running or walking or sprinting
-        if (isWalking)
-            PlayerHolder.Translate(dir * walkSpeed * slowdownMultipier * Time.deltaTime);
-        else // running
-            PlayerHolder.Translate(dir * runSpeed * sprintMultiplier *slowdownMultipier * Time.deltaTime);
-
+        if (isGrounded)
+        {
+            // check whether running or walking or sprinting
+            if (isWalking)
+                PlayerHolder.Translate(dir * walkSpeed * slowdownMultipier * Time.deltaTime);
+            else // running
+                PlayerHolder.Translate(dir * runSpeed * sprintMultiplier * slowdownMultipier * Time.deltaTime);
+        }
+        else
+        {
+            PlayerHolder.Translate(dir * runSpeed *  slowdownMultipier * Time.deltaTime);
+        }
 
 
 
@@ -161,12 +174,17 @@ public class PlayerMovement : MonoBehaviour
         {
             isGrounded = true;
             animator.SetBool("isGrounded", true);
+            jumped = false;
+            // check if fell for too long and kill
+            fallDuration = 0f;
         }
         else
         {
+            fallDuration += Time.deltaTime;
             isGrounded = false;
             animator.SetBool("isGrounded", false);
         }
+
     }
     
  
