@@ -31,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         TargetRef = CamRef.parent;
-        //animator = PlayerMesh.GetComponent<Animator>();
+        animator = PlayerMesh.GetComponent<Animator>();
     }
 
     void Update()
@@ -87,14 +87,22 @@ public class PlayerMovement : MonoBehaviour
         // Anim Update && Alignment
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
-            // animation stuff
             AlignOrientation(PlayerDirection);
             isRunning = true;
-            Debug.DrawRay(transform.position, PlayerDirection, Color.green);
+            //Debug.DrawRay(transform.position, PlayerDirection, Color.green);
+
+            // animation stuff
+            // increase locomotion variable
+            if (animator.GetFloat("Locomotion") < 0.5 && sprintMultiplier<=1)
+                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion")+0.04f);
+            else if(animator.GetFloat("Locomotion") < 1 && sprintMultiplier > 1)
+                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
         }
         else
         {
             isRunning = false;
+            if (animator.GetFloat("Locomotion") > 0)
+                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
         }
 
 
@@ -103,7 +111,7 @@ public class PlayerMovement : MonoBehaviour
         // Jumping
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            PlayerMesh.GetComponent<Rigidbody>().AddForce(40f*Vector3.up,ForceMode.Impulse);
+            PlayerMesh.GetComponent<Rigidbody>().AddForce(55f*Vector3.up,ForceMode.Impulse);
         }
 
     }
@@ -115,12 +123,12 @@ public class PlayerMovement : MonoBehaviour
         if (Physics.Raycast(CastPoint, Vector3.down, 0.3f))
         {
             isGrounded = true;
-            //animator.SetBool("isGrounded", true);
+            animator.SetBool("isGrounded", true);
         }
         else
         {
             isGrounded = false;
-            //animator.SetBool("isGrounded", false);
+            animator.SetBool("isGrounded", false);
         }
     }
     

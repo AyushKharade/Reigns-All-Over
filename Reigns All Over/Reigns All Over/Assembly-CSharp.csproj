@@ -62,6 +62,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Animation\Asset Store\rpg animations\scripts\CameraController.cs" />
+    <Compile Include="Assets\Animation\Asset Store\rpg animations\scripts\HiderInTime.cs" />
+    <Compile Include="Assets\Animation\Asset Store\rpg animations\scripts\HidingMachineBehaviour.cs" />
+    <Compile Include="Assets\Animation\Asset Store\rpg animations\scripts\ScrollSwitcher.cs" />
+    <Compile Include="Assets\Animation\Asset Store\rpg animations\scripts\UI_no_weapon.cs" />
+    <Compile Include="Assets\Animation\Asset Store\rpg animations\scripts\UI_sword.cs" />
+    <Compile Include="Assets\Animation\Asset Store\rpg animations\scripts\WeaponHide.cs" />
     <Compile Include="Assets\Scripts\Player\Camera.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
     <Reference Include="Unity.Timeline.Editor">

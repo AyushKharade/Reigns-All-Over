@@ -10,6 +10,10 @@ public class Camera : MonoBehaviour
 
     public float rotationSpeed = 1;
 
+    [Header("Adjustable Camera")]
+    public float HeightOffset;
+    public float XOffset;
+
     float mouseX;
     float mouseY;
     
@@ -33,7 +37,11 @@ public class Camera : MonoBehaviour
 
         mouseY = Mathf.Clamp(mouseY, -35f, 60f);
 
-        transform.LookAt(Target);
+        Vector3 LookAtTarget = Target.position;
+        LookAtTarget.y += HeightOffset;
+        LookAtTarget.x += XOffset;
+        //transform.LookAt(Target);
+        transform.LookAt(LookAtTarget);
 
         Target.rotation = Quaternion.Euler(mouseY, mouseX, 0);
         //Player.rotation = Quaternion.Euler(0, mouseX, 0);
