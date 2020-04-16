@@ -5,15 +5,23 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Variables")]
+    public float walkSpeed;
     public float runSpeed;
     public float sprintMultiplier = 1f;
     public float alignSpeed;
+
+    // Private Variables
+    float fallDuration = 0f;
+    bool jumped;
 
     [Header("Character States")]
     public bool isGrounded;
     public bool isRunning;
     public bool isDodging;
     public bool isDead;
+    public bool isWalking;
+    public bool controlLock;
+
 
     // Private stuff
     Vector3 FaceDirection;                             // Input Direction, match forward vector with this
@@ -22,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Object References")]
     public Transform CamRef;
     public Transform FeetRef;
-    public Transform PlayerMesh;
+    public Transform PlayerHolder;
     Transform TargetRef;
 
     //animator ref
@@ -31,18 +39,16 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         TargetRef = CamRef.parent;
-        //animator = PlayerMesh.GetComponent<Animator>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
     {
-        transform.rotation = Quaternion.identity;                 // Make sure that PlayerHolder Never rotates.
 
         // to make camera follow on jumps and fall
-        TargetRef.transform.position = new Vector3(transform.position.x, PlayerMesh.position.y, transform.position.z);     
-        // make same thing for PlayerHolder too if any thing bugs out
+        TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);     
 
-        if(!isDead)
+        if(!isDead && !controlLock)
             PMovement();
         CheckGrounded();
     }
@@ -68,42 +74,94 @@ public class PlayerMovement : MonoBehaviour
         //--------------------------------------------------------------------------------------
         // Sprint
         if (Input.GetKey(KeyCode.LeftShift))
-        { sprintMultiplier = 1.4f; }
+        {
+            sprintMultiplier = 1.4f;
+            animator.SetFloat("sprintMultiplier", 1.4f);
+        }
         else
+        {
             sprintMultiplier = 1f;
-                
+            animator.SetFloat("sprintMultiplier", 1f);
+        } 
         //---------------------------------------------------------------------------------------
 
 
         PlayerDirection = PlayerDirection.normalized;
         PlayerDirection.y = 0;
 
+        PlayerTranslation(PlayerDirection);
+        
+
+        
+        
+
+
+        // Jumping -- need to fix double jumping issue
+        if (Input.GetKeyDown(KeyCode.Space) && fallDuration<0.1f && !jumped)
+        {
+            jumped = true;
+            GetComponent<Rigidbody>().AddForce(50f*Vector3.up,ForceMode.Impulse);
+        }
+
+
+        // toggle walking
+        if (Input.GetKeyDown(KeyCode.CapsLock))
+        {
+            if (isWalking)
+            {
+                isWalking = false;
+            }
+            else
+            {
+                isWalking = true;
+                if(isRunning)
+                    animator.SetFloat("Locomotion", 0.5f);
+            }
+        }
+    }
+
+    void PlayerTranslation(Vector3 dir)
+    {
         // Translation
-        if(Vector3.Angle(PlayerDirection,PlayerMesh.forward) < 35)
-            transform.Translate(PlayerDirection * runSpeed * sprintMultiplier* Time.deltaTime);
+        float slowdownMultipier = 1f;
+        if (Vector3.Angle(dir, transform.forward) < 35)            // move at maximum speed
+            slowdownMultipier = 1f;
         else
-            transform.Translate(PlayerDirection * runSpeed * sprintMultiplier * 0.4f* Time.deltaTime);
+            slowdownMultipier = 0.4f;
+
+        if (isGrounded)
+        {
+            // check whether running or walking or sprinting
+            if (isWalking)
+                PlayerHolder.Translate(dir * walkSpeed * slowdownMultipier * Time.deltaTime);
+            else // running
+                PlayerHolder.Translate(dir * runSpeed * sprintMultiplier * slowdownMultipier * Time.deltaTime);
+        }
+        else
+        {
+            PlayerHolder.Translate(dir * runSpeed *  slowdownMultipier * Time.deltaTime);
+        }
+
+
+
 
         // Anim Update && Alignment
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
-            // animation stuff
-            AlignOrientation(PlayerDirection);
+            AlignOrientation(dir);
             isRunning = true;
-            Debug.DrawRay(transform.position, PlayerDirection, Color.green);
+
+            // increase locomotion variable
+            if (animator.GetFloat("Locomotion") < 0.5 && isWalking)
+                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+            else if (animator.GetFloat("Locomotion") < 1 && !isWalking)
+                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
         }
         else
         {
             isRunning = false;
-        }
-
-
-
-
-        // Jumping
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            PlayerMesh.GetComponent<Rigidbody>().AddForce(40f*Vector3.up,ForceMode.Impulse);
+            if (animator.GetFloat("Locomotion") > 0)
+                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
         }
 
     }
@@ -115,13 +173,18 @@ public class PlayerMovement : MonoBehaviour
         if (Physics.Raycast(CastPoint, Vector3.down, 0.3f))
         {
             isGrounded = true;
-            //animator.SetBool("isGrounded", true);
+            animator.SetBool("isGrounded", true);
+            jumped = false;
+            // check if fell for too long and kill
+            fallDuration = 0f;
         }
         else
         {
+            fallDuration += Time.deltaTime;
             isGrounded = false;
-            //animator.SetBool("isGrounded", false);
+            animator.SetBool("isGrounded", false);
         }
+
     }
     
  
@@ -131,6 +194,7 @@ public class PlayerMovement : MonoBehaviour
 
         //set quaternion to this dir
         lookDirection = Quaternion.LookRotation(dir, Vector3.up);
-        PlayerMesh.transform.localRotation = Quaternion.RotateTowards(PlayerMesh.localRotation, lookDirection, alignSpeed);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, alignSpeed);
+        //transform.Rotate(new Vector3(0,20,0));
     }
 }
