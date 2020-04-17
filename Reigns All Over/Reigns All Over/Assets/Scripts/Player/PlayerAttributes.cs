@@ -21,10 +21,12 @@ public class PlayerAttributes : MonoBehaviour
 
     //references
     PlayerMovement MovementRef;
+    Animator animator;
 
     private void Start()
     {
         MovementRef = GetComponent<PlayerMovement>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -51,5 +53,28 @@ public class PlayerAttributes : MonoBehaviour
                 stamina += staminaRegenRate * Time.deltaTime;
             }
         }
+    }
+
+
+    // Health Related
+
+    public void DealDamage(float dmg)
+    {
+        if (!MovementRef.isDead)
+        {
+            health -= dmg;
+            if (health <= 0)
+            {
+                health = 0;
+                KillPlayer();
+            }
+        }
+    }
+
+    void KillPlayer()
+    {
+        MovementRef.isDead = true;
+        animator.SetBool("isDead",true);
+
     }
 }

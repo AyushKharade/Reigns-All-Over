@@ -246,6 +246,10 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("isGrounded", true);
             jumped = false;
             // check if fell for too long and kill
+            if (fallDuration > 2f)
+            {
+                PAttributesRef.DealDamage(1000);
+            }
             fallDuration = 0f;
         }
         else
