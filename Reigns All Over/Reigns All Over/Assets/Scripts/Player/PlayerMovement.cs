@@ -84,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
             PlayerDirection += TargetRef.right;
         //--------------------------------------------------------------------------------------
         // Sprint
-        if (Input.GetKey(KeyCode.LeftShift) && !CombatRef.inCombat && PAttributesRef.stamina>0)
+        if (Input.GetKey(KeyCode.LeftShift) && PAttributesRef.stamina>0)
         {
             isSprinting = true;
             PAttributesRef.stamina -= sprintCostRate * Time.deltaTime;
@@ -100,6 +100,7 @@ public class PlayerMovement : MonoBehaviour
 
         PlayerDirection = PlayerDirection.normalized;
         PlayerDirection.y = 0;
+
 
         PlayerTranslation(PlayerDirection);
 
@@ -128,7 +129,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 isWalking = false;
             }
-            else if(!isSprinting)
+            else if(!isSprinting && !CombatRef.inCombat)
             {
                 isWalking = true;
                 if(isRunning)
@@ -137,6 +138,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
+
+
+
+    /// <summary>
+    /// handles Translation and Orientation, also movement animation update
+    /// </summary>
+    /// <param name="dir"></param>
     void PlayerTranslation(Vector3 dir)
     {
         // Translation
@@ -182,7 +191,7 @@ public class PlayerMovement : MonoBehaviour
             // cases if you stop doing things.
             if(animator.GetFloat("Locomotion") > 0.66f && !isSprinting)
                 animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
-
+            
         }
         else
         {
@@ -191,6 +200,12 @@ public class PlayerMovement : MonoBehaviour
             if (animator.GetFloat("Locomotion") > 0)
                 animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
         }
+
+    }
+
+
+    void PlayerTranslationCombat(Vector3 Dir)
+    {
 
     }
 

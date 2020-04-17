@@ -35,21 +35,29 @@ public class Combat : MonoBehaviour
 
     void Update()
     {
+
+        CombatControls();
+    }
+
+    void CombatControls()
+    {
+
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (inCombat && !MovementRef.isDodging)
             {
                 animator.SetBool("inCombat", false);
                 animator.SetBool("ExitedCombat", true);         // does unsheathing
+                ready = false;
             }
-            else if(!MovementRef.isDodging)
+            else if (!MovementRef.isDodging)
             {
                 animator.SetLayerWeight(1, 1);
                 MovementRef.isWalking = false;
                 inCombat = true;
                 ready = false;
                 animator.SetBool("inCombat", true);
-                animator.SetBool("EnteredCombat",true);
+                animator.SetBool("EnteredCombat", true);
             }
         }
     }
