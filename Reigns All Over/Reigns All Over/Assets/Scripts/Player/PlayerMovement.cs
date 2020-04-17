@@ -152,7 +152,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if(!isDodging)
         {
-            PlayerHolder.Translate(dir * runSpeed *  slowdownMultipier * Time.deltaTime);
+            PlayerHolder.Translate(dir * (runSpeed+3) *  slowdownMultipier * Time.deltaTime);
         }
 
 
@@ -186,17 +186,33 @@ public class PlayerMovement : MonoBehaviour
         // e.g. if angle between player forward and camera is < 10, its a forward roll.
         // all 4 rolls are stored in a blend tree. respect values are enabled.
         isDodging = true;
-        animator.SetLayerWeight(1,0);       // switch off combat layer until then.
-        animator.SetBool("isDodging",true);
+        animator.SetLayerWeight(1, 0);       // switch off combat layer until then.
+        animator.SetBool("isDodging", true);
         GetComponent<CapsuleCollider>().height = 1.5f;
+
+        Vector3 raypos = transform.position;
+        raypos.y += 1;
+        Debug.DrawRay(raypos, Dir, Color.green);
 
         // commit in a direction and translate in that since we are not using root motion.
         float angle = Vector3.Angle(Dir, transform.forward);
-        Debug.Log("Dodge Angle: "+angle);
-        if (angle < 15)
+        Debug.Log("Dodge Angle: " + angle);
+        if (angle < 100)
+        {
             animator.SetFloat("DodgeRoll", 0f);     // front roll
+            // align towards dir
+            if(angle>25)
+                transform.LookAt(Dir);
+        }
+        //else if(angle<90)
+        //    animator.SetFloat("DodgeRoll", 0.66f);     // left roll roll
+        //else if(angle<130)
+        //    animator.SetFloat("DodgeRoll", 1f);     // right roll
         else
+        {
             animator.SetFloat("DodgeRoll", 0.33f);     // Backroll roll
+            //transform.LookAt(Dir);                     // align away from
+        }
     }
 
     /// <summary>

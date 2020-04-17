@@ -69,6 +69,7 @@
     <Compile Include="Assets\Animation\Asset Store\rpg animations\scripts\UI_no_weapon.cs" />
     <Compile Include="Assets\Animation\Asset Store\rpg animations\scripts\UI_sword.cs" />
     <Compile Include="Assets\Animation\Asset Store\rpg animations\scripts\WeaponHide.cs" />
+    <Compile Include="Assets\Scripts\NPCs\HeadAlignTest.cs" />
     <Compile Include="Assets\Scripts\Player\Combat.cs" />
     <Compile Include="Assets\Scripts\Player\Interaction.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerCamera.cs" />

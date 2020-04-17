@@ -45,6 +45,7 @@ public class Combat : MonoBehaviour
             else if(!MovementRef.isDodging)
             {
                 animator.SetLayerWeight(1, 1);
+                MovementRef.isWalking = false;
                 inCombat = true;
                 ready = false;
                 animator.SetBool("inCombat", true);

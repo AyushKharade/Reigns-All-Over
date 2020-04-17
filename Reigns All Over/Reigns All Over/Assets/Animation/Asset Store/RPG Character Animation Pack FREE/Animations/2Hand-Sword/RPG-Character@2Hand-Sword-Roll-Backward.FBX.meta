@@ -787,7 +787,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.8540146
+      - time: 0.6798721
         functionName: UnDodge
         data: 
         objectReferenceParameter: {instanceID: 0}
