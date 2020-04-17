@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     // Private Variables
     float fallDuration = 0f;
     bool jumped;
+    float ogColliderHeight;
 
     [Header("Character States")]
     public bool isGrounded;
@@ -45,6 +46,8 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
 
         CombatRef = GetComponent<Combat>();
+
+        ogColliderHeight = GetComponent<CapsuleCollider>().height;
     }
 
     void Update()
@@ -78,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
             PlayerDirection += TargetRef.right;
         //--------------------------------------------------------------------------------------
         // Sprint
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && !CombatRef.inCombat)
         {
             sprintMultiplier = 1.4f;
             animator.SetFloat("sprintMultiplier", 1.4f);
@@ -107,7 +110,7 @@ public class PlayerMovement : MonoBehaviour
             jumped = true;
             GetComponent<Rigidbody>().AddForce(50f * Vector3.up, ForceMode.Impulse);
         }
-        else if (CombatRef.inCombat && !isDodging && CombatRef.ready)
+        else if (Input.GetKeyDown(KeyCode.Space) && CombatRef.inCombat && !isDodging && CombatRef.ready)
         {
             // get a direction dodge.
             Dodge(PlayerDirection);
@@ -139,7 +142,7 @@ public class PlayerMovement : MonoBehaviour
         else
             slowdownMultipier = 0.4f;
 
-        if (isGrounded)
+        if (isGrounded && !isDodging)
         {
             // check whether running or walking or sprinting
             if (isWalking)
@@ -147,7 +150,7 @@ public class PlayerMovement : MonoBehaviour
             else // running
                 PlayerHolder.Translate(dir * runSpeed * sprintMultiplier * slowdownMultipier * Time.deltaTime);
         }
-        else
+        else if(!isDodging)
         {
             PlayerHolder.Translate(dir * runSpeed *  slowdownMultipier * Time.deltaTime);
         }
@@ -158,7 +161,8 @@ public class PlayerMovement : MonoBehaviour
         // Anim Update && Alignment
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
-            AlignOrientation(dir);
+            if(!isDodging)
+                AlignOrientation(dir);
             isRunning = true;
 
             // increase locomotion variable
@@ -182,7 +186,29 @@ public class PlayerMovement : MonoBehaviour
         // e.g. if angle between player forward and camera is < 10, its a forward roll.
         // all 4 rolls are stored in a blend tree. respect values are enabled.
         isDodging = true;
-        animator.SetLayerWeight(1,0);
+        animator.SetLayerWeight(1,0);       // switch off combat layer until then.
+        animator.SetBool("isDodging",true);
+        GetComponent<CapsuleCollider>().height = 1.5f;
+
+        // commit in a direction and translate in that since we are not using root motion.
+        float angle = Vector3.Angle(Dir, transform.forward);
+        Debug.Log("Dodge Angle: "+angle);
+        if (angle < 15)
+            animator.SetFloat("DodgeRoll", 0f);     // front roll
+        else
+            animator.SetFloat("DodgeRoll", 0.33f);     // Backroll roll
+    }
+
+    /// <summary>
+    /// Called from animation event to cancel invincibility.
+    /// </summary>
+    public void UnDodge()
+    {
+        isDodging = false;
+        animator.SetLayerWeight(1, 1);       // switch off combat layer until then.
+        animator.SetBool("isDodging",false);
+        GetComponent<CapsuleCollider>().height = ogColliderHeight;
+
     }
 
     void CheckGrounded()

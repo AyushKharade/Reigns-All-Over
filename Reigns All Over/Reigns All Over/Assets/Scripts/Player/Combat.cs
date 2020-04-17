@@ -18,6 +18,9 @@ public class Combat : MonoBehaviour
     public GameObject SheathedWeapon;
 
 
+    // script ref
+    PlayerMovement MovementRef;
+
     Animator animator;
 
     void Start()
@@ -26,18 +29,20 @@ public class Combat : MonoBehaviour
         ready = false;
 
         UnEquipWeapon();
+
+        MovementRef = GetComponent<PlayerMovement>();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (inCombat)
+            if (inCombat && !MovementRef.isDodging)
             {
                 animator.SetBool("inCombat", false);
                 animator.SetBool("ExitedCombat", true);         // does unsheathing
             }
-            else
+            else if(!MovementRef.isDodging)
             {
                 animator.SetLayerWeight(1, 1);
                 inCombat = true;
