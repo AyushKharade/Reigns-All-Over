@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Variables")]
     public float walkSpeed;
     public float runSpeed;
-    public float sprintMultiplier = 1f;
+    public float sprintCostRate = 10f;
     public float alignSpeed;
 
     // Private Variables
@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Character States")]
     public bool isGrounded;
     public bool isRunning;
+    public bool isSprinting;
     public bool isDodging;
     public bool isDead;
     public bool isWalking;
@@ -39,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
 
     // script References
     Combat CombatRef;
+    PlayerAttributes PAttributesRef;
 
     void Start()
     {
@@ -46,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
 
         CombatRef = GetComponent<Combat>();
+        PAttributesRef = GetComponent<PlayerAttributes>();
 
         ogColliderHeight = GetComponent<CapsuleCollider>().height;
     }
@@ -81,15 +84,16 @@ public class PlayerMovement : MonoBehaviour
             PlayerDirection += TargetRef.right;
         //--------------------------------------------------------------------------------------
         // Sprint
-        if (Input.GetKey(KeyCode.LeftShift) && !CombatRef.inCombat)
+        if (Input.GetKey(KeyCode.LeftShift) && !CombatRef.inCombat && PAttributesRef.stamina>0)
         {
-            sprintMultiplier = 1.4f;
-            animator.SetFloat("sprintMultiplier", 1.4f);
+            isSprinting = true;
+            PAttributesRef.stamina -= sprintCostRate * Time.deltaTime;
+            PAttributesRef.onStaminaRegenDelay = true;
+            isWalking = false;
         }
         else
         {
-            sprintMultiplier = 1f;
-            animator.SetFloat("sprintMultiplier", 1f);
+            isSprinting = false;
         } 
         //---------------------------------------------------------------------------------------
 
@@ -124,11 +128,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 isWalking = false;
             }
-            else
+            else if(!isSprinting)
             {
                 isWalking = true;
                 if(isRunning)
-                    animator.SetFloat("Locomotion", 0.5f);
+                    animator.SetFloat("Locomotion", 0.33f);
             }
         }
     }
@@ -147,12 +151,14 @@ public class PlayerMovement : MonoBehaviour
             // check whether running or walking or sprinting
             if (isWalking)
                 PlayerHolder.Translate(dir * walkSpeed * slowdownMultipier * Time.deltaTime);
-            else // running
-                PlayerHolder.Translate(dir * runSpeed * sprintMultiplier * slowdownMultipier * Time.deltaTime);
+            else if(!isSprinting)// running
+                PlayerHolder.Translate(dir * runSpeed *  slowdownMultipier * Time.deltaTime);
+            else if(isSprinting)
+                PlayerHolder.Translate(dir * (runSpeed-1f) * slowdownMultipier * Time.deltaTime);       // run speed is kind of fast
         }
         else if(!isDodging)
         {
-            PlayerHolder.Translate(dir * (runSpeed+3) *  slowdownMultipier * Time.deltaTime);
+            PlayerHolder.Translate(dir * (runSpeed+3) *  slowdownMultipier * Time.deltaTime);         // this is for mid air movement
         }
 
 
@@ -165,15 +171,23 @@ public class PlayerMovement : MonoBehaviour
                 AlignOrientation(dir);
             isRunning = true;
 
-            // increase locomotion variable
-            if (animator.GetFloat("Locomotion") < 0.5 && isWalking)
+            if (isWalking && animator.GetFloat("Locomotion") < 0.33f)
                 animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
-            else if (animator.GetFloat("Locomotion") < 1 && !isWalking)
+            else if (!isWalking && !isSprinting && animator.GetFloat("Locomotion") < 0.66f)
                 animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+            else if(isSprinting && animator.GetFloat("Locomotion") < 1f)// sprinting
+                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+
+
+            // cases if you stop doing things.
+            if(animator.GetFloat("Locomotion") > 0.66f && !isSprinting)
+                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
+
         }
         else
         {
             isRunning = false;
+
             if (animator.GetFloat("Locomotion") > 0)
                 animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
         }
@@ -204,14 +218,9 @@ public class PlayerMovement : MonoBehaviour
             if(angle>25)
                 transform.LookAt(Dir);
         }
-        //else if(angle<90)
-        //    animator.SetFloat("DodgeRoll", 0.66f);     // left roll roll
-        //else if(angle<130)
-        //    animator.SetFloat("DodgeRoll", 1f);     // right roll
         else
         {
             animator.SetFloat("DodgeRoll", 0.33f);     // Backroll roll
-            //transform.LookAt(Dir);                     // align away from
         }
     }
 
