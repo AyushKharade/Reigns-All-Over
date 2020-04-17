@@ -36,10 +36,15 @@ public class PlayerMovement : MonoBehaviour
     //animator ref
     Animator animator;
 
+    // script References
+    Combat CombatRef;
+
     void Start()
     {
         TargetRef = CamRef.parent;
         animator = GetComponent<Animator>();
+
+        CombatRef = GetComponent<Combat>();
     }
 
     void Update()
@@ -97,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
 
 
         // Jumping -- need to fix double jumping issue
-        if (Input.GetKeyDown(KeyCode.Space) && fallDuration<0.1f && !jumped)
+        if (Input.GetKeyDown(KeyCode.Space) && fallDuration<0.1f && !jumped && !CombatRef.inCombat)
         {
             jumped = true;
             GetComponent<Rigidbody>().AddForce(50f*Vector3.up,ForceMode.Impulse);
