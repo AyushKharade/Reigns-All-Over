@@ -95,17 +95,22 @@ public class PlayerMovement : MonoBehaviour
         PlayerDirection.y = 0;
 
         PlayerTranslation(PlayerDirection);
-        
 
-        
-        
+
+
+
 
 
         // Jumping -- need to fix double jumping issue
-        if (Input.GetKeyDown(KeyCode.Space) && fallDuration<0.1f && !jumped && !CombatRef.inCombat)
+        if (Input.GetKeyDown(KeyCode.Space) && fallDuration < 0.1f && !jumped && !CombatRef.inCombat)
         {
             jumped = true;
-            GetComponent<Rigidbody>().AddForce(50f*Vector3.up,ForceMode.Impulse);
+            GetComponent<Rigidbody>().AddForce(50f * Vector3.up, ForceMode.Impulse);
+        }
+        else if (CombatRef.inCombat && !isDodging && CombatRef.ready)
+        {
+            // get a direction dodge.
+            Dodge(PlayerDirection);
         }
 
 
@@ -169,6 +174,15 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
         }
 
+    }
+
+    void Dodge(Vector3 Dir)
+    {
+        // we compute the type of dodge depending on the Dir and the angle of camera and player.
+        // e.g. if angle between player forward and camera is < 10, its a forward roll.
+        // all 4 rolls are stored in a blend tree. respect values are enabled.
+        isDodging = true;
+        animator.SetLayerWeight(1,0);
     }
 
     void CheckGrounded()
