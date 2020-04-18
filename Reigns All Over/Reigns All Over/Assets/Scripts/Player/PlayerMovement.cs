@@ -67,7 +67,12 @@ public class PlayerMovement : MonoBehaviour
         {
             PlayerHolder.position = new Vector3(0, 27, -13);
         }
-        
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            PAttributesRef.DealDamage(10);
+        }
+
     }
 
     /// <summary>

@@ -23,11 +23,13 @@ public class PlayerAttributes : MonoBehaviour
 
     //references
     PlayerMovement MovementRef;
+    Combat CombatRef;
     Animator animator;
 
     private void Start()
     {
         MovementRef = GetComponent<PlayerMovement>();
+        CombatRef = GetComponent<Combat>();
         animator = GetComponent<Animator>();
     }
 
@@ -65,6 +67,10 @@ public class PlayerAttributes : MonoBehaviour
         if (!MovementRef.isDead && !invincible && !dodgeInvincible)
         {
             health -= dmg;
+            animator.SetBool("Hurting",true);
+            if (!CombatRef.inCombat)
+                animator.SetLayerWeight(1, 1);
+
             if (health <= 0)
             {
                 health = 0;
@@ -79,6 +85,7 @@ public class PlayerAttributes : MonoBehaviour
     {
         MovementRef.isDead = true;
         animator.SetBool("isDead",true);
+        animator.SetLayerWeight(1, 0);    // Turn off combat layer since death is on first
 
     }
 }

@@ -47,6 +47,13 @@ public class PlayerEvents : MonoBehaviour
         //animator.SetLayerWeight(1, 0);
     }
 
+    public void EndHurtingAnim()
+    {
+        animator.SetBool("Hurting",false);
+        if(!CombatRef.inCombat)
+            animator.SetLayerWeight(1, 0);
+    }
+
     public void UnEquip()
     {
         CombatRef.UnEquipWeapon();
