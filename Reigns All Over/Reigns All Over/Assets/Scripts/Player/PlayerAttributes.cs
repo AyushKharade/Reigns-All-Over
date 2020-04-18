@@ -74,6 +74,9 @@ public class PlayerAttributes : MonoBehaviour
             if (!CombatRef.inCombat)
                 animator.SetLayerWeight(1, 1);
 
+            if (CombatRef.attacking)
+                HurtInteruptAttacks();
+
             if (health <= 0)
             {
                 health = 0;
@@ -82,6 +85,14 @@ public class PlayerAttributes : MonoBehaviour
         }
         else
             Debug.Log("Deal Damage called on dead / invincible player");
+    }
+
+
+    void HurtInteruptAttacks()
+    {
+        animator.SetBool("Attacking", false);
+        CombatRef.attacking = false;
+        CombatRef.chainAttack = false;
     }
 
     void KillPlayer()
