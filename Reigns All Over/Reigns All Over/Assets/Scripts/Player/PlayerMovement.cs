@@ -55,13 +55,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-
         // to make camera follow on jumps and fall
-        TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);     
+        TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 
-        if(!isDead && !controlLock)
-            PMovement();
         CheckGrounded();
+
+        if (!isDead && !controlLock)
+            PMovement();
+
+        
     }
 
     /// <summary>
@@ -116,10 +118,11 @@ public class PlayerMovement : MonoBehaviour
             GetComponent<Rigidbody>().AddForce(50f * Vector3.up, ForceMode.Impulse);
         }
         else if (Input.GetKeyDown(KeyCode.Space) && CombatRef.inCombat && !isDodging && CombatRef.ready)
-        {
-            // get a direction dodge.
-            Dodge(PlayerDirection);
-        }
+            Dodge(PlayerDirection);       // get a direction dodge.
+
+        // orient dodging                   --> basically orient slowly towards direction of dodge so front roll looks smooth
+        if (isDodging && doDodgeAlign)
+            DodgeAlign();
 
 
         // toggle walking
@@ -136,6 +139,9 @@ public class PlayerMovement : MonoBehaviour
                     animator.SetFloat("Locomotion", 0.33f);
             }
         }
+
+
+        
     }
 
 
@@ -203,41 +209,47 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-
-    void PlayerTranslationCombat(Vector3 Dir)
-    {
-
-    }
+    
 
     void Dodge(Vector3 Dir)
     {
         // we compute the type of dodge depending on the Dir and the angle of camera and player.
-        // e.g. if angle between player forward and camera is < 10, its a forward roll.
-        // all 4 rolls are stored in a blend tree. respect values are enabled.
+        // Both rolls are stored in a blend tree. respect values are enabled.
+
         isDodging = true;
+        PAttributesRef.dodgeInvincible = true;
+
+
         animator.SetLayerWeight(1, 0);       // switch off combat layer until then.
         animator.SetBool("isDodging", true);
         GetComponent<CapsuleCollider>().height = 1.5f;
-
-        Vector3 raypos = transform.position;
-        raypos.y += 1;
-        Debug.DrawRay(raypos, Dir, Color.green);
-
-        // commit in a direction and translate in that since we are not using root motion.
+        
+        
         float angle = Vector3.Angle(Dir, transform.forward);
-        Debug.Log("Dodge Angle: " + angle);
-        if (angle < 100)
+        //Debug.Log("Dodge Angle: " + angle);
+        if (angle <= 125)
         {
             animator.SetFloat("DodgeRoll", 0f);     // front roll
-            // align towards dir
-            if(angle>25)
-                transform.LookAt(Dir);
+            DodgeAlignDir = Dir;
+            doDodgeAlign = true;
         }
-        else
+        else if(angle> 125 && angle < 185)
         {
-            animator.SetFloat("DodgeRoll", 0.33f);     // Backroll roll
+            animator.SetFloat("DodgeRoll", 1f);     // Backroll roll
         }
     }
+
+    Vector3 DodgeAlignDir;
+    bool doDodgeAlign;
+    /// <summary>
+    /// Calls align in the direction you are dodging in
+    /// </summary>
+    void DodgeAlign()
+    {
+        AlignOrientation(DodgeAlignDir);
+    }
+
+
 
     /// <summary>
     /// Called from animation event to cancel invincibility.
@@ -245,10 +257,12 @@ public class PlayerMovement : MonoBehaviour
     public void UnDodge()
     {
         isDodging = false;
+        PAttributesRef.dodgeInvincible = false;
+
         animator.SetLayerWeight(1, 1);       // switch off combat layer until then.
         animator.SetBool("isDodging",false);
         GetComponent<CapsuleCollider>().height = ogColliderHeight;
-
+        doDodgeAlign = false;
     }
 
     void CheckGrounded()

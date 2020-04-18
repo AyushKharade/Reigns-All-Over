@@ -9,6 +9,8 @@ public class PlayerAttributes : MonoBehaviour
 {
     [Header("Player Information")]
     public float health=100;
+    [HideInInspector]public bool invincible;
+    [HideInInspector]public bool dodgeInvincible;
     public float stamina=100;
     public float staminaRegenRate;
     public float staminaRegenDelay;
@@ -60,7 +62,7 @@ public class PlayerAttributes : MonoBehaviour
 
     public void DealDamage(float dmg)
     {
-        if (!MovementRef.isDead)
+        if (!MovementRef.isDead && !invincible && !dodgeInvincible)
         {
             health -= dmg;
             if (health <= 0)
