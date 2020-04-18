@@ -7,16 +7,18 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Variables")]
     public float walkSpeed;
     public float runSpeed;
-    public float sprintMultiplier = 1f;
+    public float sprintCostRate = 10f;
     public float alignSpeed;
 
     // Private Variables
     float fallDuration = 0f;
     bool jumped;
+    float ogColliderHeight;
 
     [Header("Character States")]
     public bool isGrounded;
     public bool isRunning;
+    public bool isSprinting;
     public bool isDodging;
     public bool isDead;
     public bool isWalking;
@@ -36,25 +38,45 @@ public class PlayerMovement : MonoBehaviour
     //animator ref
     Animator animator;
 
+    // script References
+    Combat CombatRef;
+    PlayerAttributes PAttributesRef;
+
     void Start()
     {
         TargetRef = CamRef.parent;
         animator = GetComponent<Animator>();
+
+        CombatRef = GetComponent<Combat>();
+        PAttributesRef = GetComponent<PlayerAttributes>();
+
+        ogColliderHeight = GetComponent<CapsuleCollider>().height;
     }
 
     void Update()
     {
-
         // to make camera follow on jumps and fall
-        TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);     
+        TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 
-        if(!isDead && !controlLock)
-            PMovement();
         CheckGrounded();
+
+        if (!isDead && !controlLock)
+            PMovement();
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            PlayerHolder.position = new Vector3(0, 27, -13);
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            PAttributesRef.DealDamage(10);
+        }
+
     }
 
     /// <summary>
-    /// Upon directonal keypress, move in direction, as well as align. Uses 360 movement when not in combat.
+    /// Upon directonal keypress, move in direction, as well as align. Uses 360 movement when not in lock on combat.
     /// </summary>
     void PMovement()
     {
@@ -73,15 +95,16 @@ public class PlayerMovement : MonoBehaviour
             PlayerDirection += TargetRef.right;
         //--------------------------------------------------------------------------------------
         // Sprint
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && PAttributesRef.stamina>0)
         {
-            sprintMultiplier = 1.4f;
-            animator.SetFloat("sprintMultiplier", 1.4f);
+            isSprinting = true;
+            PAttributesRef.stamina -= sprintCostRate * Time.deltaTime;
+            PAttributesRef.onStaminaRegenDelay = true;
+            isWalking = false;
         }
         else
         {
-            sprintMultiplier = 1f;
-            animator.SetFloat("sprintMultiplier", 1f);
+            isSprinting = false;
         } 
         //---------------------------------------------------------------------------------------
 
@@ -89,19 +112,26 @@ public class PlayerMovement : MonoBehaviour
         PlayerDirection = PlayerDirection.normalized;
         PlayerDirection.y = 0;
 
-        PlayerTranslation(PlayerDirection);
-        
 
-        
-        
+        PlayerTranslation(PlayerDirection);
+
+
+
+
 
 
         // Jumping -- need to fix double jumping issue
-        if (Input.GetKeyDown(KeyCode.Space) && fallDuration<0.1f && !jumped)
+        if (Input.GetKeyDown(KeyCode.Space) && fallDuration < 0.1f && !jumped && !CombatRef.inCombat)
         {
             jumped = true;
-            GetComponent<Rigidbody>().AddForce(50f*Vector3.up,ForceMode.Impulse);
+            GetComponent<Rigidbody>().AddForce(50f * Vector3.up, ForceMode.Impulse);
         }
+        else if (Input.GetKeyDown(KeyCode.Space) && CombatRef.inCombat && !isDodging && CombatRef.ready)
+            Dodge(PlayerDirection);       // get a direction dodge.
+
+        // orient dodging                   --> basically orient slowly towards direction of dodge so front roll looks smooth
+        if (isDodging && doDodgeAlign)
+            DodgeAlign();
 
 
         // toggle walking
@@ -111,15 +141,26 @@ public class PlayerMovement : MonoBehaviour
             {
                 isWalking = false;
             }
-            else
+            else if(!isSprinting && !CombatRef.inCombat)
             {
                 isWalking = true;
                 if(isRunning)
-                    animator.SetFloat("Locomotion", 0.5f);
+                    animator.SetFloat("Locomotion", 0.33f);
             }
         }
+
+
+        
     }
 
+
+
+
+
+    /// <summary>
+    /// handles Translation and Orientation, also movement animation update
+    /// </summary>
+    /// <param name="dir"></param>
     void PlayerTranslation(Vector3 dir)
     {
         // Translation
@@ -129,17 +170,19 @@ public class PlayerMovement : MonoBehaviour
         else
             slowdownMultipier = 0.4f;
 
-        if (isGrounded)
+        if (isGrounded && !isDodging)
         {
             // check whether running or walking or sprinting
             if (isWalking)
                 PlayerHolder.Translate(dir * walkSpeed * slowdownMultipier * Time.deltaTime);
-            else // running
-                PlayerHolder.Translate(dir * runSpeed * sprintMultiplier * slowdownMultipier * Time.deltaTime);
+            else if(!isSprinting)// running
+                PlayerHolder.Translate(dir * runSpeed *  slowdownMultipier * Time.deltaTime);
+            else if(isSprinting)
+                PlayerHolder.Translate(dir * (runSpeed-1f) * slowdownMultipier * Time.deltaTime);       // run speed is kind of fast
         }
-        else
+        else if(!isDodging)
         {
-            PlayerHolder.Translate(dir * runSpeed *  slowdownMultipier * Time.deltaTime);
+            PlayerHolder.Translate(dir * (runSpeed+3) *  slowdownMultipier * Time.deltaTime);         // this is for mid air movement
         }
 
 
@@ -148,24 +191,95 @@ public class PlayerMovement : MonoBehaviour
         // Anim Update && Alignment
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
-            AlignOrientation(dir);
+            if(!isDodging)
+                AlignOrientation(dir);
             isRunning = true;
 
-            // increase locomotion variable
-            if (animator.GetFloat("Locomotion") < 0.5 && isWalking)
+            if (isWalking && animator.GetFloat("Locomotion") < 0.33f)
                 animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
-            else if (animator.GetFloat("Locomotion") < 1 && !isWalking)
+            else if (!isWalking && !isSprinting && animator.GetFloat("Locomotion") < 0.66f)
                 animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+            else if(isSprinting && animator.GetFloat("Locomotion") < 1f)// sprinting
+                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+
+
+            // cases if you stop doing things.
+            if(animator.GetFloat("Locomotion") > 0.66f && !isSprinting)
+                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
+            
         }
         else
         {
             isRunning = false;
+
             if (animator.GetFloat("Locomotion") > 0)
                 animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
         }
 
     }
 
+    
+
+    void Dodge(Vector3 Dir)
+    {
+        // we compute the type of dodge depending on the Dir and the angle of camera and player.
+        // Both rolls are stored in a blend tree. respect values are enabled.
+
+        isDodging = true;
+        PAttributesRef.dodgeInvincible = true;
+
+
+        animator.SetLayerWeight(1, 0);       // switch off combat layer until then.
+        animator.SetBool("isDodging", true);
+        GetComponent<CapsuleCollider>().height = 1.5f;
+        
+        
+        float angle = Vector3.Angle(Dir, transform.forward);
+        //Debug.Log("Dodge Angle: " + angle);
+        if (angle <= 125)
+        {
+            animator.SetFloat("DodgeRoll", 0f);     // front roll
+            DodgeAlignDir = Dir;
+            doDodgeAlign = true;
+        }
+        else if(angle> 125 && angle < 185)
+        {
+            animator.SetFloat("DodgeRoll", 1f);     // Backroll roll
+        }
+    }
+
+    Vector3 DodgeAlignDir;
+    bool doDodgeAlign;
+    /// <summary>
+    /// Calls align in the direction you are dodging in
+    /// </summary>
+    void DodgeAlign()
+    {
+        if (DodgeAlignDir == Vector3.zero)
+            AlignOrientation(transform.forward);
+        else
+            AlignOrientation(DodgeAlignDir);
+    }
+
+
+
+    /// <summary>
+    /// Called from animation event to cancel invincibility.
+    /// </summary>
+    public void UnDodge()
+    {
+        isDodging = false;
+        PAttributesRef.dodgeInvincible = false;
+
+        animator.SetLayerWeight(1, 1);       // switch off combat layer until then.
+        animator.SetBool("isDodging",false);
+        GetComponent<CapsuleCollider>().height = ogColliderHeight;
+        doDodgeAlign = false;
+    }
+
+    /// <summary>
+    /// Checks raycasts if falling
+    /// </summary>
     void CheckGrounded()
     {
         // Use Physics raycast to determine if player is grounded or not.
@@ -176,6 +290,10 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("isGrounded", true);
             jumped = false;
             // check if fell for too long and kill
+            if (fallDuration > 2f)
+            {
+                PAttributesRef.DealDamage(1000);
+            }
             fallDuration = 0f;
         }
         else
@@ -195,6 +313,5 @@ public class PlayerMovement : MonoBehaviour
         //set quaternion to this dir
         lookDirection = Quaternion.LookRotation(dir, Vector3.up);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, alignSpeed);
-        //transform.Rotate(new Vector3(0,20,0));
     }
 }
