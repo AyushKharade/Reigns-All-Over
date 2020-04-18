@@ -71,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Upon directonal keypress, move in direction, as well as align. Uses 360 movement when not in combat.
+    /// Upon directonal keypress, move in direction, as well as align. Uses 360 movement when not in lock on combat.
     /// </summary>
     void PMovement()
     {

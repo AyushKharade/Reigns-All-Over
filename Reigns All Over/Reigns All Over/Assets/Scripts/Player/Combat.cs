@@ -43,7 +43,7 @@ public class Combat : MonoBehaviour
     void CombatControls()
     {
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && !MovementRef.isDead)
         {
             if (inCombat && !MovementRef.isDodging && MovementRef.isGrounded)
             {
