@@ -63,6 +63,10 @@ public class PlayerMovement : MonoBehaviour
         if (!isDead && !controlLock)
             PMovement();
 
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            PlayerHolder.position = new Vector3(0, 27, -13);
+        }
         
     }
 
