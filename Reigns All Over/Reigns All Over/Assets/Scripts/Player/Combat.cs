@@ -92,8 +92,17 @@ public class Combat : MonoBehaviour
         {
             animator.SetFloat("attackAnimValue", type);           // chooses light or heavy.
             animator.SetLayerWeight(2, 1);
-            animator.SetBool("Attacking",true);
+            animator.SetBool("Attacking", true);
 
+            attacking = true;
+        }
+        else if (attacking && chainAttack)          // clicked while attacking during the chain window
+        {
+            animator.SetFloat("attackAnimValue", type);           // chooses light or heavy.
+            animator.SetLayerWeight(2, 1);
+            animator.SetBool("Attacking", true);
+            animator.SetBool("ChainAttack", true);
+            chainAttack = false;
             attacking = true;
         }
     }
@@ -102,9 +111,7 @@ public class Combat : MonoBehaviour
     void AttackOrient()
     {
         if (attacking)
-        {
             MovementRef.AlignOrientation(attackDirection);
-        }
     }
 
 

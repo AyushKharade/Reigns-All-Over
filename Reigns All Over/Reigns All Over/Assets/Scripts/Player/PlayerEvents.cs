@@ -62,6 +62,7 @@ public class PlayerEvents : MonoBehaviour
         CombatRef.attacking = false;
         CombatRef.chainAttack = false;
         animator.SetBool("Attacking",false);
+        animator.SetBool("ChainAttack", false);
         //animator.SetLayerWeight(2,0);         done smoothly
     }
 
