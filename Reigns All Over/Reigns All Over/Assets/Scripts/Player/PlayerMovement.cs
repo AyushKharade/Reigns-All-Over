@@ -246,7 +246,10 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     void DodgeAlign()
     {
-        AlignOrientation(DodgeAlignDir);
+        if (DodgeAlignDir == Vector3.zero)
+            AlignOrientation(transform.forward);
+        else
+            AlignOrientation(DodgeAlignDir);
     }
 
 
@@ -298,6 +301,5 @@ public class PlayerMovement : MonoBehaviour
         //set quaternion to this dir
         lookDirection = Quaternion.LookRotation(dir, Vector3.up);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, alignSpeed);
-        //transform.Rotate(new Vector3(0,20,0));
     }
 }

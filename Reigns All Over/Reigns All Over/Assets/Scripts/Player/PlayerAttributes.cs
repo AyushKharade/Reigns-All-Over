@@ -71,6 +71,8 @@ public class PlayerAttributes : MonoBehaviour
                 KillPlayer();
             }
         }
+        else
+            Debug.Log("Deal Damage called on dead / invincible player");
     }
 
     void KillPlayer()
