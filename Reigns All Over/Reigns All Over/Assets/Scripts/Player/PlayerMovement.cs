@@ -268,6 +268,9 @@ public class PlayerMovement : MonoBehaviour
         doDodgeAlign = false;
     }
 
+    /// <summary>
+    /// Checks raycasts if falling
+    /// </summary>
     void CheckGrounded()
     {
         // Use Physics raycast to determine if player is grounded or not.

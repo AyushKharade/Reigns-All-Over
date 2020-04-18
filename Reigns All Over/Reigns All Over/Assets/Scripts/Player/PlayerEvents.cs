@@ -40,11 +40,11 @@ public class PlayerEvents : MonoBehaviour
 
     public void ExitCombat()
     {
-        //CombatRef.ready = false;
+        CombatRef.ready = false;
         CombatRef.inCombat = false;
         animator.SetBool("ExitedCombat",false);
 
-        animator.SetLayerWeight(1, 0);
+        //animator.SetLayerWeight(1, 0);
     }
 
     public void UnEquip()

@@ -37,6 +37,7 @@ public class Combat : MonoBehaviour
     {
 
         CombatControls();
+        SmoothSwitchOffCombatLayer();
     }
 
     void CombatControls()
@@ -44,13 +45,13 @@ public class Combat : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (inCombat && !MovementRef.isDodging)
+            if (inCombat && !MovementRef.isDodging && MovementRef.isGrounded)
             {
                 animator.SetBool("inCombat", false);
                 animator.SetBool("ExitedCombat", true);         // does unsheathing
                 ready = false;
             }
-            else if (!MovementRef.isDodging)
+            else if (!MovementRef.isDodging && MovementRef.isGrounded)
             {
                 animator.SetLayerWeight(1, 1);
                 MovementRef.isWalking = false;
@@ -59,6 +60,15 @@ public class Combat : MonoBehaviour
                 animator.SetBool("inCombat", true);
                 animator.SetBool("EnteredCombat", true);
             }
+        }
+    }
+
+    void SmoothSwitchOffCombatLayer()
+    {
+        if (!inCombat)
+        {
+            if (animator.GetLayerWeight(1) > 0)
+                animator.SetLayerWeight(1, animator.GetLayerWeight(1)-0.02f);
         }
     }
 
@@ -75,4 +85,6 @@ public class Combat : MonoBehaviour
         EquippedWeapon.SetActive(false);
         SheathedWeapon.SetActive(true);
     }
+
+    
 }
