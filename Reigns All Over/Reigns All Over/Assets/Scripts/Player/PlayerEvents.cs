@@ -50,8 +50,8 @@ public class PlayerEvents : MonoBehaviour
     public void EndHurtingAnim()
     {
         animator.SetBool("Hurting",false);
-        if(!CombatRef.inCombat)
-            animator.SetLayerWeight(1, 0);
+        //if(!CombatRef.inCombat)
+        //    animator.SetLayerWeight(1, 0);
     }
 
     public void UnEquip()

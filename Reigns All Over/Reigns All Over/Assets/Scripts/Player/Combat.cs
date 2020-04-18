@@ -48,6 +48,7 @@ public class Combat : MonoBehaviour
             if (inCombat && !MovementRef.isDodging && MovementRef.isGrounded)
             {
                 animator.SetBool("inCombat", false);
+                animator.SetBool("Hurting", false);
                 animator.SetBool("ExitedCombat", true);         // does unsheathing
                 ready = false;
             }
@@ -58,6 +59,7 @@ public class Combat : MonoBehaviour
                 inCombat = true;
                 ready = false;
                 animator.SetBool("inCombat", true);
+                animator.SetBool("Hurting", false);
                 animator.SetBool("EnteredCombat", true);
             }
         }
@@ -65,7 +67,7 @@ public class Combat : MonoBehaviour
 
     void SmoothSwitchOffCombatLayer()
     {
-        if (!inCombat)
+        if (!inCombat && !animator.GetBool("Hurting"))
         {
             if (animator.GetLayerWeight(1) > 0)
                 animator.SetLayerWeight(1, animator.GetLayerWeight(1)-0.02f);

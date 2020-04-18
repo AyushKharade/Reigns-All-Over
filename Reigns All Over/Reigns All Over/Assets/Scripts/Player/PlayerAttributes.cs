@@ -61,7 +61,10 @@ public class PlayerAttributes : MonoBehaviour
 
 
     // Health Related
-
+    /// <summary>
+    /// General Damage from Environment, make a new function for enemies that includes a direction of attack,
+    /// </summary>
+    /// <param name="dmg"> How much damage to deal.</param>
     public void DealDamage(float dmg)
     {
         if (!MovementRef.isDead && !invincible && !dodgeInvincible)
