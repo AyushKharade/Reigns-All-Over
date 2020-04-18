@@ -128,7 +128,7 @@ public class Combat : MonoBehaviour
         if (!attacking)
         {
             if (animator.GetLayerWeight(2) > 0)
-                animator.SetLayerWeight(2, animator.GetLayerWeight(2) - 0.03f);
+                animator.SetLayerWeight(2, animator.GetLayerWeight(2) - 0.04f);
         }
     }
 
