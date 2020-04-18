@@ -75,6 +75,7 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    #region Movement & Translation
     /// <summary>
     /// Upon directonal keypress, move in direction, as well as align. Uses 360 movement when not in lock on combat.
     /// </summary>
@@ -150,6 +151,21 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
+
+        // fighting input direction.
+        if (!isDead && isGrounded && !isDodging && CombatRef.ready)
+        {
+            Vector3 attackDir=PlayerDirection;
+            if (attackDir == Vector3.zero)
+                attackDir = transform.forward;
+
+            if (Input.GetMouseButtonDown(0))
+                CombatRef.FightingControls(0, attackDir);
+            else if (Input.GetMouseButtonDown(1))
+                CombatRef.FightingControls(1, attackDir);
+        }
+
+
         
     }
 
@@ -170,7 +186,7 @@ public class PlayerMovement : MonoBehaviour
         else
             slowdownMultipier = 0.4f;
 
-        if (isGrounded && !isDodging)
+        if (isGrounded && !isDodging && !CombatRef.attacking)
         {
             // check whether running or walking or sprinting
             if (isWalking)
@@ -180,7 +196,7 @@ public class PlayerMovement : MonoBehaviour
             else if(isSprinting)
                 PlayerHolder.Translate(dir * (runSpeed-1f) * slowdownMultipier * Time.deltaTime);       // run speed is kind of fast
         }
-        else if(!isDodging)
+        else if(!isDodging && !CombatRef.attacking)
         {
             PlayerHolder.Translate(dir * (runSpeed+3) *  slowdownMultipier * Time.deltaTime);         // this is for mid air movement
         }
@@ -191,7 +207,7 @@ public class PlayerMovement : MonoBehaviour
         // Anim Update && Alignment
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
-            if(!isDodging)
+            if(!isDodging && !CombatRef.attacking)
                 AlignOrientation(dir);
             isRunning = true;
 
@@ -218,7 +234,7 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    
+    #endregion
 
     void Dodge(Vector3 Dir)
     {
@@ -227,6 +243,19 @@ public class PlayerMovement : MonoBehaviour
 
         isDodging = true;
         PAttributesRef.dodgeInvincible = true;
+
+        #region Interupt Attacks
+        if (CombatRef.attacking)
+        {
+            animator.SetBool("Attacking", false);
+            //animator.SetLayerWeight(2, 0);              // looks smoother, since it will slowly turn off when attacking is false
+            CombatRef.attacking = false;
+            CombatRef.chainAttack = false;
+        }
+
+
+
+        #endregion
 
 
         animator.SetLayerWeight(1, 0);       // switch off combat layer until then.
@@ -277,6 +306,8 @@ public class PlayerMovement : MonoBehaviour
         doDodgeAlign = false;
     }
 
+
+
     /// <summary>
     /// Checks raycasts if falling
     /// </summary>
@@ -306,7 +337,7 @@ public class PlayerMovement : MonoBehaviour
     }
     
  
-    void AlignOrientation(Vector3 dir)
+    public void AlignOrientation(Vector3 dir)
     {
         Quaternion lookDirection;
 

@@ -54,6 +54,26 @@ public class PlayerEvents : MonoBehaviour
         //    animator.SetLayerWeight(1, 0);
     }
 
+    /// <summary>
+    /// called at the end of an attack, if player doesnt chain attacks.
+    /// </summary>
+    public void EndOfAttack()
+    {
+        CombatRef.attacking = false;
+        CombatRef.chainAttack = false;
+        animator.SetBool("Attacking",false);
+        //animator.SetLayerWeight(2,0);         done smoothly
+    }
+
+
+    /// <summary>
+    /// start chain window, so that players can chain attacks.
+    /// </summary>
+    public void EnableChainAttack()
+    {
+        CombatRef.chainAttack = true;
+    }
+
     public void UnEquip()
     {
         CombatRef.UnEquipWeapon();
