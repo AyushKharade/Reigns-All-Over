@@ -252,6 +252,8 @@ public class PlayerMovement : MonoBehaviour
             //animator.SetLayerWeight(2, 0);              // looks smoother, since it will slowly turn off when attacking is false
             CombatRef.attacking = false;
             CombatRef.chainAttack = false;
+            CombatRef.chained = false;
+            CombatRef.chainWindowOpen = false;
         }
 
 

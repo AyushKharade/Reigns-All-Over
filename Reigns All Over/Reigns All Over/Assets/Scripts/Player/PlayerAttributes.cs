@@ -94,6 +94,8 @@ public class PlayerAttributes : MonoBehaviour
         animator.SetBool("ChainAttack", false);
         CombatRef.attacking = false;
         CombatRef.chainAttack = false;
+        CombatRef.chained = false;
+        CombatRef.chainWindowOpen = false;
     }
 
     void KillPlayer()

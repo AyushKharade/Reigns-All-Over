@@ -392,6 +392,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: 0.2241198
+        functionName: EnableChainAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: 0.7627119
         functionName: EndOfAttack
         data: 
@@ -399,8 +406,8 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.31779662
-        functionName: EnableChainAttack
+      - time: 0.49673203
+        functionName: PerformChainAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

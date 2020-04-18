@@ -61,6 +61,8 @@ public class PlayerEvents : MonoBehaviour
     {
         CombatRef.attacking = false;
         CombatRef.chainAttack = false;
+        CombatRef.chained = false;
+        CombatRef.chainWindowOpen = false;
         animator.SetBool("Attacking",false);
         animator.SetBool("ChainAttack", false);
         //animator.SetLayerWeight(2,0);         done smoothly
@@ -72,7 +74,19 @@ public class PlayerEvents : MonoBehaviour
     /// </summary>
     public void EnableChainAttack()
     {
-        CombatRef.chainAttack = true;
+        if(!MovementRef.isDodging)
+            CombatRef.chained = true;
+    }
+
+    /// <summary>
+    /// if user had pressed the chain attack button previously, perform chain now.
+    /// </summary>
+    public void PerformChainAttack()
+    {
+        if(!MovementRef.isDodging)
+            CombatRef.chainWindowOpen = true;
+        if(!MovementRef.isDodging && CombatRef.chainAttack)
+            CombatRef.ExecuteChainAttack();
     }
 
     public void UnEquip()
