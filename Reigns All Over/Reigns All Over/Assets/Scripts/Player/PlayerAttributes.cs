@@ -90,14 +90,7 @@ public class PlayerAttributes : MonoBehaviour
 
     void HurtInteruptAttacks()
     {
-        animator.SetBool("Attacking", false);
-        animator.SetBool("ChainAttack", false);
-        CombatRef.attacking = false;
-        CombatRef.chainAttack = false;
-        CombatRef.chained = false;
-        CombatRef.chainWindowOpen = false;
-
-        CombatRef.combo = 1;
+        CombatRef.InteruptAttack();
     }
 
     void KillPlayer()

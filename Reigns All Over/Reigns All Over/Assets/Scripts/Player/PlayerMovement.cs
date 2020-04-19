@@ -13,7 +13,6 @@ public class PlayerMovement : MonoBehaviour
     // Private Variables
     float fallDuration = 0f;
     bool jumped;
-    float ogColliderHeight;
 
     [Header("Character States")]
     public bool isGrounded;
@@ -50,7 +49,6 @@ public class PlayerMovement : MonoBehaviour
         CombatRef = GetComponent<Combat>();
         PAttributesRef = GetComponent<PlayerAttributes>();
 
-        ogColliderHeight = GetComponent<CapsuleCollider>().height;
     }
 
     void Update()
@@ -252,17 +250,7 @@ public class PlayerMovement : MonoBehaviour
 
         #region Interupt Attacks
         if (CombatRef.attacking)
-        {
-            animator.SetBool("Attacking", false);
-            animator.SetBool("ChainAttack", false);
-            //animator.SetLayerWeight(2, 0);              // looks smoother, since it will slowly turn off when attacking is false
-            CombatRef.attacking = false;
-            CombatRef.chainAttack = false;
-            CombatRef.chained = false;
-            CombatRef.chainWindowOpen = false;
-
-            CombatRef.combo = 1;
-        }
+            CombatRef.InteruptAttack();
 
 
 
@@ -271,7 +259,6 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetLayerWeight(1, 0);       // switch off combat layer until then.
         animator.SetBool("isDodging", true);
-        GetComponent<CapsuleCollider>().height = 1.5f;
         
         
         float angle = Vector3.Angle(Dir, transform.forward);
@@ -318,7 +305,6 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetLayerWeight(1, 1);       // switch off combat layer until then.
         animator.SetBool("isDodging",false);
-        GetComponent<CapsuleCollider>().height = ogColliderHeight;
         doDodgeAlign = false;
     }
 

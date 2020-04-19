@@ -183,6 +183,20 @@ public class Combat : MonoBehaviour
         }
     }
 
+
+
+    public void InteruptAttack()
+    {
+        animator.SetBool("Attacking", false);
+        animator.SetBool("ChainAttack", false);
+        attacking = false;
+        chainAttack = false;
+        chained = false;
+        chainWindowOpen = false;
+
+        combo = 1;
+    }
+
     // these methods will just turn on and off weapons
     public void EquipWeapon()
     {
