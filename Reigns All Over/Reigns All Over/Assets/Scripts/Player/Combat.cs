@@ -133,6 +133,7 @@ public class Combat : MonoBehaviour
         animator.SetBool("ChainAttack", true);
         chainAttack = false;
         chained = false;
+        chainWindowOpen = false;
         attacking = true;
     }
 

@@ -392,15 +392,8 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.2241198
+      - time: 0.17019823
         functionName: EnableChainAttack
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0.7627119
-        functionName: EndOfAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -408,6 +401,13 @@ ModelImporter:
         messageOptions: 0
       - time: 0.49673203
         functionName: PerformChainAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.7627119
+        functionName: EndOfAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -441,7 +441,28 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.1325052
+        functionName: EnableChainAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.606473
+        functionName: PerformChainAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9772258
+        functionName: EndOfAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}

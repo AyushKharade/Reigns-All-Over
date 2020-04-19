@@ -59,13 +59,16 @@ public class PlayerEvents : MonoBehaviour
     /// </summary>
     public void EndOfAttack()
     {
-        CombatRef.attacking = false;
-        CombatRef.chainAttack = false;
-        CombatRef.chained = false;
-        CombatRef.chainWindowOpen = false;
-        animator.SetBool("Attacking",false);
-        animator.SetBool("ChainAttack", false);
-        //animator.SetLayerWeight(2,0);         done smoothly
+        if (!CombatRef.chainAttack)
+        {
+            CombatRef.attacking = false;
+            CombatRef.chainAttack = false;
+            CombatRef.chained = false;
+            CombatRef.chainWindowOpen = false;
+            animator.SetBool("Attacking", false);
+            animator.SetBool("ChainAttack", false);
+            //animator.SetLayerWeight(2,0);         done smoothly
+        }
     }
 
 
@@ -76,6 +79,12 @@ public class PlayerEvents : MonoBehaviour
     {
         if(!MovementRef.isDodging)
             CombatRef.chained = true;
+
+        // reset older variables.
+        animator.SetBool("ChainAttack", false);
+        CombatRef.chainAttack = false;
+        CombatRef.chainWindowOpen = false;
+
     }
 
     /// <summary>
