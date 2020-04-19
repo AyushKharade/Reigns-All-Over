@@ -158,10 +158,10 @@ public class Combat : MonoBehaviour
         if (attacking)
             MovementRef.AlignOrientation(attackDirection);
 
-        if (MovementRef.isRunning && attackAnimValue==1)
+        if (MovementRef.isRunning && !MovementRef.isDead && attackAnimValue==1)
             MovementRef.PlayerHolder.Translate(transform.forward * 1f * Time.deltaTime);
-        else if(MovementRef.isRunning && attackAnimValue == 0)
-            MovementRef.PlayerHolder.Translate(transform.forward * 0.6f * Time.deltaTime);
+        else if(MovementRef.isRunning && !MovementRef.isDead && attackAnimValue == 0)
+            MovementRef.PlayerHolder.Translate(transform.forward * 0.5f * Time.deltaTime);
 
     }
 

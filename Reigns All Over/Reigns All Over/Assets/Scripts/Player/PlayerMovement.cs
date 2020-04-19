@@ -127,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
             jumped = true;
             GetComponent<Rigidbody>().AddForce(50f * Vector3.up, ForceMode.Impulse);
         }
-        else if (Input.GetKeyDown(KeyCode.Space) && CombatRef.inCombat && !isDodging && CombatRef.ready)
+        else if (Input.GetKeyDown(KeyCode.Space) && CombatRef.inCombat && !isDodging && CombatRef.ready && isGrounded)
             Dodge(PlayerDirection);       // get a direction dodge.
 
         // orient dodging                   --> basically orient slowly towards direction of dodge so front roll looks smooth
