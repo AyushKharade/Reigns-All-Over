@@ -112,6 +112,8 @@ public class Combat : MonoBehaviour
         {
             animator.SetLayerWeight(2, 1);
             animator.SetBool("Attacking", true);
+            animator.SetFloat("attackAnimValue", attackAnimValue);
+
 
             attacking = true;
             chained = false; chainAttack = false; chainWindowOpen = false;                    // just incase they were left on
