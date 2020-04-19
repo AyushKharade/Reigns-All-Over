@@ -132,8 +132,13 @@ public class PlayerMovement : MonoBehaviour
 
         // orient dodging                   --> basically orient slowly towards direction of dodge so front roll looks smooth
         if (isDodging && doDodgeAlign)
-            DodgeAlign();
+        {
+            DodgeAlign(dodgeDirection);
 
+            // This could be a skill, on both dodges to dodge even further
+            if (dodgeDirection == -1)
+                PlayerHolder.Translate(transform.forward * -1 * 1.25f * Time.deltaTime);
+        }
 
         // toggle walking
         if (Input.GetKeyDown(KeyCode.CapsLock))
@@ -275,10 +280,14 @@ public class PlayerMovement : MonoBehaviour
         {
             animator.SetFloat("DodgeRoll", 0f);     // front roll
             DodgeAlignDir = Dir;
+            dodgeDirection = 1;
             doDodgeAlign = true;
         }
         else if(angle> 125 && angle < 185)
         {
+            DodgeAlignDir = Dir;
+            dodgeDirection = -1;
+            doDodgeAlign = true;
             animator.SetFloat("DodgeRoll", 1f);     // Backroll roll
         }
     }
@@ -288,12 +297,13 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>
     /// Calls align in the direction you are dodging in
     /// </summary>
-    void DodgeAlign()
+    int dodgeDirection = 1;
+    void DodgeAlign(int direction)
     {
         if (DodgeAlignDir == Vector3.zero)
             AlignOrientation(transform.forward);
         else
-            AlignOrientation(DodgeAlignDir);
+            AlignOrientation(DodgeAlignDir*direction);
     }
 
 
