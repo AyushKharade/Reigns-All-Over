@@ -30,7 +30,7 @@ public class Combat : MonoBehaviour
     /// attack can be chained. Dont have to wait)
     /// </summary>
     [HideInInspector]public bool chainWindowOpen;
-    public int combo;                                  // use when higher combo should deal higher damage
+    public int combo=1;                                  // use when higher combo should deal higher damage
     // controls Light/Heavy attack blend tree value
     float attackAnimValue;             
 
@@ -110,15 +110,17 @@ public class Combat : MonoBehaviour
         attackAnimValue = type;
         if (!attacking)
         {
-            //animator.SetFloat("attackAnimValue", type);           // chooses light or heavy.
             animator.SetLayerWeight(2, 1);
             animator.SetBool("Attacking", true);
 
             attacking = true;
             chained = false; chainAttack = false; chainWindowOpen = false;                    // just incase they were left on
+
+            combo = 1;
         }
         else if (attacking && chained)                     // clicked while attacking during the chain window
         {
+            combo++;
             chainAttack = true;
             if (chainWindowOpen)
                 ExecuteChainAttack();

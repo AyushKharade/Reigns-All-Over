@@ -96,6 +96,8 @@ public class PlayerAttributes : MonoBehaviour
         CombatRef.chainAttack = false;
         CombatRef.chained = false;
         CombatRef.chainWindowOpen = false;
+
+        CombatRef.combo = 1;
     }
 
     void KillPlayer()

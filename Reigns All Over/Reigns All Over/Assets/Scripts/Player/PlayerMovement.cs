@@ -236,6 +236,7 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion
 
+    #region Dodging
     void Dodge(Vector3 Dir)
     {
         // we compute the type of dodge depending on the Dir and the angle of camera and player.
@@ -254,6 +255,8 @@ public class PlayerMovement : MonoBehaviour
             CombatRef.chainAttack = false;
             CombatRef.chained = false;
             CombatRef.chainWindowOpen = false;
+
+            CombatRef.combo = 1;
         }
 
 
@@ -309,6 +312,7 @@ public class PlayerMovement : MonoBehaviour
         doDodgeAlign = false;
     }
 
+    #endregion
 
 
     /// <summary>

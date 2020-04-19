@@ -67,7 +67,8 @@ public class PlayerEvents : MonoBehaviour
             CombatRef.chainWindowOpen = false;
             animator.SetBool("Attacking", false);
             animator.SetBool("ChainAttack", false);
-            //animator.SetLayerWeight(2,0);         done smoothly
+
+            CombatRef.combo = 1;
         }
     }
 
