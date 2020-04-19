@@ -348,4 +348,16 @@ public class PlayerMovement : MonoBehaviour
         lookDirection = Quaternion.LookRotation(dir, Vector3.up);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, alignSpeed);
     }
+
+    // overloaded  with speed parameter
+    /*
+    public void AlignOrientation(Vector3 dir, float newAlignSpeed)
+    {
+        Quaternion lookDirection;
+
+        //set quaternion to this dir
+        lookDirection = Quaternion.LookRotation(dir, Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, newAlignSpeed);
+    }
+    */
 }

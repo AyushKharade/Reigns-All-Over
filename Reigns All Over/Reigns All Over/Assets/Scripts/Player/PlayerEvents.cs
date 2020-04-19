@@ -93,10 +93,17 @@ public class PlayerEvents : MonoBehaviour
     /// </summary>
     public void PerformChainAttack()
     {
-        if(!MovementRef.isDodging)
+        // experimental -- turn off attacking state for weapon.
+        if (!CombatRef.chainAttack)
+            CombatRef.EquippedWeapon.GetComponent<Weapon>().doDMG = false;
+
+        if (!MovementRef.isDodging)
             CombatRef.chainWindowOpen = true;
         if(!MovementRef.isDodging && CombatRef.chainAttack)
             CombatRef.ExecuteChainAttack();
+
+
+        
     }
 
     public void UnEquip()

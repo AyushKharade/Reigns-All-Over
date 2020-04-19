@@ -32,7 +32,7 @@ public class Combat : MonoBehaviour
     [HideInInspector]public bool chainWindowOpen;
     public int combo=1;                                  // use when higher combo should deal higher damage
     // controls Light/Heavy attack blend tree value
-    float attackAnimValue;             
+    [HideInInspector] public float attackAnimValue;             
 
     Vector3 attackDirection;           // orient here.
 
@@ -119,6 +119,9 @@ public class Combat : MonoBehaviour
             chained = false; chainAttack = false; chainWindowOpen = false;                    // just incase they were left on
 
             combo = 1;
+
+            // turn on sword dmg
+            EquippedWeapon.GetComponent<Weapon>().doDMG = true;
         }
         else if (attacking && chained)                     // clicked while attacking during the chain window
         {
@@ -140,6 +143,9 @@ public class Combat : MonoBehaviour
         chained = false;
         chainWindowOpen = false;
         attacking = true;
+
+        // turn on sword dmg
+        EquippedWeapon.GetComponent<Weapon>().doDMG = true;
     }
 
     void SmoothSwitchAttacks()
