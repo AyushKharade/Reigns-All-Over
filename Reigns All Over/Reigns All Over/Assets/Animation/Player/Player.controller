@@ -860,7 +860,7 @@ BlendTree:
   m_Name: Combo2
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 7400002, guid: 176fac875603d3f419eb970f987aeab5, type: 3}
+    m_Motion: {fileID: 7400000, guid: 176fac875603d3f419eb970f987aeab5, type: 3}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 0.8

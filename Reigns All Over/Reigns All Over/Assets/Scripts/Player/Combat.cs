@@ -66,6 +66,7 @@ public class Combat : MonoBehaviour
         CombatControls();
         AttackOrient();
         SmoothSwitchOffCombatLayers();
+        SmoothSwitchAttacks();
     }
 
     /// <summary>
@@ -109,7 +110,7 @@ public class Combat : MonoBehaviour
         attackAnimValue = type;
         if (!attacking)
         {
-            animator.SetFloat("attackAnimValue", type);           // chooses light or heavy.
+            //animator.SetFloat("attackAnimValue", type);           // chooses light or heavy.
             animator.SetLayerWeight(2, 1);
             animator.SetBool("Attacking", true);
 
@@ -137,6 +138,16 @@ public class Combat : MonoBehaviour
         attacking = true;
     }
 
+    void SmoothSwitchAttacks()
+    {
+        if (attacking)
+        {
+            if (animator.GetFloat("attackAnimValue") < 1 && attackAnimValue == 1)
+                animator.SetFloat("attackAnimValue",animator.GetFloat("attackAnimValue")+0.03f);
+            else if (animator.GetFloat("attackAnimValue") > 0 && attackAnimValue == 0)
+                animator.SetFloat("attackAnimValue", animator.GetFloat("attackAnimValue") - 0.03f);
+        }
+    }
 
     void AttackOrient()
     {
