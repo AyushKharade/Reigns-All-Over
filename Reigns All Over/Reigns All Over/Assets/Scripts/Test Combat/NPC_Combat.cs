@@ -70,7 +70,8 @@ public class NPC_Combat : MonoBehaviour
         if (targetInRange)
         {
             // new attack function
-            AttackTarget();
+            if(!commitedAttack)
+                AttackTarget();
         }
         else
         {
@@ -95,7 +96,7 @@ public class NPC_Combat : MonoBehaviour
             if (noOfAttacks > 1)
             {
                 int r = Random.Range(0, noOfAttacks + 1);
-                animator.SetFloat("AttackValue",attackAnimValue);
+                animator.SetFloat("AttackValue",r);
             }
         }
         else
