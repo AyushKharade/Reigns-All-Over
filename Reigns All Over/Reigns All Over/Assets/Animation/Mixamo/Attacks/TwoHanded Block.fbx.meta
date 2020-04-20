@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 81bc9807aacb85c44824978353c7dd9c
+guid: 6f5804dfbd5bc8e4f9112ceddd01be9f
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: OneHanded_attack2
+    second: BlockStart
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,13 +35,13 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: OneHanded_attack2
+      name: BlockStart
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 68
+      lastFrame: 15
       wrapMode: 0
-      orientationOffsetY: 0
+      orientationOffsetY: -33.37
       level: 0
       cycleOffset: 0
       loop: 0
@@ -49,7 +49,7 @@ ModelImporter:
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 1
-      loopBlendPositionY: 0
+      loopBlendPositionY: 1
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
       keepOriginalPositionY: 1
