@@ -27,6 +27,7 @@ public class Weapon : MonoBehaviour
     /// Weapons in bad condition will deal low damage (condition <65 (10% penalty), condition < 50 (25% penalty), condition < 30 (45% penalth)
     /// </summary>
     [Range(0,100)] public float condition;
+    [Range(0, 1)] public float deteriorationRate;
 
     //private
     bool usedByPlayer;       // if yes, weapon will deteriorate and deal combo damage
@@ -82,6 +83,8 @@ public class Weapon : MonoBehaviour
         {
             dmg += baseDamage * ((c * 15f) / 100f);
         }
+
+        WeaponDeteriorate();
         return dmg;
     }
 
@@ -89,7 +92,20 @@ public class Weapon : MonoBehaviour
     /// reduces weapon condition on every use.
     /// </summary>
     void WeaponDeteriorate()
-    { }
+    {
+        float f = 0;
+        if (upgrade + "" == "Enhanced")
+            f = 0.1f;
+        else if ((upgrade + "" == "Pristine"))
+            f = 0.25f;
+        else if ((upgrade + "" == "Exquisite"))
+            f = 0.4f;
+        else if ((upgrade + "" == "Legendary"))
+            f = 0.55f;
+
+
+            condition -= (deteriorationRate-deteriorationRate*f);
+    }
 
 
 
@@ -98,18 +114,22 @@ public class Weapon : MonoBehaviour
     {
         if (other.tag == "Enemy" && doDMG && CombatRef.attacking)
         {
-            // calculate damage
-            int dmg = (int)(DealHowMuchDMG());
-            other.GetComponent<TestEnemyDummy>().DealDamage(dmg);
-            doDMG = false;
+            if (!other.GetComponent<TestEnemyDummy>().isDead)
+            {
+                // calculate damage
+                int dmg = (int)(DealHowMuchDMG());
+                other.GetComponent<TestEnemyDummy>().DealDamage(dmg);
+                doDMG = false;
 
-            // instantiate popup.
-            GameObject GB = Instantiate(DamagePopUpPrefab,other.transform.position,Quaternion.identity);
-            GB.GetComponent<TextMesh>().text = dmg+"";
-            if (doingCritDMG)
-                GB.GetComponent<TextMesh>().color = Color.red;
+                // instantiate popup.
+                GameObject GB = Instantiate(DamagePopUpPrefab, other.transform.position, Quaternion.identity);
+                GB.transform.Translate(Vector3.up * 1.75f);
+                GB.GetComponent<TextMesh>().text = dmg + "";
+                if (doingCritDMG)
+                    GB.GetComponent<TextMesh>().color = Color.red;
 
-            Destroy(GB, 2.5f);
+                Destroy(GB, 2.5f);
+            }
         }
     }
 

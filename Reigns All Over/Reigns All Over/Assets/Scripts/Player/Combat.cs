@@ -201,6 +201,8 @@ public class Combat : MonoBehaviour
         chainWindowOpen = false;
 
         combo = 1;
+
+        EquippedWeapon.GetComponent<Weapon>().doDMG = false;
     }
 
     // these methods will just turn on and off weapons

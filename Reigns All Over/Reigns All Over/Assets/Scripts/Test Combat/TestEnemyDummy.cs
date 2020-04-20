@@ -14,6 +14,8 @@ public class TestEnemyDummy : MonoBehaviour
     public Image HP;
     public Transform UIParent;
 
+    public bool isDead;
+
     private void Start()
     {
         maxHealth = health;
@@ -23,20 +25,27 @@ public class TestEnemyDummy : MonoBehaviour
     private void Update()
     {
         // make UI be billboard
-        UIParent.rotation = Camera.main.transform.rotation;
+        if(!isDead)
+            UIParent.rotation = Camera.main.transform.rotation;
     }
     void UpdateHealthUI()
     {
         HP.fillAmount = (float)(health*1f / maxHealth*1f);
     }
-   
+
 
     public void DealDamage(int dmg)
     {
-        health -= dmg;
-        if (health <= 0)
-            Destroy(this.gameObject);
-
-        UpdateHealthUI();
+        if (!isDead)
+        {
+            health -= dmg;
+            if (health <= 0)
+            {
+                GetComponent<Animator>().SetBool("isDead", true);
+                isDead = true;
+                UIParent.gameObject.SetActive(false);
+            }
+            UpdateHealthUI();
+        }
     }
 }

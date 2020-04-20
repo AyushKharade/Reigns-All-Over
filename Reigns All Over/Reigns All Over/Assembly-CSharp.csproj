@@ -62,7 +62,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\NPCs\HeadAlignTest.cs" />
     <Compile Include="Assets\Scripts\Player\Combat.cs" />
     <Compile Include="Assets\Scripts\Player\Interaction.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerAttributes.cs" />
@@ -71,6 +70,9 @@
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Player\Weapons\Weapon.cs" />
     <Compile Include="Assets\Scripts\Test Combat\DMGPopUp.cs" />
+    <Compile Include="Assets\Scripts\Test Combat\NPC_Combat.cs" />
+    <Compile Include="Assets\Scripts\Test Combat\NPC_Events.cs" />
+    <Compile Include="Assets\Scripts\Test Combat\NPCBehavior.cs" />
     <Compile Include="Assets\Scripts\Test Combat\TestEnemyDummy.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/ASUS/Documents/Unity Projects/Regins All Over RPG/Reigns-All-Over/Reigns All Over/Reigns All Over/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
