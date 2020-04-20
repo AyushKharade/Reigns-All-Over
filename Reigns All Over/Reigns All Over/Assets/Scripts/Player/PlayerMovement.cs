@@ -246,7 +246,7 @@ public class PlayerMovement : MonoBehaviour
         // Both rolls are stored in a blend tree. respect values are enabled.
 
         isDodging = true;
-        PAttributesRef.dodgeInvincible = true;
+        //PAttributesRef.dodgeInvincible = true;
 
         #region Interupt Attacks
         if (CombatRef.attacking)

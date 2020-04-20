@@ -9,7 +9,8 @@ public class NPC_Combat : MonoBehaviour
     public GameObject Weapon;
     public float mSpeed;
     public float alignSpeed;
-
+    public int noOfAttacks;
+    public int damage;
     // references
     Transform NPCHolder;
     [HideInInspector]public Animator animator;
@@ -19,18 +20,19 @@ public class NPC_Combat : MonoBehaviour
     public bool commitedAttack;
     public bool isRunning;
 
+    public float distanceToAttack;
     public float distance;
 
-    float attackFrequency=1f;
+    public float attackFrequency=1f;
+    float OGattackFrequency;
     float attackTimer=0f;
 
     void Start()
     {
         NPCHolder = transform.parent;
         animator = GetComponent<Animator>();
-
-        float r = Random.Range(-0.35f, 0.35f);
-        attackFrequency += r;
+        OGattackFrequency = attackFrequency;
+        RandomizeAttackFrequency();
     }
 
     void Update()
@@ -50,7 +52,7 @@ public class NPC_Combat : MonoBehaviour
         if (!commitedAttack)
             AlignOrientation((Target.position-transform.position), alignSpeed);
 
-        if (Vector3.Distance(transform.position, Target.position) > 1.35f && !commitedAttack)
+        if (distance > distanceToAttack && !commitedAttack)
         {
             targetInRange = false;
             Seek(Target.position, (Target.position - transform.position));
@@ -87,6 +89,14 @@ public class NPC_Combat : MonoBehaviour
         {
             commitedAttack = true;
             animator.SetBool("Attacking", true);
+
+            // choose a random attack
+            float attackAnimValue=0f;
+            if (noOfAttacks > 1)
+            {
+                int r = Random.Range(0, noOfAttacks + 1);
+                animator.SetFloat("AttackValue",attackAnimValue);
+            }
         }
         else
             AlignOrientation((Target.position - transform.position), alignSpeed);
@@ -133,5 +143,18 @@ public class NPC_Combat : MonoBehaviour
             if (animator.GetFloat("Locomotion") > 0)
                 animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
         }
+    }
+
+    public void RandomizeAttackFrequency()
+    {
+        float r = Random.Range(-0.3f, 0.3f);
+        attackFrequency += r;
+
+        if (attackFrequency < OGattackFrequency-0.75f || attackFrequency > OGattackFrequency+0.75f)
+        {
+            Debug.Log("Attack Frequency was reset.");
+            attackFrequency = OGattackFrequency;
+        }
+
     }
 }

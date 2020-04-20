@@ -81,8 +81,9 @@ public class Combat : MonoBehaviour
             {
                 animator.SetBool("inCombat", false);
                 animator.SetBool("Hurting", false);
-                animator.SetBool("ExitedCombat", true);         // does unsheathing
+                animator.SetBool("ExitedCombat", true);         // does sheathing
                 ready = false;
+                animator.SetBool("Hurting", false);
             }
             else if (!MovementRef.isDodging && MovementRef.isGrounded)
             {

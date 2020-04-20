@@ -10,7 +10,7 @@ public class PlayerAttributes : MonoBehaviour
     [Header("Player Information")]
     public float health=100;
     [HideInInspector]public bool invincible;
-    [HideInInspector]public bool dodgeInvincible;
+    public bool dodgeInvincible;
     public float stamina=100;
     public float staminaRegenRate;
     public float staminaRegenDelay;

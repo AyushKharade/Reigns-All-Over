@@ -101,9 +101,11 @@ public class PlayerEvents : MonoBehaviour
             CombatRef.chainWindowOpen = true;
         if(!MovementRef.isDodging && CombatRef.chainAttack)
             CombatRef.ExecuteChainAttack();
+    }
 
-
-        
+    void EnableDodgeInvincibility()
+    {
+        GetComponent<PlayerAttributes>().dodgeInvincible = true;
     }
 
     public void UnEquip()
