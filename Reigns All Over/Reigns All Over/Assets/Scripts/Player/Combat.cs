@@ -15,6 +15,7 @@ public class Combat : MonoBehaviour
     // --> Uses a new layer to do combat, 4 blend trees each with two animations (light & heavy attacks)
 
     public bool attacking;             // if any attack is being performed.
+    public bool isBlocking;
 
     /// <summary>
     /// Is enabled after which chain input will be accepted.
@@ -67,6 +68,28 @@ public class Combat : MonoBehaviour
         AttackOrient();
         SmoothSwitchOffCombatLayers();
         SmoothSwitchAttacks();
+
+    }
+
+    [HideInInspector]public float blockImpactAnimTimer=0f;
+    private void FixedUpdate()
+    {
+        blockImpactAnimTimer += Time.deltaTime;
+        if (animator.GetBool("BlockingImpact"))
+        {
+            if (blockImpactAnimTimer > 0.6f)
+            {
+                blockImpactAnimTimer = 0;
+                animator.SetBool("BlockingImpact", false);
+                animator.SetBool("BlockingImpactRepeat", false);
+            }
+            if(blockImpactAnimTimer>0.05f)
+                animator.SetBool("BlockingImpactRepeat", false);
+        }
+        else
+            blockImpactAnimTimer = 0f;
+
+
     }
 
     /// <summary>
@@ -95,6 +118,21 @@ public class Combat : MonoBehaviour
                 animator.SetBool("Hurting", false);
                 animator.SetBool("EnteredCombat", true);
             }
+        }
+
+        // blocking controls
+        if (ready && Input.GetKey(KeyCode.X) && !MovementRef.isDodging && !MovementRef.isDead)
+        {
+            isBlocking = true;
+            animator.SetBool("Blocking",true);
+            animator.SetFloat("Locomotion", 0f);
+            if (attacking)
+                InteruptAttack();
+        }
+        else
+        {
+            isBlocking = false;
+            animator.SetBool("Blocking", false);
         }
     }
 
@@ -165,10 +203,19 @@ public class Combat : MonoBehaviour
         if (attacking)
             MovementRef.AlignOrientation(attackDirection);
 
-        if (MovementRef.isRunning && !MovementRef.isDead && attackAnimValue==1)
+        if (isBlocking)
+        {
+            Vector3 blockLookAt = Camera.main.transform.forward;
+            blockLookAt.y = 0;
+            MovementRef.AlignOrientation(blockLookAt);
+        }
+
+        if (MovementRef.isRunning && !MovementRef.isDead && attacking && !isBlocking && attackAnimValue==1)
             MovementRef.PlayerHolder.Translate(transform.forward * 1f * Time.deltaTime);
-        else if(MovementRef.isRunning && !MovementRef.isDead && attackAnimValue == 0)
+        else if(MovementRef.isRunning && !MovementRef.isDead && attacking && !isBlocking && attackAnimValue == 0)
             MovementRef.PlayerHolder.Translate(transform.forward * 0.5f * Time.deltaTime);
+
+
 
     }
 

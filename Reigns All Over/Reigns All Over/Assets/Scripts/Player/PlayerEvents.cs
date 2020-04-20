@@ -108,6 +108,11 @@ public class PlayerEvents : MonoBehaviour
         GetComponent<PlayerAttributes>().dodgeInvincible = true;
     }
 
+    void TurnOffBlockImpact()
+    {
+        animator.SetBool("BlockingImpact",false);
+    }
+
     public void UnEquip()
     {
         CombatRef.UnEquipWeapon();

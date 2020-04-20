@@ -189,7 +189,7 @@ public class PlayerMovement : MonoBehaviour
         else
             slowdownMultipier = 0.4f;
 
-        if (isGrounded && !isDodging && !CombatRef.attacking)
+        if (isGrounded && !isDodging && !CombatRef.attacking && !CombatRef.isBlocking)
         {
             // check whether running or walking or sprinting
             if (isWalking)
@@ -199,10 +199,12 @@ public class PlayerMovement : MonoBehaviour
             else if(isSprinting)
                 PlayerHolder.Translate(dir * (runSpeed-1f) * slowdownMultipier * Time.deltaTime);       // run speed is kind of fast
         }
-        else if(!isDodging && !CombatRef.attacking)
+        else if(!isDodging && !CombatRef.attacking && !CombatRef.isBlocking)
         {
             PlayerHolder.Translate(dir * (runSpeed+3) *  slowdownMultipier * Time.deltaTime);         // this is for mid air movement
         }
+        else if(CombatRef.isBlocking)
+            PlayerHolder.Translate(dir * (runSpeed + 3) * slowdownMultipier * Time.deltaTime);         // this is for mid air movement
 
 
 
@@ -210,17 +212,20 @@ public class PlayerMovement : MonoBehaviour
         // Anim Update && Alignment
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
-            if(!isDodging && !CombatRef.attacking)
+            if(!isDodging && !CombatRef.attacking && !CombatRef.isBlocking)
                 AlignOrientation(dir);
             isRunning = true;
 
-            if (isWalking && animator.GetFloat("Locomotion") < 0.33f)
-                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
-            else if (!isWalking && !isSprinting && animator.GetFloat("Locomotion") < 0.66f)
-                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
-            else if(isSprinting && animator.GetFloat("Locomotion") < 1f)// sprinting
-                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+            if (!CombatRef.isBlocking)
+            {
 
+                if (isWalking && animator.GetFloat("Locomotion") < 0.33f)
+                    animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+                else if (!isWalking && !isSprinting && animator.GetFloat("Locomotion") < 0.66f)
+                    animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+                else if (isSprinting && animator.GetFloat("Locomotion") < 1f)// sprinting
+                    animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+            }
 
             // cases if you stop doing things.
             if(animator.GetFloat("Locomotion") > 0.66f && !isSprinting)

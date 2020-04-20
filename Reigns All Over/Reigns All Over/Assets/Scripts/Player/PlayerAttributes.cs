@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// saves data such as health, stamina, gold, inventory, skills, experience etc.
@@ -16,10 +17,14 @@ public class PlayerAttributes : MonoBehaviour
     public float staminaRegenDelay;
     public bool onStaminaRegenDelay;
     float staminaTimer;
+    public float blockDMG_Absorb=0.65f;
 
     [Header("Character")]
     public int level;
     public int currentXP;
+
+    [Header("Temp UI")]
+    public Text HP;
 
     //references
     PlayerMovement MovementRef;
@@ -37,6 +42,8 @@ public class PlayerAttributes : MonoBehaviour
     {
         if(!MovementRef.isDead)
             RegenStamina();
+
+        HP.text = "Health: "+health+"";
     }
 
     void RegenStamina()
@@ -69,8 +76,21 @@ public class PlayerAttributes : MonoBehaviour
     {
         if (!MovementRef.isDead && !invincible && !dodgeInvincible)
         {
-            health -= dmg;
-            animator.SetBool("Hurting",true);
+            if (CombatRef.isBlocking)
+            {
+                health -= (dmg - dmg * blockDMG_Absorb);
+                Debug.Log("Blocked Damage: "+dmg +" >> "+ (dmg - dmg * blockDMG_Absorb));
+                if (!animator.GetBool("BlockingImpact"))
+                    animator.SetBool("BlockingImpact", true);
+                else
+                    animator.SetBool("BlockingImpactRepeat", true);
+                CombatRef.blockImpactAnimTimer = 0f;
+            }
+            else
+            {
+                health -= dmg;
+                animator.SetBool("Hurting", true);
+            }
             if (!CombatRef.inCombat)
                 animator.SetLayerWeight(1, 1);
 
@@ -83,8 +103,7 @@ public class PlayerAttributes : MonoBehaviour
                 KillPlayer();
             }
         }
-        else
-            Debug.Log("Deal Damage called on dead / invincible player");
+      
     }
 
 
