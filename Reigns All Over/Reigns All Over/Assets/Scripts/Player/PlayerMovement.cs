@@ -226,6 +226,12 @@ public class PlayerMovement : MonoBehaviour
                 else if (isSprinting && animator.GetFloat("Locomotion") < 1f)// sprinting
                     animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
             }
+            else
+            {
+                if (animator.GetFloat("Locomotion") < 0.66f)
+                    animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+
+            }
 
             // cases if you stop doing things.
             if(animator.GetFloat("Locomotion") > 0.66f && !isSprinting)

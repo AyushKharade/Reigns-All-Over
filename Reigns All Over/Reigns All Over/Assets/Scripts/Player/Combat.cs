@@ -125,7 +125,7 @@ public class Combat : MonoBehaviour
         {
             isBlocking = true;
             animator.SetBool("Blocking",true);
-            animator.SetFloat("Locomotion", 0f);
+            //animator.SetFloat("Locomotion", 0f);
             if (attacking)
                 InteruptAttack();
         }
