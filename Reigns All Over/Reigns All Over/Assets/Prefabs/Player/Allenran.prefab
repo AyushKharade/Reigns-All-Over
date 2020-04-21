@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 869225579657458414}
   - component: {fileID: 879714499833688388}
   - component: {fileID: 892731006403690459}
+  - component: {fileID: 520976211}
   m_Layer: 0
   m_Name: SteelSword
   m_TagString: Untagged
@@ -169,8 +170,36 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.11516571, y: 0.039334774, z: 1.0456368}
-  m_Center: {x: -0.001802627, y: 0.0005905051, z: -0.56747097}
+  m_Size: {x: 0.11516571, y: 0.039334774, z: 1.2510839}
+  m_Center: {x: -0.0018026292, y: 0.00059050164, z: -0.67019486}
+--- !u!114 &520976211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 892731006403690456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d5dc94408a6509458ed87d6ff3f3878, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Steel Sword
+  desc: 'Most commonly found steel sword. Though not the best steel in the province,
+    it sure is good enough when needed.
+
+
+    default dmg: 7, crit 16'
+  WeaponType: 0
+  upgrade: 1
+  baseDamage: 7
+  criticalChance: 16
+  condition: 93.6
+  deteriorationRate: 0.13
+  doDMG: 0
+  PlayerRef: {fileID: 2639881460653007724}
+  DamagePopUpPrefab: {fileID: 2836066789045989664, guid: 394769c9d937d094a9c06bf0e32ff1c4,
+    type: 3}
 --- !u!1 &2639881460629158588
 GameObject:
   m_ObjectHideFlags: 0
@@ -471,6 +500,8 @@ MonoBehaviour:
   CamRef: {fileID: 2639881462137081473}
   FeetRef: {fileID: 2639881461206971733}
   PlayerHolder: {fileID: 2639881462057730917}
+  PlayerDirection: {x: 0, y: 0, z: 0}
+  allowDodgeOrient: 0
 --- !u!114 &2639881460653007701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -511,14 +542,26 @@ MonoBehaviour:
   inCombat: 0
   ready: 0
   attacking: 0
+  isBlocking: 0
+  isCastingSpell: 0
+  blockTime: 0
   chained: 0
   chainAttack: 0
   chainWindowOpen: 0
   combo: 1
+  attackAnimValue: 0
+  arenaline: 0
+  arenalineGainRate: 0
   HandWeaponSlot: {fileID: 2639881461557934677}
   SheathSlot: {fileID: 103805946318306115}
   EquippedWeapon: {fileID: 892731006403690456}
   SheathedWeapon: {fileID: 2639881460629158588}
+  CastHandRef: {fileID: 2639881460652904312}
+  EquippedSpell: {fileID: 4903049697872570603, guid: 7fbfc160689ab7c4680eddc91b5c5821,
+    type: 3}
+  QuickSpell1: {fileID: 0}
+  QuickSpell2: {fileID: 0}
+  blockImpactAnimTimer: 0
 --- !u!114 &2639881460653007702
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -538,8 +581,12 @@ MonoBehaviour:
   staminaRegenRate: 2.5
   staminaRegenDelay: 5
   onStaminaRegenDelay: 0
-  level: 0
-  currentXP: 0
+  blockDMG_Absorb: 0.8
+  mana: 10
+  character:
+    currentXP: 0
+    currentLevel: 0
+  HP: {fileID: 0}
 --- !u!1 &2639881460653007726
 GameObject:
   m_ObjectHideFlags: 0
@@ -3147,7 +3194,7 @@ GameObject:
   - component: {fileID: 2639881462057730917}
   m_Layer: 0
   m_Name: Allenran
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
