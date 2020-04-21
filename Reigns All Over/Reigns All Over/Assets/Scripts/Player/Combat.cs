@@ -128,6 +128,9 @@ public class Combat : MonoBehaviour
             //animator.SetFloat("Locomotion", 0f);
             if (attacking)
                 InteruptAttack();
+
+            // blocking walk animation.
+            BlockingMovementAnim();
         }
         else
         {
@@ -251,6 +254,19 @@ public class Combat : MonoBehaviour
         combo = 1;
 
         EquippedWeapon.GetComponent<Weapon>().doDMG = false;
+    }
+
+
+
+    void BlockingMovementAnim()
+    {
+        float x = Input.GetAxis("Horizontal");
+        float y = Input.GetAxis("Vertical");
+
+        animator.SetFloat("180X_Dir_Input",x);
+        animator.SetFloat("180Y_Dir_Input",y);
+
+        MovementRef.PlayerHolder.Translate(MovementRef.PlayerDirection * 0.9f * Time.deltaTime);
     }
 
     // these methods will just turn on and off weapons

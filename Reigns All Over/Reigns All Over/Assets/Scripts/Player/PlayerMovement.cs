@@ -77,9 +77,11 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>
     /// Upon directonal keypress, move in direction, as well as align. Uses 360 movement when not in lock on combat.
     /// </summary>
+
+    [HideInInspector]public Vector3 PlayerDirection = Vector3.zero;
+ 
     void PMovement()
     {
-        Vector3 PlayerDirection = Vector3.zero;
 
         // Movement Input --------------------------------------------------------------------
         // Front & Back.
@@ -203,8 +205,8 @@ public class PlayerMovement : MonoBehaviour
         {
             PlayerHolder.Translate(dir * (runSpeed+3) *  slowdownMultipier * Time.deltaTime);         // this is for mid air movement
         }
-        else if(CombatRef.isBlocking)
-            PlayerHolder.Translate(dir * (runSpeed + 3) * slowdownMultipier * Time.deltaTime);         // this is for mid air movement
+        //else if(CombatRef.isBlocking)
+        //    PlayerHolder.Translate(dir * walkSpeed/2f * slowdownMultipier * Time.deltaTime);         // this is for mid air movement
 
 
 
@@ -241,6 +243,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             isRunning = false;
+            PlayerDirection = Vector3.zero;
 
             if (animator.GetFloat("Locomotion") > 0)
                 animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
