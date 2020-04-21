@@ -128,7 +128,6 @@ public class Weapon : MonoBehaviour
                 if (doingCritDMG)
                     GB.GetComponent<TextMesh>().color = Color.red;
 
-                Destroy(GB, 2.5f);
             }
         }
     }

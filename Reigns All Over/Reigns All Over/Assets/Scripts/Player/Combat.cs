@@ -52,6 +52,7 @@ public class Combat : MonoBehaviour
     public GameObject SheathedWeapon;
 
     [Header("Equipped Spells")]
+    public Transform CastHandRef;
     public GameObject EquippedSpell;
     public GameObject QuickSpell1;
     public GameObject QuickSpell2;
@@ -158,7 +159,7 @@ public class Combat : MonoBehaviour
 
 
         // Spell Controls
-        if (!isBlocking && !MovementRef.isDead && !MovementRef.isDodging)
+        if (ready && !isBlocking && !MovementRef.isDead && !MovementRef.isDodging)
         {
             if (!isCastingSpell && Input.GetMouseButtonDown(2))
             {
@@ -303,6 +304,20 @@ public class Combat : MonoBehaviour
         isCastingSpell = false;
         Debug.Log("Interupted Spell Casting");
     }
+
+
+
+    // spellcasting 
+    /// <summary>
+    /// Called from animation event, casts equipped spell if you have mana
+    /// </summary>
+    public void CastSpell()
+    {
+        GameObject spell = Instantiate(EquippedSpell,CastHandRef.position,Quaternion.identity);
+        //spell.transform.LookAt(transform.forward);
+    }
+
+
 
     /// <summary>
     /// Collects input for the 2D blend tree and also applies directonal translation for faster movement while blocking)

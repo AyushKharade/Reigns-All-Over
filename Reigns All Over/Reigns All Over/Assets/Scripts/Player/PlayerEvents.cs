@@ -115,6 +115,11 @@ public class PlayerEvents : MonoBehaviour
 
 
     // spellcasting
+    void CastSpell()
+    {
+        CombatRef.CastSpell();
+    }
+
     void EndSpell()
     {
         CombatRef.isCastingSpell = false;
