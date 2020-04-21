@@ -62,13 +62,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\NPCs\HeadAlignTest.cs" />
     <Compile Include="Assets\Scripts\Player\Combat.cs" />
     <Compile Include="Assets\Scripts\Player\Interaction.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerAttributes.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerCamera.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerEvents.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Player\Weapons\Weapon.cs" />
+    <Compile Include="Assets\Scripts\Test Combat\DMGPopUp.cs" />
+    <Compile Include="Assets\Scripts\Test Combat\DummyForceSpell.cs" />
+    <Compile Include="Assets\Scripts\Test Combat\NPC_Combat.cs" />
+    <Compile Include="Assets\Scripts\Test Combat\NPC_Events.cs" />
+    <Compile Include="Assets\Scripts\Test Combat\NPCBehavior.cs" />
+    <Compile Include="Assets\Scripts\Test Combat\TestEnemyDummy.cs" />
+    <None Include="Assets\Models\cave_troll\shaders\Standard Two Sided Soft Blend.shader" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/ASUS/Documents/Unity Projects/Regins All Over RPG/Reigns-All-Over/Reigns All Over/Reigns All Over/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
@@ -89,6 +96,9 @@
     </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>C:/Users/ASUS/Documents/Unity Projects/Regins All Over RPG/Reigns-All-Over/Reigns All Over/Reigns All Over/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>C:/Users/ASUS/Documents/Unity Projects/Regins All Over RPG/Reigns-All-Over/Reigns All Over/Reigns All Over/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>C:/Users/ASUS/Documents/Unity Projects/Regins All Over RPG/Reigns-All-Over/Reigns All Over/Reigns All Over/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>

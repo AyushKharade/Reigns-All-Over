@@ -13,7 +13,6 @@ public class PlayerMovement : MonoBehaviour
     // Private Variables
     float fallDuration = 0f;
     bool jumped;
-    float ogColliderHeight;
 
     [Header("Character States")]
     public bool isGrounded;
@@ -49,8 +48,6 @@ public class PlayerMovement : MonoBehaviour
 
         CombatRef = GetComponent<Combat>();
         PAttributesRef = GetComponent<PlayerAttributes>();
-
-        ogColliderHeight = GetComponent<CapsuleCollider>().height;
     }
 
     void Update()
@@ -75,16 +72,18 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    #region Movement & Translation
     /// <summary>
     /// Upon directonal keypress, move in direction, as well as align. Uses 360 movement when not in lock on combat.
     /// </summary>
+
+    [HideInInspector]public Vector3 PlayerDirection = Vector3.zero;
+ 
     void PMovement()
     {
-        Vector3 PlayerDirection = Vector3.zero;
-
         // Movement Input --------------------------------------------------------------------
         // Front & Back.
-        if(Input.GetKey(KeyCode.W))                                                     // Takes in player input and set PlayerDirection
+        if (Input.GetKey(KeyCode.W))                                                     // Takes in player input and set PlayerDirection
             PlayerDirection += TargetRef.forward;
         else if(Input.GetKey(KeyCode.S))
             PlayerDirection += TargetRef.forward * -1;
@@ -126,13 +125,18 @@ public class PlayerMovement : MonoBehaviour
             jumped = true;
             GetComponent<Rigidbody>().AddForce(50f * Vector3.up, ForceMode.Impulse);
         }
-        else if (Input.GetKeyDown(KeyCode.Space) && CombatRef.inCombat && !isDodging && CombatRef.ready)
+        else if (Input.GetKeyDown(KeyCode.Space) && CombatRef.inCombat && !isDodging && CombatRef.ready && isGrounded)
             Dodge(PlayerDirection);       // get a direction dodge.
 
         // orient dodging                   --> basically orient slowly towards direction of dodge so front roll looks smooth
-        if (isDodging && doDodgeAlign)
-            DodgeAlign();
+        if (isDodging && doDodgeAlign && !allowDodgeOrient)
+        {
+            DodgeAlign(dodgeDirection);
 
+            // This could be a skill, on both dodges to dodge even further
+            if (dodgeDirection == -1)
+                PlayerHolder.Translate(transform.forward * -1 * 1.25f * Time.deltaTime);
+        }
 
         // toggle walking
         if (Input.GetKeyDown(KeyCode.CapsLock))
@@ -147,6 +151,21 @@ public class PlayerMovement : MonoBehaviour
                 if(isRunning)
                     animator.SetFloat("Locomotion", 0.33f);
             }
+        }
+
+
+
+        // fighting input direction.
+        if (!isDead && isGrounded && !isDodging && CombatRef.ready)
+        {
+            Vector3 attackDir=PlayerDirection;
+            if (attackDir == Vector3.zero)
+                attackDir = transform.forward;
+
+            if (Input.GetMouseButtonDown(0))
+                CombatRef.FightingControls(0, attackDir);
+            else if (Input.GetMouseButtonDown(1))
+                CombatRef.FightingControls(1, attackDir);
         }
 
 
@@ -170,7 +189,7 @@ public class PlayerMovement : MonoBehaviour
         else
             slowdownMultipier = 0.4f;
 
-        if (isGrounded && !isDodging)
+        if (isGrounded && !isDodging && !CombatRef.attacking && !CombatRef.isBlocking)
         {
             // check whether running or walking or sprinting
             if (isWalking)
@@ -180,28 +199,41 @@ public class PlayerMovement : MonoBehaviour
             else if(isSprinting)
                 PlayerHolder.Translate(dir * (runSpeed-1f) * slowdownMultipier * Time.deltaTime);       // run speed is kind of fast
         }
-        else if(!isDodging)
+        else if(!isDodging && !CombatRef.attacking && !CombatRef.isBlocking)
         {
             PlayerHolder.Translate(dir * (runSpeed+3) *  slowdownMultipier * Time.deltaTime);         // this is for mid air movement
         }
 
 
 
-
         // Anim Update && Alignment
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
-            if(!isDodging)
-                AlignOrientation(dir);
             isRunning = true;
 
-            if (isWalking && animator.GetFloat("Locomotion") < 0.33f)
-                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
-            else if (!isWalking && !isSprinting && animator.GetFloat("Locomotion") < 0.66f)
-                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
-            else if(isSprinting && animator.GetFloat("Locomotion") < 1f)// sprinting
-                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+            if (!isDodging && !CombatRef.attacking && !CombatRef.isBlocking)
+                AlignOrientation(dir);
+            else if (allowDodgeOrient)
+            {
+                if(dodgeDirection==1)  // front roll
+                    AlignOrientation(dir);
+                else
+                    AlignOrientation(dir*-1);
 
+            }
+
+
+            if (!CombatRef.isBlocking)
+            {
+
+                if (isWalking && animator.GetFloat("Locomotion") < 0.33f)
+                    animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+                else if (!isWalking && !isSprinting && animator.GetFloat("Locomotion") < 0.66f)
+                    animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+                else if (isSprinting && animator.GetFloat("Locomotion") < 1f)// sprinting
+                    animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+            }
+            
 
             // cases if you stop doing things.
             if(animator.GetFloat("Locomotion") > 0.66f && !isSprinting)
@@ -211,6 +243,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             isRunning = false;
+            PlayerDirection = Vector3.zero;
 
             if (animator.GetFloat("Locomotion") > 0)
                 animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
@@ -218,20 +251,25 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    
+    #endregion
 
+    #region Dodging
     void Dodge(Vector3 Dir)
     {
         // we compute the type of dodge depending on the Dir and the angle of camera and player.
         // Both rolls are stored in a blend tree. respect values are enabled.
 
         isDodging = true;
-        PAttributesRef.dodgeInvincible = true;
+
+        if (CombatRef.attacking)
+            CombatRef.InteruptAttack();
+        if(CombatRef.isCastingSpell)
+            CombatRef.InteruptSpellCast();
 
 
-        animator.SetLayerWeight(1, 0);       // switch off combat layer until then.
+
+        //animator.SetLayerWeight(1, 0);       // switch off combat layer until then.    // attempting to switch off smoothly
         animator.SetBool("isDodging", true);
-        GetComponent<CapsuleCollider>().height = 1.5f;
         
         
         float angle = Vector3.Angle(Dir, transform.forward);
@@ -240,25 +278,31 @@ public class PlayerMovement : MonoBehaviour
         {
             animator.SetFloat("DodgeRoll", 0f);     // front roll
             DodgeAlignDir = Dir;
+            dodgeDirection = 1;
             doDodgeAlign = true;
         }
         else if(angle> 125 && angle < 185)
         {
+            DodgeAlignDir = Dir;
+            dodgeDirection = -1;
+            doDodgeAlign = true;
             animator.SetFloat("DodgeRoll", 1f);     // Backroll roll
         }
     }
 
     Vector3 DodgeAlignDir;
     bool doDodgeAlign;
+    [HideInInspector] public bool allowDodgeOrient;
     /// <summary>
     /// Calls align in the direction you are dodging in
     /// </summary>
-    void DodgeAlign()
+    int dodgeDirection = 1;
+    void DodgeAlign(int direction)
     {
         if (DodgeAlignDir == Vector3.zero)
             AlignOrientation(transform.forward);
         else
-            AlignOrientation(DodgeAlignDir);
+            AlignOrientation(DodgeAlignDir*direction);
     }
 
 
@@ -273,9 +317,12 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetLayerWeight(1, 1);       // switch off combat layer until then.
         animator.SetBool("isDodging",false);
-        GetComponent<CapsuleCollider>().height = ogColliderHeight;
         doDodgeAlign = false;
+        allowDodgeOrient = false;
     }
+
+    #endregion
+
 
     /// <summary>
     /// Checks raycasts if falling
@@ -305,8 +352,14 @@ public class PlayerMovement : MonoBehaviour
 
     }
     
- 
-    void AlignOrientation(Vector3 dir)
+    
+    
+
+    /// <summary>
+    /// Aligns character towards specified direction at a fixed speed which is specified in the Inspector for PlayerMovement;
+    /// </summary>
+    /// <param name="dir">Direction to which the player will face.</param>
+    public void AlignOrientation(Vector3 dir)
     {
         Quaternion lookDirection;
 
@@ -314,4 +367,19 @@ public class PlayerMovement : MonoBehaviour
         lookDirection = Quaternion.LookRotation(dir, Vector3.up);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, alignSpeed);
     }
+
+    /// <summary>
+    /// Similar to orient function, has a overloaded paramter to specify speed of alignment.
+    /// </summary>
+    /// <param name="dir">Direction to which the player will face.</param>
+    /// <param name="newAlignSpeed">Speed at which player will align.</param>
+    public void AlignOrientation(Vector3 dir, float newAlignSpeed)
+    {
+        Quaternion lookDirection;
+
+        //set quaternion to this dir
+        lookDirection = Quaternion.LookRotation(dir, Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, newAlignSpeed);
+    }
+    
 }

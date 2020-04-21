@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Class for animation events and other stuff.
+/// Class for mostly using animation events and other stuff.
 /// </summary>
 public class PlayerEvents : MonoBehaviour
 {
@@ -22,43 +22,130 @@ public class PlayerEvents : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    void Update()
-    {
-        
-    }
-
+    
     /// <summary>
-    /// Called at the end of animation of drawing weapon.
+    /// Called at the end of animation of drawing weapon. Ready Boolean will be toggled so player can attack.
     /// </summary>
     public void EnterCombat()
     {
         CombatRef.ready = true;
         CombatRef.EquipWeapon();
         animator.SetBool("EnteredCombat",false);
-
     }
 
+    /// <summary>
+    /// Called at the end of unsheathing animation.
+    /// </summary>
     public void ExitCombat()
     {
         CombatRef.ready = false;
         CombatRef.inCombat = false;
         animator.SetBool("ExitedCombat",false);
-
-        //animator.SetLayerWeight(1, 0);
     }
 
     public void EndHurtingAnim()
     {
         animator.SetBool("Hurting",false);
-        //if(!CombatRef.inCombat)
-        //    animator.SetLayerWeight(1, 0);
     }
 
+    /// <summary>
+    /// called at the end of an attack animation, if player doesnt chain attacks or if there are no more combos.
+    /// </summary>
+    public void EndOfAttack()
+    {
+        if (!CombatRef.chainAttack)                 // not sure if this condition check is necessary.
+        {
+            CombatRef.attacking = false;
+            CombatRef.chainAttack = false;
+            CombatRef.chained = false;
+            CombatRef.chainWindowOpen = false;
+            animator.SetBool("Attacking", false);
+            animator.SetBool("ChainAttack", false);
+
+            CombatRef.combo = 1;
+        }
+    }
+
+
+    /// <summary>
+    /// start chain window, so that players can chain attacks.
+    /// </summary>
+    public void EnableChainAttack()
+    {
+        if(!MovementRef.isDodging)
+            CombatRef.chained = true;
+
+        // reset older variables.
+        animator.SetBool("ChainAttack", false);
+        CombatRef.chainAttack = false;
+        CombatRef.chainWindowOpen = false;
+
+    }
+
+    /// <summary>
+    /// if user had pressed the chain attack button previously, perform chain now.
+    /// </summary>
+    public void PerformChainAttack()
+    {
+        // experimental -- turn off attacking state for weapon.
+        if (!CombatRef.chainAttack)
+            CombatRef.EquippedWeapon.GetComponent<Weapon>().doDMG = false;
+
+        if (!MovementRef.isDodging)
+            CombatRef.chainWindowOpen = true;
+        if(!MovementRef.isDodging && CombatRef.chainAttack)
+            CombatRef.ExecuteChainAttack();
+    }
+
+    /// <summary>
+    /// Grants invincibility while dodging (Starts at a particular frame in the dodge animation.
+    /// </summary>
+    void EnableDodgeInvincibility()
+    {
+        GetComponent<PlayerAttributes>().dodgeInvincible = true;
+    }
+
+    /// <summary>
+    /// This will be a skill, allows you to change direction while dodging. (Gives more fluid dodge movement)
+    /// </summary>
+    void AllowDodgingOrient()
+    {
+        MovementRef.allowDodgeOrient = true;
+    }
+
+
+    /// <summary>
+    /// Call Cast spell function in Combat Script, will cast the currenly equipped spell. 
+    /// </summary>
+    void CastSpell()
+    {
+        CombatRef.CastSpell();
+    }
+
+    /// <summary>
+    /// Anim event that calls at the end of an animation to turn off variables related to spell casting.
+    /// </summary>
+    void EndSpell()
+    {
+        CombatRef.isCastingSpell = false;
+        animator.SetBool("CastingSpell",false);
+    }
+
+
+
+
+    
+    /// <summary>
+    /// Simply called by sheathing anim, calls unequip on Combat
+    /// </summary>
     public void UnEquip()
     {
         CombatRef.UnEquipWeapon();
     }
 
+    /// <summary>
+    /// Calls equip() on combat while drawing weapon
+    /// </summary>
     public void Equip()
     {
         CombatRef.EquipWeapon();
