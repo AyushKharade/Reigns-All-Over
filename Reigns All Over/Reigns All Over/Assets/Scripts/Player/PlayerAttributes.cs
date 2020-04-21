@@ -18,6 +18,7 @@ public class PlayerAttributes : MonoBehaviour
     public bool onStaminaRegenDelay;
     float staminaTimer;
     public float blockDMG_Absorb;
+    public int mana=10;                    // currently thinking 10 slots of mana (like the 6 slots in Prince Of Persia)
 
     [Header("Character")]
     public int level;
@@ -97,7 +98,9 @@ public class PlayerAttributes : MonoBehaviour
                 animator.SetLayerWeight(1, 1);
 
             if (CombatRef.attacking)
-                HurtInteruptAttacks();
+                CombatRef.InteruptAttack();
+            if (CombatRef.isCastingSpell)
+                CombatRef.InteruptSpellCast();
 
             if (health <= 0)
             {
@@ -107,13 +110,7 @@ public class PlayerAttributes : MonoBehaviour
         }
       
     }
-
-
-    void HurtInteruptAttacks()
-    {
-        CombatRef.InteruptAttack();
-    }
-
+    
     void KillPlayer()
     {
         MovementRef.isDead = true;

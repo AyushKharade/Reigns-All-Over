@@ -16,7 +16,7 @@ public class Combat : MonoBehaviour
 
     public bool attacking;             // if any attack is being performed.
     public bool isBlocking;
-
+    public bool isCastingSpell;
     /// <summary>
     /// If you blocked recently, opportunity to reposte attack.
     /// </summary>
@@ -50,6 +50,12 @@ public class Combat : MonoBehaviour
     public GameObject SheathSlot;
     public GameObject EquippedWeapon;
     public GameObject SheathedWeapon;
+
+    [Header("Equipped Spells")]
+    public GameObject EquippedSpell;
+    public GameObject QuickSpell1;
+    public GameObject QuickSpell2;
+
 
 
     // script ref
@@ -101,20 +107,20 @@ public class Combat : MonoBehaviour
     }
 
     /// <summary>
-    /// Equip & Unequip weapons
+    /// Equip & Unequip weapons, block and cast spells.
     /// </summary>
     void CombatControls()
     {
 
         if (Input.GetKeyDown(KeyCode.E) && !MovementRef.isDead)
         {
-            if (inCombat && !MovementRef.isDodging && MovementRef.isGrounded && !attacking)
+            if (inCombat && !MovementRef.isDodging && MovementRef.isGrounded && !attacking && !isCastingSpell)
             {
                 animator.SetBool("inCombat", false);
                 animator.SetBool("Hurting", false);
                 animator.SetBool("ExitedCombat", true);         // does sheathing
                 ready = false;
-                animator.SetBool("Hurting", false);
+                //animator.SetBool("Hurting", false);
             }
             else if (!MovementRef.isDodging && MovementRef.isGrounded)
             {
@@ -146,6 +152,27 @@ public class Combat : MonoBehaviour
             isBlocking = false;
             blockTime = 0;
             animator.SetBool("Blocking", false);
+        }
+
+
+
+
+        // Spell Controls
+        if (!isBlocking && !MovementRef.isDead && !MovementRef.isDodging)
+        {
+            if (!isCastingSpell && Input.GetMouseButtonDown(2))
+            {
+                if (attacking)
+                    InteruptAttack();
+
+                isCastingSpell = true;
+                animator.SetBool("CastingSpell",true);
+
+                // read what type of spell it is and change spell blend value., also add if can afford from mana and deduct mana
+                // make an interupt spell function.
+
+                // if spell has condition that you cannot move dont make player move.
+            }
         }
     }
 
@@ -248,6 +275,10 @@ public class Combat : MonoBehaviour
             if (animator.GetLayerWeight(2) > 0)
                 animator.SetLayerWeight(2, animator.GetLayerWeight(2) - 0.04f);
         }
+
+        // Smoothly turn off combat layer when player is dodging.
+        if(MovementRef.isDodging && animator.GetLayerWeight(1)>0)
+            animator.SetLayerWeight(1, animator.GetLayerWeight(1) - 0.015f);
     }
 
 
@@ -266,6 +297,12 @@ public class Combat : MonoBehaviour
         EquippedWeapon.GetComponent<Weapon>().doDMG = false;
     }
 
+    public void InteruptSpellCast()
+    {
+        animator.SetBool("CastingSpell", false);
+        isCastingSpell = false;
+        Debug.Log("Interupted Spell Casting");
+    }
 
     /// <summary>
     /// Collects input for the 2D blend tree and also applies directonal translation for faster movement while blocking)

@@ -113,6 +113,14 @@ public class PlayerEvents : MonoBehaviour
         MovementRef.allowDodgeOrient = true;
     }
 
+
+    // spellcasting
+    void EndSpell()
+    {
+        CombatRef.isCastingSpell = false;
+        animator.SetBool("CastingSpell",false);
+    }
+
     public void UnEquip()
     {
         CombatRef.UnEquipWeapon();

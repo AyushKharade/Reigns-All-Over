@@ -264,10 +264,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (CombatRef.attacking)
             CombatRef.InteruptAttack();
+        if(CombatRef.isCastingSpell)
+            CombatRef.InteruptSpellCast();
 
 
 
-        animator.SetLayerWeight(1, 0);       // switch off combat layer until then.
+        //animator.SetLayerWeight(1, 0);       // switch off combat layer until then.    // attempting to switch off smoothly
         animator.SetBool("isDodging", true);
         
         
