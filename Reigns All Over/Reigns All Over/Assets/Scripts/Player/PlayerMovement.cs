@@ -48,7 +48,6 @@ public class PlayerMovement : MonoBehaviour
 
         CombatRef = GetComponent<Combat>();
         PAttributesRef = GetComponent<PlayerAttributes>();
-
     }
 
     void Update()
@@ -353,7 +352,13 @@ public class PlayerMovement : MonoBehaviour
 
     }
     
- 
+    
+    
+
+    /// <summary>
+    /// Aligns character towards specified direction at a fixed speed which is specified in the Inspector for PlayerMovement;
+    /// </summary>
+    /// <param name="dir">Direction to which the player will face.</param>
     public void AlignOrientation(Vector3 dir)
     {
         Quaternion lookDirection;
@@ -363,8 +368,11 @@ public class PlayerMovement : MonoBehaviour
         transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, alignSpeed);
     }
 
-    // overloaded  with speed parameter
-    /*
+    /// <summary>
+    /// Similar to orient function, has a overloaded paramter to specify speed of alignment.
+    /// </summary>
+    /// <param name="dir">Direction to which the player will face.</param>
+    /// <param name="newAlignSpeed">Speed at which player will align.</param>
     public void AlignOrientation(Vector3 dir, float newAlignSpeed)
     {
         Quaternion lookDirection;
@@ -373,5 +381,5 @@ public class PlayerMovement : MonoBehaviour
         lookDirection = Quaternion.LookRotation(dir, Vector3.up);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, newAlignSpeed);
     }
-    */
+    
 }

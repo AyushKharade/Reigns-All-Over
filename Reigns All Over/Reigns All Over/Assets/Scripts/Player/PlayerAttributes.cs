@@ -11,7 +11,7 @@ public class PlayerAttributes : MonoBehaviour
     [Header("Player Information")]
     public float health=100;
     [HideInInspector]public bool invincible;
-    public bool dodgeInvincible;
+    [HideInInspector]public bool dodgeInvincible;
     public float stamina=100;
     public float staminaRegenRate;
     public float staminaRegenDelay;
@@ -20,13 +20,12 @@ public class PlayerAttributes : MonoBehaviour
     public float blockDMG_Absorb;
     public int mana=10;                    // currently thinking 10 slots of mana (like the 6 slots in Prince Of Persia)
 
-    [Header("Character")]
-    public int level;
-    public int currentXP;
+    [Header("Character Development")]
+    public CharacterDev character=new CharacterDev();
 
-    [Header("Temp UI")]
-    public Text HP;
-
+    [Header("Inventory")]
+    public PlayerInventory inventory = new PlayerInventory();
+    
     //references
     PlayerMovement MovementRef;
     Combat CombatRef;
@@ -44,7 +43,6 @@ public class PlayerAttributes : MonoBehaviour
         if(!MovementRef.isDead)
             RegenStamina();
 
-        HP.text = "Health: "+health+"";
     }
 
     void RegenStamina()
@@ -118,4 +116,54 @@ public class PlayerAttributes : MonoBehaviour
         animator.SetLayerWeight(1, 0);    // Turn off combat layer since death is on first
 
     }
+
+
+
+
+
+
+}
+
+
+
+//___________________________________________________________________________________________________________________________________________
+// Additional classes for skills, etc.
+
+/// <summary>
+/// Seperate class to keep tracking of skills & XP
+/// </summary>
+[System.Serializable]
+public class CharacterDev
+{
+    [Header("Experience")]
+    public int currentXP;
+    public int currentLevel;
+
+
+    // UI references && message prefab to pop up when level up.
+    //[Header("Other things")]
+    //public GameObject 
+
+    // functions
+    public void AddExperience(int xp)
+    {
+        currentXP += xp;
+    }
+
+    void UpdateXP_UI()
+    {
+
+    }
+
+}
+
+
+
+[System.Serializable]
+public class PlayerInventory
+{
+    [Header("Overview")]
+    public int maxCarryWeight=60;
+    public int curCarryWeight=7;
+
 }

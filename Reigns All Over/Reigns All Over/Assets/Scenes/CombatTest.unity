@@ -669,11 +669,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Allenran
       objectReference: {fileID: 0}
-    - target: {fileID: 2639881462057730939, guid: 749f5920f46552d47940df86fd71dfa5,
-        type: 3}
-      propertyPath: m_TagString
-      value: Player
-      objectReference: {fileID: 0}
     - target: {fileID: 2639881462057730917, guid: 749f5920f46552d47940df86fd71dfa5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -729,93 +724,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 892731006403690456, guid: 749f5920f46552d47940df86fd71dfa5,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 892731006403690459, guid: 749f5920f46552d47940df86fd71dfa5,
-        type: 3}
-      propertyPath: m_Size.z
-      value: 1.2510839
-      objectReference: {fileID: 0}
-    - target: {fileID: 892731006403690459, guid: 749f5920f46552d47940df86fd71dfa5,
-        type: 3}
-      propertyPath: m_Center.x
-      value: -0.0018026292
-      objectReference: {fileID: 0}
-    - target: {fileID: 892731006403690459, guid: 749f5920f46552d47940df86fd71dfa5,
-        type: 3}
-      propertyPath: m_Center.y
-      value: 0.00059050164
-      objectReference: {fileID: 0}
-    - target: {fileID: 892731006403690459, guid: 749f5920f46552d47940df86fd71dfa5,
-        type: 3}
-      propertyPath: m_Center.z
-      value: -0.67019486
-      objectReference: {fileID: 0}
     - target: {fileID: 2639881460653007702, guid: 749f5920f46552d47940df86fd71dfa5,
         type: 3}
       propertyPath: HP
       value: 
       objectReference: {fileID: 2010262153}
-    - target: {fileID: 2639881460653007702, guid: 749f5920f46552d47940df86fd71dfa5,
-        type: 3}
-      propertyPath: blockDMG_Absorb
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 2639881460653007702, guid: 749f5920f46552d47940df86fd71dfa5,
-        type: 3}
-      propertyPath: level
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2639881460653007700, guid: 749f5920f46552d47940df86fd71dfa5,
-        type: 3}
-      propertyPath: EquippedSpell
-      value: 
-      objectReference: {fileID: 4903049697872570603, guid: 7fbfc160689ab7c4680eddc91b5c5821,
-        type: 3}
-    - target: {fileID: 2639881460653007700, guid: 749f5920f46552d47940df86fd71dfa5,
-        type: 3}
-      propertyPath: CastHandRef
-      value: 
-      objectReference: {fileID: 1257469028}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 749f5920f46552d47940df86fd71dfa5, type: 3}
---- !u!1 &520976206 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 892731006403690456, guid: 749f5920f46552d47940df86fd71dfa5,
-    type: 3}
-  m_PrefabInstance: {fileID: 507860393}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &520976211
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 520976206}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d5dc94408a6509458ed87d6ff3f3878, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: Steel Sword
-  desc: 'Most commonly found steel sword. Though not the best steel in the province,
-    it sure is good enough when needed.
-
-
-    default dmg: 7, crit 16'
-  WeaponType: 0
-  upgrade: 1
-  baseDamage: 7
-  criticalChance: 16
-  condition: 93.6
-  deteriorationRate: 0.13
-  doDMG: 0
-  PlayerRef: {fileID: 640539197}
-  DamagePopUpPrefab: {fileID: 2836066789045989664, guid: 394769c9d937d094a9c06bf0e32ff1c4,
-    type: 3}
 --- !u!1 &565261515
 GameObject:
   m_ObjectHideFlags: 0
@@ -1023,12 +938,6 @@ Transform:
   m_Father: {fileID: 1176509001}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &640539197 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2639881460653007724, guid: 749f5920f46552d47940df86fd71dfa5,
-    type: 3}
-  m_PrefabInstance: {fileID: 507860393}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &644896299
 GameObject:
   m_ObjectHideFlags: 0
@@ -1526,12 +1435,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0a46ed10328f9d84d970fcde76d432f9, type: 3}
---- !u!4 &1257469028 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2639881460652904312, guid: 749f5920f46552d47940df86fd71dfa5,
-    type: 3}
-  m_PrefabInstance: {fileID: 507860393}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1271239836
 GameObject:
   m_ObjectHideFlags: 0

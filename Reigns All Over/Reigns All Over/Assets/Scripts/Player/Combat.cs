@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Class deals with combat system and animation
+/// Class deals with combat system and animations.
 /// </summary>
 public class Combat : MonoBehaviour
 {
     #region Variables
     [Header("Combat States")]
-    public bool inCombat;              // 
+    public bool inCombat;
     public bool ready;                 // if attacks can be done or not.
-    // Fighting states
-    // --> Uses a new layer to do combat, 4 blend trees each with two animations (light & heavy attacks)
+    
 
     public bool attacking;             // if any attack is being performed.
     public bool isBlocking;
@@ -61,7 +60,6 @@ public class Combat : MonoBehaviour
 
     // script ref
     PlayerMovement MovementRef;
-
     Animator animator;
 
     #endregion
@@ -108,7 +106,7 @@ public class Combat : MonoBehaviour
     }
 
     /// <summary>
-    /// Equip & Unequip weapons, block and cast spells.
+    /// Equip & Unequip weapons, block and cast spells, Takes keyboard input and calls functions to attack/block/cast spells.
     /// </summary>
     void CombatControls()
     {
@@ -193,8 +191,6 @@ public class Combat : MonoBehaviour
             animator.SetLayerWeight(2, 1);
             animator.SetBool("Attacking", true);
             animator.SetFloat("attackAnimValue", attackAnimValue);
-
-
             attacking = true;
             chained = false; chainAttack = false; chainWindowOpen = false;                    // just incase they were left on
 
@@ -213,6 +209,9 @@ public class Combat : MonoBehaviour
        
     }
 
+    /// <summary>
+    /// moves attacking animation to next in the combo, if there is no combo, it will act as if you didnt press the attack button.
+    /// </summary>
     public void ExecuteChainAttack()
     {
         animator.SetFloat("attackAnimValue", attackAnimValue);           // chooses light or heavy.
@@ -228,6 +227,9 @@ public class Combat : MonoBehaviour
         EquippedWeapon.GetComponent<Weapon>().doDMG = true;
     }
 
+    /// <summary>
+    /// Smooth blending between light and heavy attacks.
+    /// </summary>
     void SmoothSwitchAttacks()
     {
         if (attacking)
@@ -239,6 +241,10 @@ public class Combat : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Orient towards the direction you attacked if you are not facing it already.
+    /// </summary>
     void AttackOrient()
     {
         if (attacking)
@@ -279,11 +285,14 @@ public class Combat : MonoBehaviour
 
         // Smoothly turn off combat layer when player is dodging.
         if(MovementRef.isDodging && animator.GetLayerWeight(1)>0)
-            animator.SetLayerWeight(1, animator.GetLayerWeight(1) - 0.015f);
+            animator.SetLayerWeight(1, animator.GetLayerWeight(1) - 0.025f);
     }
 
 
 
+    /// <summary>
+    /// Will interupt any attacks being done, usually called when you block / dodge / cast spell or get hurt.
+    /// </summary>
     public void InteruptAttack()
     {
         animator.SetBool("Attacking", false);
@@ -298,6 +307,9 @@ public class Combat : MonoBehaviour
         EquippedWeapon.GetComponent<Weapon>().doDMG = false;
     }
 
+    /// <summary>
+    /// Interupts any current spell casting. Called when you block / dodge / attack or get hurt.
+    /// </summary>
     public void InteruptSpellCast()
     {
         animator.SetBool("CastingSpell", false);
