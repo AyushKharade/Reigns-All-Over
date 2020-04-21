@@ -759,6 +759,16 @@ PrefabInstance:
       propertyPath: HP
       value: 
       objectReference: {fileID: 2010262153}
+    - target: {fileID: 2639881460653007702, guid: 749f5920f46552d47940df86fd71dfa5,
+        type: 3}
+      propertyPath: blockDMG_Absorb
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639881460653007702, guid: 749f5920f46552d47940df86fd71dfa5,
+        type: 3}
+      propertyPath: level
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 749f5920f46552d47940df86fd71dfa5, type: 3}
 --- !u!1 &520976206 stripped
@@ -1023,7 +1033,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &644896300
 Transform:
   m_ObjectHideFlags: 0
@@ -3805,7 +3815,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1597173427
 Transform:
   m_ObjectHideFlags: 0

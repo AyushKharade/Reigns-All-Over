@@ -20,8 +20,7 @@ public class Combat : MonoBehaviour
     /// <summary>
     /// If you blocked recently, opportunity to reposte attack.
     /// </summary>
-    //[HideInInspector]
-    public float blockTime;          
+    [HideInInspector]public float blockTime;          
 
     /// <summary>
     /// Is enabled after which chain input will be accepted.
@@ -39,7 +38,10 @@ public class Combat : MonoBehaviour
     [HideInInspector]public bool chainWindowOpen;
     public int combo=1;                                  // use when higher combo should deal higher damage
     // controls Light/Heavy attack blend tree value
-    [HideInInspector] public float attackAnimValue;             
+    [HideInInspector] public float attackAnimValue;
+
+    public float arenaline;                 // witcher adrenaline system, staying in combat builds up adrenaline and deal higher damage
+    public float arenalineGainRate;
 
     Vector3 attackDirection;           // orient here.
 
@@ -134,12 +136,15 @@ public class Combat : MonoBehaviour
             if (attacking)
                 InteruptAttack();
 
+            blockTime += Time.deltaTime;
+
             // blocking walk animation.
             BlockingMovementAnim();
         }
         else
         {
             isBlocking = false;
+            blockTime = 0;
             animator.SetBool("Blocking", false);
         }
     }

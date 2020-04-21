@@ -78,7 +78,9 @@ public class PlayerAttributes : MonoBehaviour
         {
             if (CombatRef.isBlocking)
             {
-                health -= (dmg - dmg * blockDMG_Absorb);
+                health -= (dmg - dmg * blockDMG_Absorb);          // make sure to take into consideration blocktime from Combat
+
+
                 Debug.Log("Blocked Damage: "+dmg +" >> "+ (dmg - dmg * blockDMG_Absorb));
                 if (!animator.GetBool("BlockingImpact"))
                     animator.SetBool("BlockingImpact", true);
