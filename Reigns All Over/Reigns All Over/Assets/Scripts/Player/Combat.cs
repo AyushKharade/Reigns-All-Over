@@ -18,6 +18,12 @@ public class Combat : MonoBehaviour
     public bool isBlocking;
 
     /// <summary>
+    /// If you blocked recently, opportunity to reposte attack.
+    /// </summary>
+    //[HideInInspector]
+    public float blockTime;          
+
+    /// <summary>
     /// Is enabled after which chain input will be accepted.
     /// </summary>
     public bool chained;               
@@ -121,11 +127,10 @@ public class Combat : MonoBehaviour
         }
 
         // blocking controls
-        if (ready && Input.GetKey(KeyCode.X) && !MovementRef.isDodging && !MovementRef.isDead)
+        if (ready && Input.GetKey(KeyCode.X) && !MovementRef.isDodging && !MovementRef.isDead && MovementRef.isGrounded)
         {
             isBlocking = true;
             animator.SetBool("Blocking",true);
-            //animator.SetFloat("Locomotion", 0f);
             if (attacking)
                 InteruptAttack();
 
@@ -257,7 +262,9 @@ public class Combat : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// Collects input for the 2D blend tree and also applies directonal translation for faster movement while blocking)
+    /// </summary>
     void BlockingMovementAnim()
     {
         float x = Input.GetAxis("Horizontal");
@@ -266,7 +273,11 @@ public class Combat : MonoBehaviour
         animator.SetFloat("180X_Dir_Input",x);
         animator.SetFloat("180Y_Dir_Input",y);
 
-        MovementRef.PlayerHolder.Translate(MovementRef.PlayerDirection * 0.9f * Time.deltaTime);
+        float strafeSpeed = 0.9f;
+        if (x != 0 && y != 0)
+            strafeSpeed = 1.2f;
+
+        MovementRef.PlayerHolder.Translate(MovementRef.PlayerDirection * strafeSpeed * Time.deltaTime);
     }
 
     // these methods will just turn on and off weapons

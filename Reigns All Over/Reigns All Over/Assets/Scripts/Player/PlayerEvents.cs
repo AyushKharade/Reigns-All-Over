@@ -108,6 +108,11 @@ public class PlayerEvents : MonoBehaviour
         GetComponent<PlayerAttributes>().dodgeInvincible = true;
     }
 
+    void AllowDodgingOrient()
+    {
+        MovementRef.allowDodgeOrient = true;
+    }
+
     public void UnEquip()
     {
         CombatRef.UnEquipWeapon();

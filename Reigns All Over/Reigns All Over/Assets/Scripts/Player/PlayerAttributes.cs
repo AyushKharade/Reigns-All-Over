@@ -17,7 +17,7 @@ public class PlayerAttributes : MonoBehaviour
     public float staminaRegenDelay;
     public bool onStaminaRegenDelay;
     float staminaTimer;
-    public float blockDMG_Absorb=0.65f;
+    public float blockDMG_Absorb;
 
     [Header("Character")]
     public int level;

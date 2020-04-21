@@ -56,6 +56,7 @@ public class NPC_Combat : MonoBehaviour
         {
             targetInRange = false;
             Seek(Target.position, (Target.position - transform.position));
+            attackTimer = attackFrequency;          // so they immedietly attack after chasing
         }
         else
         {
