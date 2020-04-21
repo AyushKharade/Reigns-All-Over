@@ -2342,7 +2342,7 @@ BlendTree:
     m_DirectBlendParameter: Locomotion
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: cd9b41339059067459cc8ddb2b126224,
+    m_Motion: {fileID: -203655887218126122, guid: e93a34a3476aa8c4ebe69ec1c2c089c1,
       type: 3}
     m_Threshold: 1
     m_Position: {x: 0, y: -1}

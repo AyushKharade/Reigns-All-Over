@@ -5,7 +5,7 @@ ModelImporter:
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: WalkBackwards_WithWEapon
+    second: WalkBackwards_WithWeapon
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,18 +35,18 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: WalkBackwards_WithWEapon
+      name: WalkBackwards_WithWeapon
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
       lastFrame: 41
       wrapMode: 0
-      orientationOffsetY: -52.27
+      orientationOffsetY: -53.19
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
