@@ -93,6 +93,7 @@ public class PlayerEvents : MonoBehaviour
 
         if (!MovementRef.isDodging)
             CombatRef.chainWindowOpen = true;
+
         if(!MovementRef.isDodging && CombatRef.chainAttack)
             CombatRef.ExecuteChainAttack();
     }

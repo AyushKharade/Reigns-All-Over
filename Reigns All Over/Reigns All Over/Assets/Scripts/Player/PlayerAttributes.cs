@@ -10,9 +10,11 @@ public class PlayerAttributes : MonoBehaviour
 {
     [Header("Player Information")]
     public float health=100;
+    [HideInInspector]public float maxHealth;
     [HideInInspector]public bool invincible;
     [HideInInspector]public bool dodgeInvincible;
     public float stamina=100;
+    [HideInInspector] public float maxStamina;
     public float staminaRegenRate;
     public float staminaRegenDelay;
     public bool onStaminaRegenDelay;
@@ -33,6 +35,9 @@ public class PlayerAttributes : MonoBehaviour
 
     private void Start()
     {
+        maxHealth = health;
+        maxStamina = stamina;
+
         MovementRef = GetComponent<PlayerMovement>();
         CombatRef = GetComponent<Combat>();
         animator = GetComponent<Animator>();
@@ -117,7 +122,14 @@ public class PlayerAttributes : MonoBehaviour
 
     }
 
+    public void ReduceStamina(float val)
+    {
+        stamina -= val;
+        if (stamina < 0)
+            stamina = 0;
+        onStaminaRegenDelay = true;
 
+    }
 
 
 

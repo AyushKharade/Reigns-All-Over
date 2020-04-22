@@ -37,12 +37,15 @@ public class Combat : MonoBehaviour
     [HideInInspector]public bool chainWindowOpen;
     public int combo=1;                                  // use when higher combo should deal higher damage
     // controls Light/Heavy attack blend tree value
-    [HideInInspector] public float attackAnimValue;
+    [HideInInspector] public float attackAnimValue=7.5f;
 
     public float arenaline;                 // witcher adrenaline system, staying in combat builds up adrenaline and deal higher damage
     public float arenalineGainRate;
 
     Vector3 attackDirection;           // orient here.
+
+    [Header("Rates / Cooldowns")]
+    public float heavyAttackCost;
 
     [Header("Equipped Weapon")]
     public GameObject HandWeaponSlot;
@@ -60,6 +63,7 @@ public class Combat : MonoBehaviour
 
     // script ref
     PlayerMovement MovementRef;
+    PlayerAttributes PAttributesRef;
     Animator animator;
 
     #endregion
@@ -72,6 +76,7 @@ public class Combat : MonoBehaviour
         UnEquipWeapon();
 
         MovementRef = GetComponent<PlayerMovement>();
+        PAttributesRef = GetComponent<PlayerAttributes>();
     }
 
     void Update()
@@ -176,7 +181,7 @@ public class Combat : MonoBehaviour
     }
 
 
-
+    float attackStaminaCost=0f;
     /// <summary>
     /// receive input and attack direction from PlayerMovement, get type of attack and process in this function.s
     /// </summary>
@@ -186,25 +191,36 @@ public class Combat : MonoBehaviour
     {
         attackDirection = Dir;
         attackAnimValue = type;
+
+        attackStaminaCost = combo * heavyAttackCost * attackAnimValue;            // calculate heavy attack stamina cost
         if (!attacking)
         {
-            animator.SetLayerWeight(2, 1);
-            animator.SetBool("Attacking", true);
-            animator.SetFloat("attackAnimValue", attackAnimValue);
-            attacking = true;
-            chained = false; chainAttack = false; chainWindowOpen = false;                    // just incase they were left on
 
-            combo = 1;
+            if (PAttributesRef.stamina - attackStaminaCost >= 0)
+            {
+                animator.SetLayerWeight(2, 1);
+                animator.SetBool("Attacking", true);
+                animator.SetFloat("attackAnimValue", attackAnimValue);
+                attacking = true;
+                chained = false; chainAttack = false; chainWindowOpen = false;                    // just incase they were left on
 
-            // turn on sword dmg
-            EquippedWeapon.GetComponent<Weapon>().doDMG = true;
+                combo = 1;
+
+                // turn on sword dmg
+                EquippedWeapon.GetComponent<Weapon>().doDMG = true;
+
+                PAttributesRef.ReduceStamina(attackStaminaCost);
+            }
+
         }
         else if (attacking && chained)                     // clicked while attacking during the chain window
         {
             combo++;
             chainAttack = true;
-            if (chainWindowOpen)
+            if (chainWindowOpen && ((PAttributesRef.stamina - attackStaminaCost) >= 0))
+            {
                 ExecuteChainAttack();
+            }
         }
        
     }
@@ -225,6 +241,8 @@ public class Combat : MonoBehaviour
 
         // turn on sword dmg
         EquippedWeapon.GetComponent<Weapon>().doDMG = true;
+
+        PAttributesRef.ReduceStamina(attackStaminaCost);
     }
 
     /// <summary>
@@ -343,8 +361,8 @@ public class Combat : MonoBehaviour
         animator.SetFloat("180Y_Dir_Input",y);
 
         float strafeSpeed = 0.9f;
-        if (x != 0 && y != 0)
-            strafeSpeed = 1.2f;
+        //if (x != 0 && y != 0)
+        //    strafeSpeed = 1.2f;
 
         MovementRef.PlayerHolder.Translate(MovementRef.PlayerDirection * strafeSpeed * Time.deltaTime);
     }
