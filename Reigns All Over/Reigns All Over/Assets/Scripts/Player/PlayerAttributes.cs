@@ -9,18 +9,26 @@ using UnityEngine.UI;
 public class PlayerAttributes : MonoBehaviour
 {
     [Header("Player Information")]
+    // Health
     public float health=100;
     [HideInInspector]public float maxHealth;
-    [HideInInspector]public bool invincible;
-    [HideInInspector]public bool dodgeInvincible;
+    // stamina
     public float stamina=100;
     [HideInInspector] public float maxStamina;
     public float staminaRegenRate;
     public float staminaRegenDelay;
     public bool onStaminaRegenDelay;
     float staminaTimer;
+
+
     public float blockDMG_Absorb;
-    public int mana=10;                    // currently thinking 10 slots of mana (like the 6 slots in Prince Of Persia)
+
+    // Mana
+    public int mana=2;                    // currently thinking slots of mana (like the 6 slots in Prince Of Persia)
+
+    [HideInInspector] public bool invincible;
+    [HideInInspector] public bool dodgeInvincible;
+
 
     [Header("Character Development")]
     public CharacterDev character=new CharacterDev();
