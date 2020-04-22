@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class DummyForceSpell : MonoBehaviour
 {
+    /// <summary>
+    /// No. of charges required to cast spell.
+    /// </summary>
+    public int cost;
     public float force=10f;
     public float mSpeed=3f;
     public Transform Target;

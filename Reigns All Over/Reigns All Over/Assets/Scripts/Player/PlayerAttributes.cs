@@ -24,8 +24,19 @@ public class PlayerAttributes : MonoBehaviour
     public float blockDMG_Absorb;
 
     // Mana
-    public int mana=2;                    // currently thinking slots of mana (like the 6 slots in Prince Of Persia)
+    [Header("Magic")]
+    public int mana=6;                    // currently thinking slots of mana (like the 6 slots in Prince Of Persia)
+    [HideInInspector]int manaCapacity = 6;          // how many slots are unlocked.
+                                                    //int maxMana = 6;
+    public List<float> manaSlots=new List<float>();
 
+
+
+    public int curManaSlotIndex;
+    public float manaRegenRate;
+    public float manaRegenDelay;
+    bool onManaRegenDelay;
+    float manaRegenTimer;
     [HideInInspector] public bool invincible;
     [HideInInspector] public bool dodgeInvincible;
 
@@ -49,15 +60,24 @@ public class PlayerAttributes : MonoBehaviour
         MovementRef = GetComponent<PlayerMovement>();
         CombatRef = GetComponent<Combat>();
         animator = GetComponent<Animator>();
+
+        curManaSlotIndex = mana;
+
+        InitManaSlots();
     }
 
     private void Update()
     {
-        if(!MovementRef.isDead)
+        if (!MovementRef.isDead)
+        {
             RegenStamina();
-
+            RegenerateMana();
+        }
     }
 
+    /// <summary>
+    /// Regenerates stamina based on regenerate value specified.
+    /// </summary>
     void RegenStamina()
     {
         if (stamina < 100)
@@ -74,6 +94,40 @@ public class PlayerAttributes : MonoBehaviour
             else
             {
                 stamina += staminaRegenRate * Time.deltaTime;
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// Regenerates each mana stone one by one.
+    /// </summary>
+    void RegenerateMana()
+    {
+        if (curManaSlotIndex < manaCapacity)
+        {
+            if (onManaRegenDelay)
+            {
+                manaRegenTimer += Time.deltaTime;
+                if (manaRegenTimer > manaRegenDelay)
+                {
+                    onManaRegenDelay = false;
+                    manaRegenTimer = 0f;
+                }
+            }
+            else
+            {
+                //regenerate current slot's value and move to next one once its full.
+                if (manaSlots[curManaSlotIndex] >= 10)
+                {
+                    curManaSlotIndex++;
+                    mana++;
+                }
+                else
+                {
+                    manaSlots[curManaSlotIndex] += Time.deltaTime;
+                }
+                
             }
         }
     }
@@ -130,6 +184,10 @@ public class PlayerAttributes : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Consume stamina from actions, called from other scripts that do actions.
+    /// </summary>
+    /// <param name="val"></param>
     public void ReduceStamina(float val)
     {
         stamina -= val;
@@ -139,8 +197,33 @@ public class PlayerAttributes : MonoBehaviour
 
     }
 
+    public void ConsumeMana(int cost)
+    {
+        mana -= cost;
+        onManaRegenDelay = true;
+        manaSlots[curManaSlotIndex-1] = 0f;      // so ui update reflects on this
+        // also remove all charges from the next slot, this will be an upgrade so partial charges on a stone remain.
+        if(mana!=manaCapacity-1)
+            manaSlots[curManaSlotIndex] = 0f;      // so ui update reflects on this
+        curManaSlotIndex--;
+    }
+
+    public bool HasEnoughMana(int val)
+    {
+        if (mana - val >= 0)
+            return true;
+        else
+            return false;
+    }
 
 
+    public void InitManaSlots()
+    {
+        for (int i = 0; i < manaCapacity; i++)
+        {
+            manaSlots[i] = 10f;
+        }
+    }
 
 }
 

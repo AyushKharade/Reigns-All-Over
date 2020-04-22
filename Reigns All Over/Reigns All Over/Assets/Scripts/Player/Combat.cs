@@ -164,8 +164,10 @@ public class Combat : MonoBehaviour
         // Spell Controls
         if (ready && !isBlocking && !MovementRef.isDead && !MovementRef.isDodging)
         {
-            if (!isCastingSpell && Input.GetMouseButtonDown(2))
+            if (!isCastingSpell && Input.GetMouseButtonDown(2) && PAttributesRef.HasEnoughMana(EquippedSpell.GetComponent<DummyForceSpell>().cost))
             {
+                PAttributesRef.ConsumeMana(EquippedSpell.GetComponent<DummyForceSpell>().cost);
+
                 if (attacking)
                     InteruptAttack();
 
