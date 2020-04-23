@@ -1297,7 +1297,7 @@ BlendTree:
     m_Motion: {fileID: 7400000, guid: 7b5b17e2d42e0424f9c36012595dc9b6, type: 3}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 1
+    m_TimeScale: 0.7
     m_CycleOffset: 0.5
     m_DirectBlendParameter: Locomotion
     m_Mirror: 1
@@ -2748,22 +2748,22 @@ BlendTree:
     m_DirectBlendParameter: Locomotion
     m_Mirror: 1
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 6d1527962f07d2047a678ba77676ec73, type: 2}
-    m_Threshold: 0.5
-    m_Position: {x: 0, y: 0}
-    m_TimeScale: 1.3
-    m_CycleOffset: 0.5
-    m_DirectBlendParameter: Locomotion
-    m_Mirror: 1
-  - serializedVersion: 2
     m_Motion: {fileID: -203655887218126122, guid: 953cd6f40121969478a2417bbe2260cc,
       type: 3}
-    m_Threshold: 1
+    m_Threshold: 0.5
     m_Position: {x: 0, y: 0}
     m_TimeScale: 0.8
     m_CycleOffset: 0
     m_DirectBlendParameter: Locomotion
     m_Mirror: 0
+  - serializedVersion: 2
+    m_Motion: {fileID: 7400000, guid: 6d1527962f07d2047a678ba77676ec73, type: 2}
+    m_Threshold: 1
+    m_Position: {x: 0, y: 0}
+    m_TimeScale: 1.3
+    m_CycleOffset: 0.5
+    m_DirectBlendParameter: Locomotion
+    m_Mirror: 1
   m_BlendParameter: SpellAnimValue
   m_BlendParameterY: Locomotion
   m_MinThreshold: 0
