@@ -245,19 +245,22 @@ public class Combat : MonoBehaviour
     /// </summary>
     public void ExecuteChainAttack()
     {
-        animator.SetFloat("attackAnimValue", attackAnimValue);           // chooses light or heavy.
-        animator.SetLayerWeight(2, 1);
-        animator.SetBool("Attacking", true);
-        animator.SetBool("ChainAttack", true);
-        chainAttack = false;
-        chained = false;
-        chainWindowOpen = false;
-        attacking = true;
+        if (PAttributesRef.stamina - sprintAttackCost >= 0)
+        {
+            animator.SetFloat("attackAnimValue", attackAnimValue);           // chooses light or heavy.
+            animator.SetLayerWeight(2, 1);
+            animator.SetBool("Attacking", true);
+            animator.SetBool("ChainAttack", true);
+            chainAttack = false;
+            chained = false;
+            chainWindowOpen = false;
+            attacking = true;
 
-        // turn on sword dmg
-        EquippedWeapon.GetComponent<Weapon>().doDMG = true;
+            // turn on sword dmg
+            EquippedWeapon.GetComponent<Weapon>().doDMG = true;
 
-        PAttributesRef.ReduceStamina(attackStaminaCost);
+            PAttributesRef.ReduceStamina(attackStaminaCost);
+        }
     }
 
     /// <summary>
