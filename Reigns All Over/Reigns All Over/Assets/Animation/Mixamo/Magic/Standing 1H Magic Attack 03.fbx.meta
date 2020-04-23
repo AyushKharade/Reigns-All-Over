@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: cee3bce479514614f91d69e21f5e8f65
+guid: c2f8ce24d89483b4791e3fb4947e5be2
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: Death_2
+    second: LH_SelfSpell
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,11 +35,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Death_2
+      name: LH_SelfSpell
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 89
+      lastFrame: 69
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -48,7 +48,7 @@ ModelImporter:
       hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
-      loopBlendOrientation: 0
+      loopBlendOrientation: 1
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0

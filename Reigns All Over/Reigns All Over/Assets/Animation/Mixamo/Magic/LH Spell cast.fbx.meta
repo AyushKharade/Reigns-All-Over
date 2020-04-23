@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 953cd6f40121969478a2417bbe2260cc
+guid: cf81c513dc96e5d4191a408d4281b443
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: LeftHandedSpell1
+    second: LH_Spell1
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,20 +35,20 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: LeftHandedSpell1
+      name: LH_Spell1
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
       lastFrame: 34
       wrapMode: 0
-      orientationOffsetY: 30
+      orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
-      loopBlendOrientation: 1
+      loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
@@ -59,15 +59,15 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.8522727
-        functionName: EndSpell
+      - time: 0.3048433
+        functionName: CastSpell
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.3096591
-        functionName: CastSpell
+      - time: 0.81196576
+        functionName: EndSpell
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

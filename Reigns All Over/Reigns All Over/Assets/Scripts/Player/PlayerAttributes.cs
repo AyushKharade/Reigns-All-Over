@@ -26,7 +26,7 @@ public class PlayerAttributes : MonoBehaviour
     // Mana
     [Header("Magic")]
     public int mana=6;                    // currently thinking slots of mana (like the 6 slots in Prince Of Persia)
-    [HideInInspector]int manaCapacity = 6;          // how many slots are unlocked.
+    public int manaCapacity = 6;          // how many slots are unlocked.
                                                     //int maxMana = 6;
     public List<float> manaSlots=new List<float>();
 
