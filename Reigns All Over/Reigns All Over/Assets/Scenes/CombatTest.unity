@@ -1443,7 +1443,7 @@ MonoBehaviour:
   m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 1
+  m_FillAmount: 0.25
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -3213,6 +3213,7 @@ GameObject:
   - component: {fileID: 1462952688}
   - component: {fileID: 1462952690}
   - component: {fileID: 1462952689}
+  - component: {fileID: 1462952691}
   m_Layer: 5
   m_Name: Stamina_BG
   m_TagString: Untagged
@@ -3278,6 +3279,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1462952687}
   m_CullTransparentMesh: 0
+--- !u!111 &1462952691
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462952687}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 2e89e6a1bb8f64a48a366f008a362b25, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 2e89e6a1bb8f64a48a366f008a362b25, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &1482089757
 GameObject:
   m_ObjectHideFlags: 0

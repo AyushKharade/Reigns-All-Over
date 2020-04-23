@@ -58,4 +58,12 @@ public class PlayerUI : MonoBehaviour
             slotIndex++;
         }
     }
+
+    /// <summary>
+    /// flash stamina bar to indicate no more stamina for action.
+    /// </summary>
+    public void WarnNoStaminaUI()
+    {
+        StaminaBar.transform.parent.GetChild(0).GetComponent<Animation>().Play();
+    }
 }

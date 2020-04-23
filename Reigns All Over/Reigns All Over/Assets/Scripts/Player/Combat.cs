@@ -226,6 +226,8 @@ public class Combat : MonoBehaviour
                 EquippedWeapon.GetComponent<Weapon>().doDMG = true;
                 PAttributesRef.ReduceStamina(sprintAttackCost);
             }
+            else
+                WarnNoStamina();
 
         }
         else if (attacking && chained)                     // clicked while attacking during the chain window
@@ -236,6 +238,9 @@ public class Combat : MonoBehaviour
             {
                 ExecuteChainAttack();
             }
+            else if ((PAttributesRef.stamina - attackStaminaCost) <= 0)
+                WarnNoStamina();
+
         }
        
     }
@@ -260,6 +265,10 @@ public class Combat : MonoBehaviour
             EquippedWeapon.GetComponent<Weapon>().doDMG = true;
 
             PAttributesRef.ReduceStamina(attackStaminaCost);
+        }
+        else
+        {
+            WarnNoStamina();
         }
     }
 
@@ -401,5 +410,12 @@ public class Combat : MonoBehaviour
         SheathedWeapon.SetActive(true);
     }
 
+    /// <summary>
+    /// Simply flash stamina BG bar to show that current action requires higher stamin
+    /// </summary>
+    void WarnNoStamina()
+    {
+        MovementRef.PlayerHolder.GetComponent<PlayerUI>().WarnNoStaminaUI();
+    }
     
 }
