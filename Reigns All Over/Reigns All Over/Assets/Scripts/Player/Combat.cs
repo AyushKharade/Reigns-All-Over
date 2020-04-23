@@ -46,6 +46,7 @@ public class Combat : MonoBehaviour
 
     [Header("Rates / Cooldowns")]
     public float heavyAttackCost;
+    public float sprintAttackCost;
 
     [Header("Equipped Weapon")]
     public GameObject HandWeaponSlot;
@@ -198,7 +199,7 @@ public class Combat : MonoBehaviour
         if (!attacking)
         {
 
-            if (PAttributesRef.stamina - attackStaminaCost >= 0)
+            if (PAttributesRef.stamina - attackStaminaCost >= 0 && !MovementRef.isSprinting)
             {
                 animator.SetLayerWeight(2, 1);
                 animator.SetBool("Attacking", true);
@@ -212,6 +213,18 @@ public class Combat : MonoBehaviour
                 EquippedWeapon.GetComponent<Weapon>().doDMG = true;
 
                 PAttributesRef.ReduceStamina(attackStaminaCost);
+            }
+            else if (MovementRef.isSprinting && PAttributesRef.stamina - sprintAttackCost >= 0)
+            {
+                animator.SetLayerWeight(2, 1);
+                animator.SetBool("SprintAttack", true);
+                attacking = true;
+                chained = false; chainAttack = false; chainWindowOpen = false;                    // just incase they were left on
+                combo = 1;
+
+                // turn on sword dmg
+                EquippedWeapon.GetComponent<Weapon>().doDMG = true;
+                PAttributesRef.ReduceStamina(sprintAttackCost);
             }
 
         }
@@ -325,6 +338,8 @@ public class Combat : MonoBehaviour
         combo = 1;
 
         EquippedWeapon.GetComponent<Weapon>().doDMG = false;
+
+        animator.SetBool("SprintAttack", false);
     }
 
     /// <summary>

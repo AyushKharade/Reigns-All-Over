@@ -53,8 +53,8 @@ public class PlayerEvents : MonoBehaviour
     /// </summary>
     public void EndOfAttack()
     {
-        if (!CombatRef.chainAttack)                 // not sure if this condition check is necessary.
-        {
+        //if (!CombatRef.chainAttack)                 // not sure if this condition check is necessary.
+        //{
             CombatRef.attacking = false;
             CombatRef.chainAttack = false;
             CombatRef.chained = false;
@@ -63,7 +63,12 @@ public class PlayerEvents : MonoBehaviour
             animator.SetBool("ChainAttack", false);
 
             CombatRef.combo = 1;
-        }
+
+            if (animator.GetBool("SprintAttack"))
+                animator.SetBool("SprintAttack", false);
+
+          //  Debug.Log("EndOFAttack Called");
+        //}
     }
 
 
