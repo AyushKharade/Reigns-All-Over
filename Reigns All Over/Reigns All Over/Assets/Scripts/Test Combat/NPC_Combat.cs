@@ -93,7 +93,6 @@ public class NPC_Combat : MonoBehaviour
             animator.SetBool("Attacking", true);
 
             // choose a random attack
-            float attackAnimValue=0f;
             if (noOfAttacks > 1)
             {
                 int r = Random.Range(0, noOfAttacks + 1);

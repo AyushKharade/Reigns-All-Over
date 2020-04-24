@@ -93,17 +93,22 @@ public class PlayerMovement : MonoBehaviour
         else if(Input.GetKey(KeyCode.D))
             PlayerDirection += TargetRef.right;
         //--------------------------------------------------------------------------------------
-        // Sprint
-        if (Input.GetKey(KeyCode.LeftShift) && PAttributesRef.stamina>0)
+        // Sprint -- works with way less conditions but put them so that we dont lose stamina when we hold the sprint button when we cant sprint
+        if (Input.GetKey(KeyCode.LeftShift) && PAttributesRef.stamina > 0 && !isDodging && !CombatRef.isBlocking && !CombatRef.attacking && isGrounded && isRunning)
         {
             isSprinting = true;
-            PAttributesRef.stamina -= sprintCostRate * Time.deltaTime;
-            PAttributesRef.onStaminaRegenDelay = true;
+            PAttributesRef.ReduceStamina(sprintCostRate * Time.deltaTime);
             isWalking = false;
+        }
+        else if (PAttributesRef.stamina <= 0 && Input.GetKey(KeyCode.LeftShift))
+        {
+            isSprinting = false;
+            PlayerHolder.GetComponent<PlayerUI>().WarnNoStaminaUI();
         }
         else
         {
             isSprinting = false;
+
         } 
         //---------------------------------------------------------------------------------------
 
@@ -266,6 +271,7 @@ public class PlayerMovement : MonoBehaviour
         if(CombatRef.isCastingSpell)
             CombatRef.InteruptSpellCast();
 
+        PAttributesRef.ReduceStamina(0);         // its fine if we have zero stamina we can roll, just dont let player regen a lot of stamina
 
 
         //animator.SetLayerWeight(1, 0);       // switch off combat layer until then.    // attempting to switch off smoothly

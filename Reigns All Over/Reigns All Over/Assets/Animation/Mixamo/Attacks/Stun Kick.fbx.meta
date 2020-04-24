@@ -1,11 +1,14 @@
 fileFormatVersion: 2
-guid: c389989649d98a24f96e9cb300eef91d
+guid: fc6f04ae031d4e5469e602ef3e0c7d98
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
+      74: 1827226128182048838
+    second: Take 001
+  - first:
       74: -203655887218126122
-    second: Death_1
+    second: Kick
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,20 +38,20 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Death_1
+      name: Kick
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 68
+      lastFrame: 36
       wrapMode: 0
-      orientationOffsetY: 0
+      orientationOffsetY: -56.6
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
-      loopBlendOrientation: 0
+      loopBlendOrientation: 1
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0

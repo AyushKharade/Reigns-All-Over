@@ -37,12 +37,16 @@ public class Combat : MonoBehaviour
     [HideInInspector]public bool chainWindowOpen;
     public int combo=1;                                  // use when higher combo should deal higher damage
     // controls Light/Heavy attack blend tree value
-    [HideInInspector] public float attackAnimValue;
+    [HideInInspector] public float attackAnimValue=7.5f;
 
     public float arenaline;                 // witcher adrenaline system, staying in combat builds up adrenaline and deal higher damage
     public float arenalineGainRate;
 
     Vector3 attackDirection;           // orient here.
+
+    [Header("Rates / Cooldowns")]
+    public float heavyAttackCost;
+    public float sprintAttackCost;
 
     [Header("Equipped Weapon")]
     public GameObject HandWeaponSlot;
@@ -60,6 +64,7 @@ public class Combat : MonoBehaviour
 
     // script ref
     PlayerMovement MovementRef;
+    PlayerAttributes PAttributesRef;
     Animator animator;
 
     #endregion
@@ -72,6 +77,7 @@ public class Combat : MonoBehaviour
         UnEquipWeapon();
 
         MovementRef = GetComponent<PlayerMovement>();
+        PAttributesRef = GetComponent<PlayerAttributes>();
     }
 
     void Update()
@@ -121,7 +127,7 @@ public class Combat : MonoBehaviour
                 ready = false;
                 //animator.SetBool("Hurting", false);
             }
-            else if (!MovementRef.isDodging && MovementRef.isGrounded)
+            else if (!MovementRef.isDodging && MovementRef.isGrounded && !attacking && !isCastingSpell)
             {
                 animator.SetLayerWeight(1, 1);
                 MovementRef.isWalking = false;
@@ -159,8 +165,10 @@ public class Combat : MonoBehaviour
         // Spell Controls
         if (ready && !isBlocking && !MovementRef.isDead && !MovementRef.isDodging)
         {
-            if (!isCastingSpell && Input.GetMouseButtonDown(2))
+            if (!isCastingSpell && Input.GetMouseButtonDown(2) && PAttributesRef.HasEnoughMana(EquippedSpell.GetComponent<DummyForceSpell>().cost))
             {
+                PAttributesRef.ConsumeMana(EquippedSpell.GetComponent<DummyForceSpell>().cost);
+
                 if (attacking)
                     InteruptAttack();
 
@@ -176,7 +184,7 @@ public class Combat : MonoBehaviour
     }
 
 
-
+    float attackStaminaCost=0f;
     /// <summary>
     /// receive input and attack direction from PlayerMovement, get type of attack and process in this function.s
     /// </summary>
@@ -186,25 +194,54 @@ public class Combat : MonoBehaviour
     {
         attackDirection = Dir;
         attackAnimValue = type;
+
+        attackStaminaCost = combo * heavyAttackCost * attackAnimValue;            // calculate heavy attack stamina cost
         if (!attacking)
         {
-            animator.SetLayerWeight(2, 1);
-            animator.SetBool("Attacking", true);
-            animator.SetFloat("attackAnimValue", attackAnimValue);
-            attacking = true;
-            chained = false; chainAttack = false; chainWindowOpen = false;                    // just incase they were left on
 
-            combo = 1;
+            if (PAttributesRef.stamina - attackStaminaCost >= 0 && !MovementRef.isSprinting)
+            {
+                animator.SetLayerWeight(2, 1);
+                animator.SetBool("Attacking", true);
+                animator.SetFloat("attackAnimValue", attackAnimValue);
+                attacking = true;
+                chained = false; chainAttack = false; chainWindowOpen = false;                    // just incase they were left on
 
-            // turn on sword dmg
-            EquippedWeapon.GetComponent<Weapon>().doDMG = true;
+                combo = 1;
+
+                // turn on sword dmg
+                EquippedWeapon.GetComponent<Weapon>().doDMG = true;
+
+                if(attackStaminaCost>0)
+                    PAttributesRef.ReduceStamina(attackStaminaCost);
+            }
+            else if (MovementRef.isSprinting && PAttributesRef.stamina - sprintAttackCost >= 0)
+            {
+                animator.SetLayerWeight(2, 1);
+                animator.SetBool("SprintAttack", true);
+                attacking = true;
+                chained = false; chainAttack = false; chainWindowOpen = false;                    // just incase they were left on
+                combo = 1;
+
+                // turn on sword dmg
+                EquippedWeapon.GetComponent<Weapon>().doDMG = true;
+                PAttributesRef.ReduceStamina(sprintAttackCost);
+            }
+            else
+                WarnNoStamina();
+
         }
         else if (attacking && chained)                     // clicked while attacking during the chain window
         {
             combo++;
             chainAttack = true;
-            if (chainWindowOpen)
+            if (chainWindowOpen && ((PAttributesRef.stamina - attackStaminaCost) >= 0))
+            {
                 ExecuteChainAttack();
+            }
+            else if ((PAttributesRef.stamina - attackStaminaCost) <= 0)
+                WarnNoStamina();
+
         }
        
     }
@@ -214,17 +251,27 @@ public class Combat : MonoBehaviour
     /// </summary>
     public void ExecuteChainAttack()
     {
-        animator.SetFloat("attackAnimValue", attackAnimValue);           // chooses light or heavy.
-        animator.SetLayerWeight(2, 1);
-        animator.SetBool("Attacking", true);
-        animator.SetBool("ChainAttack", true);
-        chainAttack = false;
-        chained = false;
-        chainWindowOpen = false;
-        attacking = true;
+        if (PAttributesRef.stamina - attackStaminaCost >= 0)
+        {
+            animator.SetFloat("attackAnimValue", attackAnimValue);           // chooses light or heavy.
+            animator.SetLayerWeight(2, 1);
+            animator.SetBool("Attacking", true);
+            animator.SetBool("ChainAttack", true);
+            chainAttack = false;
+            chained = false;
+            chainWindowOpen = false;
+            attacking = true;
 
-        // turn on sword dmg
-        EquippedWeapon.GetComponent<Weapon>().doDMG = true;
+            // turn on sword dmg
+            EquippedWeapon.GetComponent<Weapon>().doDMG = true;
+
+            if(attackStaminaCost>0)                         // so that light attacks dont delay regeneration
+                PAttributesRef.ReduceStamina(attackStaminaCost);
+        }
+        else
+        {
+            WarnNoStamina();
+        }
     }
 
     /// <summary>
@@ -305,6 +352,8 @@ public class Combat : MonoBehaviour
         combo = 1;
 
         EquippedWeapon.GetComponent<Weapon>().doDMG = false;
+
+        animator.SetBool("SprintAttack", false);
     }
 
     /// <summary>
@@ -343,9 +392,10 @@ public class Combat : MonoBehaviour
         animator.SetFloat("180Y_Dir_Input",y);
 
         float strafeSpeed = 0.9f;
-        if (x != 0 && y != 0)
-            strafeSpeed = 1.2f;
+        //if (x != 0 && y != 0)
+        //    strafeSpeed = 1.2f;
 
+        // add a skill condition
         MovementRef.PlayerHolder.Translate(MovementRef.PlayerDirection * strafeSpeed * Time.deltaTime);
     }
 
@@ -363,5 +413,12 @@ public class Combat : MonoBehaviour
         SheathedWeapon.SetActive(true);
     }
 
+    /// <summary>
+    /// Simply flash stamina BG bar to show that current action requires higher stamin
+    /// </summary>
+    void WarnNoStamina()
+    {
+        MovementRef.PlayerHolder.GetComponent<PlayerUI>().WarnNoStaminaUI();
+    }
     
 }

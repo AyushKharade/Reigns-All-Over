@@ -105,9 +105,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e358a4274f3aaf84ca95714f4181236c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cost: 1
   force: 10
   mSpeed: 5
   Target: {fileID: 0}
-  damage: 10
+  damage: 5
   DMG_popupPrefab: {fileID: 2836066789045989664, guid: 394769c9d937d094a9c06bf0e32ff1c4,
     type: 3}
