@@ -11,7 +11,7 @@ public class PlayerUI : MonoBehaviour
 
     [Header("Mana References")]
     public Transform manaSlotParent;
-    public List<Image> manaSlotList = new List<Image>();
+    List<Image> manaSlotList = new List<Image>();
 
     //references:
     PlayerAttributes PAttributesRef;

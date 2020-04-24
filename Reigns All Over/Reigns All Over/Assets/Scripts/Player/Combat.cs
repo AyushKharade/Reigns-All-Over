@@ -127,7 +127,7 @@ public class Combat : MonoBehaviour
                 ready = false;
                 //animator.SetBool("Hurting", false);
             }
-            else if (!MovementRef.isDodging && MovementRef.isGrounded)
+            else if (!MovementRef.isDodging && MovementRef.isGrounded && !attacking && !isCastingSpell)
             {
                 animator.SetLayerWeight(1, 1);
                 MovementRef.isWalking = false;
@@ -212,7 +212,8 @@ public class Combat : MonoBehaviour
                 // turn on sword dmg
                 EquippedWeapon.GetComponent<Weapon>().doDMG = true;
 
-                PAttributesRef.ReduceStamina(attackStaminaCost);
+                if(attackStaminaCost>0)
+                    PAttributesRef.ReduceStamina(attackStaminaCost);
             }
             else if (MovementRef.isSprinting && PAttributesRef.stamina - sprintAttackCost >= 0)
             {
@@ -250,7 +251,7 @@ public class Combat : MonoBehaviour
     /// </summary>
     public void ExecuteChainAttack()
     {
-        if (PAttributesRef.stamina - sprintAttackCost >= 0)
+        if (PAttributesRef.stamina - attackStaminaCost >= 0)
         {
             animator.SetFloat("attackAnimValue", attackAnimValue);           // chooses light or heavy.
             animator.SetLayerWeight(2, 1);
@@ -264,7 +265,8 @@ public class Combat : MonoBehaviour
             // turn on sword dmg
             EquippedWeapon.GetComponent<Weapon>().doDMG = true;
 
-            PAttributesRef.ReduceStamina(attackStaminaCost);
+            if(attackStaminaCost>0)                         // so that light attacks dont delay regeneration
+                PAttributesRef.ReduceStamina(attackStaminaCost);
         }
         else
         {
@@ -393,6 +395,7 @@ public class Combat : MonoBehaviour
         //if (x != 0 && y != 0)
         //    strafeSpeed = 1.2f;
 
+        // add a skill condition
         MovementRef.PlayerHolder.Translate(MovementRef.PlayerDirection * strafeSpeed * Time.deltaTime);
     }
 
