@@ -552,6 +552,8 @@ MonoBehaviour:
   attackAnimValue: 0
   arenaline: 0
   arenalineGainRate: 0
+  heavyAttackCost: 4
+  sprintAttackCost: 15
   HandWeaponSlot: {fileID: 2639881461557934677}
   SheathSlot: {fileID: 103805946318306115}
   EquippedWeapon: {fileID: 892731006403690456}
@@ -575,18 +577,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
-  invincible: 0
-  dodgeInvincible: 0
+  maxHealth: 0
   stamina: 100
-  staminaRegenRate: 2.5
+  maxStamina: 0
+  staminaRegenRate: 4
   staminaRegenDelay: 5
   onStaminaRegenDelay: 0
   blockDMG_Absorb: 0.8
-  mana: 10
+  mana: 0
+  manaCapacity: 3
+  manaSlots:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  curManaSlotIndex: 0
+  manaRegenRate: 2.5
+  manaRegenDelay: 5
+  invincible: 0
+  dodgeInvincible: 0
   character:
     currentXP: 0
     currentLevel: 0
-  HP: {fileID: 0}
+  inventory:
+    maxCarryWeight: 60
+    curCarryWeight: 7
 --- !u!1 &2639881460653007726
 GameObject:
   m_ObjectHideFlags: 0
@@ -3192,6 +3209,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2639881462057730917}
+  - component: {fileID: 1844222448}
   m_Layer: 0
   m_Name: Allenran
   m_TagString: Player
@@ -3215,6 +3233,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1844222448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2639881462057730939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8739c0a7c28ba4e4da6e5e87514c503a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HPBar: {fileID: 0}
+  StaminaBar: {fileID: 0}
+  manaSlotParent: {fileID: 0}
 --- !u!1 &2639881462137081476
 GameObject:
   m_ObjectHideFlags: 0
