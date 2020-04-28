@@ -26,11 +26,16 @@ public class NPC_Attributes : MonoBehaviour
     public Transform destination;
     bool destinationSet;
     public float velocity;
+
+
+    // references
     private NavMeshAgent navmeshRef;
+    private Animator animator;
 
     private void Start()
     {
         navmeshRef = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -48,6 +53,10 @@ public class NPC_Attributes : MonoBehaviour
 
     void GoToDestination()
     {
+        navmeshRef.Warp(transform.position);
         navmeshRef.SetDestination(destination.position);
+        animator.SetFloat("Locomotion", 1f);
+
+        
     }
 }
