@@ -76,6 +76,7 @@
     <Compile Include="Assets\Scripts\Test Combat\NPC_Events.cs" />
     <Compile Include="Assets\Scripts\Test Combat\NPCBehavior.cs" />
     <Compile Include="Assets\Scripts\Test Combat\TestEnemyDummy.cs" />
+    <None Include="Assets\Models\World\Medieval village\Documentation\Readme.txt" />
     <None Include="Assets\Models\Characters\Enemies\cave_troll\shaders\Standard Two Sided Soft Blend.shader" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/ASUS/Documents/Unity Projects/Regins All Over RPG/Reigns-All-Over/Reigns All Over/Reigns All Over/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
@@ -97,9 +98,6 @@
     </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>C:/Users/ASUS/Documents/Unity Projects/Regins All Over RPG/Reigns-All-Over/Reigns All Over/Reigns All Over/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Sprite.Editor">
-      <HintPath>C:/Users/ASUS/Documents/Unity Projects/Regins All Over RPG/Reigns-All-Over/Reigns All Over/Reigns All Over/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>C:/Users/ASUS/Documents/Unity Projects/Regins All Over RPG/Reigns-All-Over/Reigns All Over/Reigns All Over/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
