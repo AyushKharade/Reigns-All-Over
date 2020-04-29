@@ -22,7 +22,7 @@ public class NPC_Attributes : MonoBehaviour
     public enum NPC_Type { Villager, Guard, Creature, Bandit};
     public NPC_Type npcType = new NPC_Type();
 
-    public enum combat_Type { Flee, Melee, Magic, Creature};
+    public enum combat_Type { Flee, OneHanded, Shield, TwoHanded,Magic, Creature};
     public combat_Type combatType = new combat_Type();
 
     [Header("Navmesh Test")]
@@ -43,7 +43,7 @@ public class NPC_Attributes : MonoBehaviour
 
     private void Update()
     {
-       
+        //velocity = navmeshRef.velocity.magnitude;
     }
 
 

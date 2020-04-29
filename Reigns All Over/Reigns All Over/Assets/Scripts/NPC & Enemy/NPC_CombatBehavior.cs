@@ -21,6 +21,7 @@ public class NPC_CombatBehavior : MonoBehaviour
     public bool equipped;          // whether npc has equipped his weapon
     public bool inCombat;          // whether npc is in direct combat
     public bool targetInSight;     // if target is close enough or direct raycast is possible.
+    public bool usingNavmesh;
 
 
     [Header("Weapon References")]
@@ -72,13 +73,28 @@ public class NPC_CombatBehavior : MonoBehaviour
         }
 
         // if target is in sight, seek and attack, else use navmesh towards player.
-        if (targetInSight )
+        if (engageTarget)
         {
-            navmeshRef.isStopped = true;
-            EngageTarget();   
+            if (targetInSight && Vector3.Distance(transform.position, attackTarget.position) < 10)
+            {
+                navmeshRef.ResetPath();
+                usingNavmesh = false;
+                EngageTarget();
+            }
+            else if (!usingNavmesh) // navemesh
+            {
+                if (navmeshRef.hasPath)
+                    navmeshRef.ResetPath();
+
+                navmeshRef.SetDestination(attackTarget.position);
+                usingNavmesh = true;
+            }
         }
-        else // navemesh
-        { }
+
+
+        if(usingNavmesh)
+            NavmeshAnimationUpdate();
+
     }
 
 
@@ -167,6 +183,17 @@ public class NPC_CombatBehavior : MonoBehaviour
         SheathWeapon.SetActive(true);
         animator.SetBool("EquipWeapon",false);
     }
+
+
+    void NavmeshAnimationUpdate()
+    {
+        float animValue = navmeshRef.velocity.magnitude/navmeshRef.speed;
+        //Debug.Log("anim value: "+animValue +"("+ navmeshRef.velocity.magnitude + ","+navmeshRef.speed+")");
+        animator.SetFloat("Locomotion",animValue);
+
+
+    }
+
 
     // seek and align methods
     void AlignOrientation(Vector3 dir)
