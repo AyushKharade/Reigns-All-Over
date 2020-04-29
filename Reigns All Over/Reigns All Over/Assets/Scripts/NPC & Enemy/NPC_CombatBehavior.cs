@@ -20,8 +20,6 @@ public class NPC_CombatBehavior : MonoBehaviour
 
     // how close the target must be to attack
     [Header("Distance Parameters")]
-    
-    
     public float attackDistance;
     /// <summary>
     /// how close does the npc need to be before they can request to attack
@@ -38,6 +36,8 @@ public class NPC_CombatBehavior : MonoBehaviour
     public bool attacking;
     // can he attack player
     public bool hasAttackPermission;
+    public float attackFrequency=1f;
+    float ogAttackFrequency;
 
 
     [Header("Weapon References")]
@@ -69,7 +69,7 @@ public class NPC_CombatBehavior : MonoBehaviour
         Holder = transform.parent;
 
         noOfAttacks = attacks.Count;
-
+        ogAttackFrequency = attackFrequency;
     }
 
     void Update()
@@ -195,11 +195,62 @@ public class NPC_CombatBehavior : MonoBehaviour
             else // attack
             {
                 animator.SetFloat("Locomotion", 0f);  // walk
+                AttackingBehavior();
+
             }
         }
         
     }
 
+
+    float attackTimer = 0f;
+    bool canAttack;
+    /// <summary>
+    /// Do different types of attack based on behavior
+    /// </summary>
+    void AttackingBehavior()
+    {
+        string attackType = NAttributesRef.Get_NPC_CombatType();
+        Vector3 targetDirection = (attackTarget.position - transform.position);
+
+        if (attackTimer > attackFrequency)
+        {
+            canAttack = true;
+            attackTimer = 0f;
+        }
+        else
+        {
+            attackTimer += Time.deltaTime;
+        }
+
+
+
+        // diferent behaviors
+        if (attackType == "OneHanded")
+        {
+
+            if (canAttack && Vector3.Angle(transform.forward, targetDirection ) < 15 && canAttack)
+            {
+                animator.SetLayerWeight(2,1);
+                animator.SetBool("Attacking",true);
+                attacking = true;
+            }
+            else if(!attacking)
+                AlignOrientation(targetDirection,2f);
+
+
+        }
+    }
+
+
+    void EndNPCAttack()
+    {
+        animator.SetBool("Attacking",false);
+        attacking = true;
+        attackTimer = 0f;
+        canAttack = false;
+        RandomizeAttackFrequency();
+    }
 
     /// <summary>
     /// pursue target using navmesh
@@ -318,6 +369,25 @@ public class NPC_CombatBehavior : MonoBehaviour
         animator.SetBool("EquipWeapon",false);
     }
 
+    void AttackTarget()
+    {
+        if (attackTarget.tag != "Player")
+        {
+            attackTarget.GetComponent<NPC_Attributes>().DealDamageNPC(10,transform.forward);
+        }
+    }
+
+    void RandomizeAttackFrequency()
+    {
+        float r = Random.Range(-0.3f, 0.3f);
+        attackFrequency += r;
+
+        if (attackFrequency < ogAttackFrequency - 0.75f || attackFrequency > ogAttackFrequency + 0.75f)
+        {
+            //Debug.Log("Attack Frequency was reset.");
+            attackFrequency = ogAttackFrequency;
+        }
+    }
 
     void NavmeshAnimationUpdate()
     {
@@ -335,6 +405,15 @@ public class NPC_CombatBehavior : MonoBehaviour
         //set quaternion to this dir
         lookDirection = Quaternion.LookRotation(dir, Vector3.up);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, 4f);
+    }
+
+    void AlignOrientation(Vector3 dir, float speed )
+    {
+        Quaternion lookDirection;
+
+        //set quaternion to this dir
+        lookDirection = Quaternion.LookRotation(dir, Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, speed);
     }
 
     //void Seek(Vector3 pos,Vector3 direction)

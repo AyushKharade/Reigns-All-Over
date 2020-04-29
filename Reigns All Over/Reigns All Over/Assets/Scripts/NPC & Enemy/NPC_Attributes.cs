@@ -89,6 +89,9 @@ public class NPC_Attributes : MonoBehaviour
         isDead = true;
 
         GetComponent<Animator>().SetBool("isDead", true);
+        GetComponent<Animator>().SetLayerWeight(1,0);
+        GetComponent<Animator>().SetLayerWeight(2,0);
+
         UIParent.gameObject.SetActive(false);
 
         GetComponent<Rigidbody>().isKinematic = true;
