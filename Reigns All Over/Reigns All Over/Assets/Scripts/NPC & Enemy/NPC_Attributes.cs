@@ -15,7 +15,10 @@ public class NPC_Attributes : MonoBehaviour
 
     [Header("Variables")]
     public int health;
+    public bool isDead;
 
+
+    // enums
     public enum NPC_Type { Villager, Guard, Creature, Bandit};
     public NPC_Type npcType = new NPC_Type();
 
@@ -40,23 +43,20 @@ public class NPC_Attributes : MonoBehaviour
 
     private void Update()
     {
-        if (!destinationSet)
-        {
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                destinationSet = true;
-                GoToDestination();
-            }
-        }
-        velocity = navmeshRef.velocity.magnitude;
+       
     }
 
-    void GoToDestination()
+
+
+
+    // getters for enum:
+    public string Get_NPC_Type()
     {
-        navmeshRef.Warp(transform.position);
-        navmeshRef.SetDestination(destination.position);
-        animator.SetFloat("Locomotion", 1f);
-
-        
+        return npcType + "";
     }
+    public string Get_NPC_CombatType()
+    {
+        return combatType + "";
+    }
+    
 }
