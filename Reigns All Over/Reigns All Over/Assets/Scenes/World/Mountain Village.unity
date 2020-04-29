@@ -3670,6 +3670,7 @@ MonoBehaviour:
   playerRelation: 0
   HP: {fileID: 0}
   UIParent: {fileID: 0}
+  CameraRef: {fileID: 0}
 --- !u!195 &474655005
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -9904,6 +9905,7 @@ MonoBehaviour:
   playerRelation: 0
   HP: {fileID: 0}
   UIParent: {fileID: 0}
+  CameraRef: {fileID: 0}
 --- !u!195 &1261025906
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -18631,6 +18633,7 @@ MonoBehaviour:
   playerRelation: 0
   HP: {fileID: 0}
   UIParent: {fileID: 0}
+  CameraRef: {fileID: 0}
 --- !u!195 &4422618934684230219
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -21654,6 +21657,7 @@ MonoBehaviour:
   playerRelation: 3
   HP: {fileID: 1499074014}
   UIParent: {fileID: 1499074013}
+  CameraRef: {fileID: 0}
 --- !u!1 &7925926829720437980
 GameObject:
   m_ObjectHideFlags: 0

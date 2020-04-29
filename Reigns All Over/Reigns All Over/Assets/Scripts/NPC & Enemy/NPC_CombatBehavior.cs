@@ -13,6 +13,9 @@ public class NPC_CombatBehavior : MonoBehaviour
     public float runSpeed;               // run speed maybe less if using root motion.
     public int attackDMG;
     public Transform attackTarget;
+
+    public List<AttackDetails> attacks = new List<AttackDetails>();
+    int noOfAttacks;
     
 
     // how close the target must be to attack
@@ -29,8 +32,7 @@ public class NPC_CombatBehavior : MonoBehaviour
     public GameObject HandWeapon;
     public GameObject SheathWeapon;
 
-    [Header("testing vars")]
-    public float velocityNavmesh;
+    //[Header("testing vars")]
     
     // private
     Animator animator;
@@ -53,11 +55,13 @@ public class NPC_CombatBehavior : MonoBehaviour
         navmeshRef = GetComponent<NavMeshAgent>();
         Holder = transform.parent;
 
+        noOfAttacks = attacks.Count;
+
     }
 
     void Update()
     {
-        if (attackTarget != null)
+        if (attackTarget != null && !NAttributesRef.isDead)
         {
             // check if they are dead already, then move on.
             EngageCombat();
@@ -66,7 +70,6 @@ public class NPC_CombatBehavior : MonoBehaviour
 
 
         // testing stuff
-        velocityNavmesh = navmeshRef.velocity.magnitude;
     }
 
 
@@ -81,7 +84,7 @@ public class NPC_CombatBehavior : MonoBehaviour
         // determine distance.
         float dist = Vector3.Distance(transform.position, attackTarget.position);          // if its really close, you could probably seek it.
 
-        if (dist > 10)
+        if (dist > 12)
         {
             ChaseTargetNavmesh();
         }
@@ -94,7 +97,7 @@ public class NPC_CombatBehavior : MonoBehaviour
                 navmeshRef.ResetPath();
             }
             //Debug.Log("Should attack");
-            CombatBehavior();
+            CombatBehavior(dist);
         }
         else
         {
@@ -106,9 +109,10 @@ public class NPC_CombatBehavior : MonoBehaviour
     /// <summary>
     /// takes care of attacking target depending upon style specified in NAttributes
     /// </summary>
-    void CombatBehavior()
+    void CombatBehavior(float distance)
     {
-
+        // get closer by walking.
+        
     }
 
 
@@ -265,4 +269,13 @@ public class NPC_CombatBehavior : MonoBehaviour
             attackTarget = other.transform;
         }
     }
+}
+
+
+[System.Serializable]
+public struct AttackDetails
+{
+    public float frequency;
+    public int attackDamage;
+    public float blendValue;
 }

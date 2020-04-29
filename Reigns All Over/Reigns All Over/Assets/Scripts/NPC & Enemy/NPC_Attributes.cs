@@ -74,16 +74,25 @@ public class NPC_Attributes : MonoBehaviour
         health -= (int)(dmgToTake);
         if (health <= 0)
         {
-            health = 0;
-            isDead = true;
-
-            GetComponent<Animator>().SetBool("isDead", true);
-            UIParent.gameObject.SetActive(false);
+            KillNPC();
         }
         UpdateHealthUI();
 
 
         return (int)dmgToTake;    
+    }
+
+
+    void KillNPC()
+    {
+        health = 0;
+        isDead = true;
+
+        GetComponent<Animator>().SetBool("isDead", true);
+        UIParent.gameObject.SetActive(false);
+
+        GetComponent<Rigidbody>().isKinematic = true;
+        GetComponent<CapsuleCollider>().enabled = false;
     }
 
     void UpdateHealthUI()
