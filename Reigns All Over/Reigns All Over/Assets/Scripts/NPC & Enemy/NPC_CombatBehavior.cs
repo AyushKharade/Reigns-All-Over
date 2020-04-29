@@ -19,21 +19,34 @@ public class NPC_CombatBehavior : MonoBehaviour
     
 
     // how close the target must be to attack
-    public float distanceToTarget;
+    [Header("Distance Parameters")]
+    
+    
+    public float attackDistance;
+    /// <summary>
+    /// how close does the npc need to be before they can request to attack
+    /// </summary>
+    public float distanceToRequestAttack;
 
-    [Header("States")]
+    [Header("Approach States")]
     public bool equipped;          // whether npc has equipped his weapon
     public bool inCombat;          // whether npc is in direct combat
     public bool targetInSight;     // if target is close enough or direct raycast is possible.
     public bool usingNavmesh;
+
+    [Header("Combat States")]
+    public bool attacking;
+    // can he attack player
+    public bool hasAttackPermission;
 
 
     [Header("Weapon References")]
     public GameObject HandWeapon;
     public GameObject SheathWeapon;
 
-    //[Header("testing vars")]
-    
+    [Header("testing vars")]
+    public float distanceToTarget;
+
     // private
     Animator animator;
     NPC_Attributes NAttributesRef;
@@ -70,6 +83,7 @@ public class NPC_CombatBehavior : MonoBehaviour
 
 
         // testing stuff
+        distanceToTarget = Vector3.Distance(attackTarget.position,transform.position);
     }
 
 
@@ -84,20 +98,22 @@ public class NPC_CombatBehavior : MonoBehaviour
         // determine distance.
         float dist = Vector3.Distance(transform.position, attackTarget.position);          // if its really close, you could probably seek it.
 
-        if (dist > 12)
+        if (dist > 10)
         {
             ChaseTargetNavmesh();
         }
         else if (GetTargetInSight())
         {
-            //seek ?
+            //seek 
             if (usingNavmesh)
             {
                 usingNavmesh = false;
                 navmeshRef.ResetPath();
             }
-            //Debug.Log("Should attack");
             CombatBehavior(dist);
+
+            // testing
+            //animator.SetFloat("Locomotion",0f);
         }
         else
         {
@@ -111,7 +127,76 @@ public class NPC_CombatBehavior : MonoBehaviour
     /// </summary>
     void CombatBehavior(float distance)
     {
-        // get closer by walking.
+        /*
+         * Strategy
+         * Once this method is called, NPCs are close enough with sight with their target.
+         * if target is any npc, just attack regularly
+         * if its a player, its trick, we should make sure that not a lot of enemies attack at once, and that they surround the player.
+         * 
+         * PAttributes has variable 'maxattackers'.
+         * Once NPC has sight of player, they move closer by walking until they reach distance to attack.
+         * 
+         * Once they reach this distance, they will request attack. if they get back true, they can go ahead and attack.
+         * if they get false, means enough enemies are already attacking. in this case do flanking behavior. or simply they can stand and taunt.
+         * 
+         * Cooldown on requesting attack again if you got back false or you finished your attack.
+         * heavy attacks should retract so that npc can recover, for normal atttacks, NPCs may not retract attack permission (free it to someone else)
+         * 
+         */
+
+        Vector3 directionTowardsTarget = (attackTarget.position - transform.position);
+        if (attackTarget.CompareTag("Player"))
+        {
+            // move until request distance.
+            if (distance > distanceToRequestAttack)
+            {
+                animator.SetFloat("Locomotion", 0.5f);  // walk
+                AlignOrientation(directionTowardsTarget);
+                Seek(directionTowardsTarget,walkSpeed);
+            }
+            else if(distance > attackDistance)
+            {
+                //request attack
+                hasAttackPermission = attackTarget.GetComponent<PlayerAttributes>().RequestAttack();
+
+                if (hasAttackPermission)
+                {
+                    // move in closer and attack
+                    animator.SetFloat("Locomotion", 0.5f);  // walk
+                    AlignOrientation(directionTowardsTarget);
+                    Seek(directionTowardsTarget, walkSpeed);
+                }
+                else
+                    animator.SetFloat("Locomotion", 0f);  // stop
+
+
+            }
+
+            // if has perimission and close enough to player, attack
+            if (hasAttackPermission && distance <= attackDistance)
+            {
+
+            }
+        }
+
+
+
+
+        // targets are other npcs.
+        else // npc, dont request attacks
+        {
+            // get close enough and attack.
+            if (distance > attackDistance)
+            {
+                animator.SetFloat("Locomotion", 0.5f);  // walk
+                AlignOrientation(directionTowardsTarget);
+                Seek(directionTowardsTarget, walkSpeed);
+            }
+            else // attack
+            {
+                animator.SetFloat("Locomotion", 0f);  // walk
+            }
+        }
         
     }
 
@@ -148,6 +233,7 @@ public class NPC_CombatBehavior : MonoBehaviour
     /// <summary>
     /// move towards target and attack
     /// </summary>
+    /*
     void EngageTarget()
     {
         if (Vector3.Distance(attackTarget.position, transform.position) > distanceToTarget)
@@ -185,6 +271,7 @@ public class NPC_CombatBehavior : MonoBehaviour
                 animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
         }
     }
+    */
 
 
     /// <summary>
@@ -205,7 +292,7 @@ public class NPC_CombatBehavior : MonoBehaviour
         Debug.DrawRay(castPos,raycastDir,Color.red);
         RaycastHit hit;
         Physics.Raycast(castPos,raycastDir,out hit);
-        if (hit.collider.CompareTag("Player"))
+        if (hit.collider.CompareTag("Player") || hit.collider.gameObject.layer== LayerMask.NameToLayer("NPC"))
             return true;
         return false;
             
@@ -275,7 +362,12 @@ public class NPC_CombatBehavior : MonoBehaviour
 [System.Serializable]
 public struct AttackDetails
 {
+    [Range(0,1)]
     public float frequency;
     public int attackDamage;
     public float blendValue;
+    /// <summary>
+    /// should enemy give up its retract permission after attack? useful if attack is heavy and npc needs to recover
+    /// </summary>
+    public bool retracts;
 }

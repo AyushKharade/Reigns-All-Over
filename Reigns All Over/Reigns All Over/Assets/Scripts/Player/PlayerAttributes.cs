@@ -225,6 +225,30 @@ public class PlayerAttributes : MonoBehaviour
         }
     }
 
+
+    // combat stuff
+    [Header("Enemies attacking")]
+    public int currentAttackingEnemies;
+    public int maxMeleeEnemies;
+
+    public bool RequestAttack()
+    {
+        if (currentAttackingEnemies == maxMeleeEnemies)
+            return false;
+        else
+        {
+            currentAttackingEnemies++;
+            return true;
+        }
+
+    }
+
+    public void RetractAttack()
+    {
+        if(currentAttackingEnemies>0)
+            currentAttackingEnemies--;
+    }
+
 }
 
 

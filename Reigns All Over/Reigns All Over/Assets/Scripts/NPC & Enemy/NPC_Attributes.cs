@@ -64,7 +64,7 @@ public class NPC_Attributes : MonoBehaviour
         // if any buffs that reduce damage.
         float dmgMultiplier = 1f;                // if npc has any debuffs that makes it take more damage.
 
-        if (Vector3.Angle(dir, transform.forward) > 90)
+        if (Vector3.Angle(dir, transform.forward) <30)
             dmgMultiplier = 1.5f;
 
 
