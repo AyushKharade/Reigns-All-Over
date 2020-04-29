@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
+using UnityEngine.UI;
 
 /// <summary>
 /// Stores data & general functions.
@@ -15,7 +15,10 @@ public class NPC_Attributes : MonoBehaviour
 
     [Header("Variables")]
     public int health;
+    int maxHealth;
     public bool isDead;
+
+
 
 
     // enums
@@ -25,27 +28,68 @@ public class NPC_Attributes : MonoBehaviour
     public enum combat_Type { Flee, OneHanded, Shield, TwoHanded,Magic, Creature};
     public combat_Type combatType = new combat_Type();
 
-    [Header("Navmesh Test")]
-    public Transform destination;
-    bool destinationSet;
-    public float velocity;
+    public enum stateTowardsPlayer { Neutral, Ally, Vendor, Hostile};
+    public stateTowardsPlayer playerRelation = new stateTowardsPlayer();
 
 
-    // references
-    private NavMeshAgent navmeshRef;
-    private Animator animator;
+    [Header("NPC_HP_UI")]
+
+    public Image HP;
+    public Transform UIParent;
+    public Transform CameraRef;
 
     private void Start()
     {
-        navmeshRef = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
+        maxHealth = health;
+        CameraRef = Camera.main.transform;
     }
 
     private void Update()
     {
-        //velocity = navmeshRef.velocity.magnitude;
+        // billboard the ui
+        if (!isDead)
+            UIParent.rotation = CameraRef.rotation;
+        
     }
 
+
+    /// <summary>
+    /// deal damage to an npc if applicable. That is wont hurt non-enemies.
+    /// </summary>
+    /// <param name="dmg">How much damage to inflict</param>
+    /// <param name="dir">Your direction. Skill can make attacks from behind do more damage.</param>
+    /// <returns>returns amount of damage dealt. 0 = blocked</returns>
+    public int DealDamageNPC(int dmg, Vector3 dir)
+    {
+        // if any buffs that reduce damage.
+        float dmgMultiplier = 1f;                // if npc has any debuffs that makes it take more damage.
+
+        if (Vector3.Angle(dir, transform.forward) > 90)
+            dmgMultiplier = 1.5f;
+
+
+        //total damage to take
+        float dmgToTake = dmg * dmgMultiplier;
+
+        health -= (int)(dmgToTake);
+        if (health <= 0)
+        {
+            health = 0;
+            isDead = true;
+
+            GetComponent<Animator>().SetBool("isDead", true);
+            UIParent.gameObject.SetActive(false);
+        }
+        UpdateHealthUI();
+
+
+        return (int)dmgToTake;    
+    }
+
+    void UpdateHealthUI()
+    {
+        HP.fillAmount = (float)(health * 1f / maxHealth * 1f);
+    }
 
 
 
@@ -58,5 +102,9 @@ public class NPC_Attributes : MonoBehaviour
     {
         return combatType + "";
     }
-    
+    public string Get_NPC_PlayeRelation()
+    {
+        return playerRelation + "";
+    }
+
 }

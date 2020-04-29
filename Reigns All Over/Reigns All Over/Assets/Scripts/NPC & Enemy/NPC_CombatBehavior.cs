@@ -10,9 +10,10 @@ public class NPC_CombatBehavior : MonoBehaviour
 {
     [Header("Variables")]
     public float walkSpeed;
-    public float runSpeed;
+    public float runSpeed;               // run speed maybe less if using root motion.
     public int attackDMG;
     public Transform attackTarget;
+    
 
     // how close the target must be to attack
     public float distanceToTarget;
@@ -28,15 +29,19 @@ public class NPC_CombatBehavior : MonoBehaviour
     public GameObject HandWeapon;
     public GameObject SheathWeapon;
 
-    [Header("Test")]
-    public bool engageTarget;
-
+    [Header("testing vars")]
+    public float velocityNavmesh;
+    
     // private
     Animator animator;
     NPC_Attributes NAttributesRef;
     NavMeshAgent navmeshRef;
     Transform Holder;
 
+    /// <summary>
+    /// to track NPC's navmesh destination and so to check if this destination is too far from intended destination if so update it
+    /// </summary>
+    Vector3 navmeshTarget;
     
 
     void Start()
@@ -48,53 +53,91 @@ public class NPC_CombatBehavior : MonoBehaviour
         navmeshRef = GetComponent<NavMeshAgent>();
         Holder = transform.parent;
 
-        //mSpeed = navmeshRef.speed;
     }
 
     void Update()
     {
-        if (!NAttributesRef.isDead)
+        if (attackTarget != null)
+        {
+            // check if they are dead already, then move on.
             EngageCombat();
+        }
+
+
+
+        // testing stuff
+        velocityNavmesh = navmeshRef.velocity.magnitude;
     }
 
+
+    /// <summary>
+    /// Inits combat approach towards a new target, this is equip weapon if not already did so & chase after them.
+    /// </summary>
     void EngageCombat()
     {
-        if (engageTarget)
-        {
-            // equip weapon
-            if (!equipped)
-                EquipWeapon();
+        if (!equipped)
+            EquipWeapon();
 
-            //if (Vector3.Distance(transform.position, attackTarget.position) < 10 || GetTargetInSight())
-            if (GetTargetInSight())
-                targetInSight = true;
-            else
-                targetInSight = false;
+        // determine distance.
+        float dist = Vector3.Distance(transform.position, attackTarget.position);          // if its really close, you could probably seek it.
+
+        if (dist > 10)
+        {
+            ChaseTargetNavmesh();
         }
-
-        // if target is in sight, seek and attack, else use navmesh towards player.
-        if (engageTarget)
+        else if (GetTargetInSight())
         {
-            if (targetInSight && Vector3.Distance(transform.position, attackTarget.position) < 10)
+            //seek ?
+            if (usingNavmesh)
+            {
+                usingNavmesh = false;
+                navmeshRef.ResetPath();
+            }
+            //Debug.Log("Should attack");
+            CombatBehavior();
+        }
+        else
+        {
+            ChaseTargetNavmesh();
+        }
+    }
+
+
+    /// <summary>
+    /// takes care of attacking target depending upon style specified in NAttributes
+    /// </summary>
+    void CombatBehavior()
+    {
+
+    }
+
+
+    /// <summary>
+    /// pursue target using navmesh
+    /// </summary>
+    void ChaseTargetNavmesh()
+    {
+        //Use navmesh
+        if (!usingNavmesh)
+        {
+            navmeshTarget = attackTarget.position;
+            navmeshRef.SetDestination(attackTarget.position);
+            usingNavmesh = true;
+        }
+        else
+        {
+            // check if target moved to far away from the navmesh target, if yes, update pathfinding
+            if (Vector3.Distance(navmeshTarget, attackTarget.position) > 5)
             {
                 navmeshRef.ResetPath();
-                usingNavmesh = false;
-                EngageTarget();
-            }
-            else if (!usingNavmesh) // navemesh
-            {
-                if (navmeshRef.hasPath)
-                    navmeshRef.ResetPath();
-
                 navmeshRef.SetDestination(attackTarget.position);
-                usingNavmesh = true;
+                navmeshTarget = attackTarget.position;
+                Debug.Log("Updated chasing location");
             }
-        }
 
-
-        if(usingNavmesh)
             NavmeshAnimationUpdate();
 
+        }
     }
 
 
@@ -188,12 +231,10 @@ public class NPC_CombatBehavior : MonoBehaviour
     void NavmeshAnimationUpdate()
     {
         float animValue = navmeshRef.velocity.magnitude/navmeshRef.speed;
-        //Debug.Log("anim value: "+animValue +"("+ navmeshRef.velocity.magnitude + ","+navmeshRef.speed+")");
         animator.SetFloat("Locomotion",animValue);
 
 
     }
-
 
     // seek and align methods
     void AlignOrientation(Vector3 dir)
@@ -210,5 +251,18 @@ public class NPC_CombatBehavior : MonoBehaviour
     {
         direction.y = 0f;
         Holder.Translate(speed*direction*Time.deltaTime);
+    }
+
+
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        // detect if this trigger is a hostile target, engage it, if theres a condition assigned to not stray away from actual location. Do not stray away.
+        // for now, this is only player
+        if (other.tag == "Player")
+        {
+            attackTarget = other.transform;
+        }
     }
 }
