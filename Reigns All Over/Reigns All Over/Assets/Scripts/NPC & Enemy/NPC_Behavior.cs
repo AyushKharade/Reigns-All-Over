@@ -8,6 +8,8 @@ using UnityEngine;
 /// </summary>
 public class NPC_Behavior : MonoBehaviour
 {
+    
+
     void Start()
     {
         

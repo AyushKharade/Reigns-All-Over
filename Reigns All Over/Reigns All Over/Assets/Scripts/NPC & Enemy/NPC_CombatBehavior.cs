@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
 /// Combat Behavior
@@ -8,8 +9,13 @@ using UnityEngine;
 public class NPC_CombatBehavior : MonoBehaviour
 {
     [Header("Variables")]
+    public float walkSpeed;
+    public float runSpeed;
     public int attackDMG;
     public Transform attackTarget;
+
+    // how close the target must be to attack
+    public float distanceToTarget;
 
     [Header("States")]
     public bool equipped;          // whether npc has equipped his weapon
@@ -27,6 +33,10 @@ public class NPC_CombatBehavior : MonoBehaviour
     // private
     Animator animator;
     NPC_Attributes NAttributesRef;
+    NavMeshAgent navmeshRef;
+    Transform Holder;
+
+    
 
     void Start()
     {
@@ -34,11 +44,15 @@ public class NPC_CombatBehavior : MonoBehaviour
 
         animator = GetComponent<Animator>();
         NAttributesRef = GetComponent<NPC_Attributes>();
+        navmeshRef = GetComponent<NavMeshAgent>();
+        Holder = transform.parent;
+
+        //mSpeed = navmeshRef.speed;
     }
 
     void Update()
     {
-        if(!NAttributesRef.isDead)
+        if (!NAttributesRef.isDead)
             EngageCombat();
     }
 
@@ -48,14 +62,64 @@ public class NPC_CombatBehavior : MonoBehaviour
         {
             // equip weapon
             if (!equipped)
-            {
                 EquipWeapon();
-            }
 
-            if (Vector3.Distance(transform.position, attackTarget.position) < 10 || GetTargetInSight())
+            //if (Vector3.Distance(transform.position, attackTarget.position) < 10 || GetTargetInSight())
+            if (GetTargetInSight())
                 targetInSight = true;
             else
                 targetInSight = false;
+        }
+
+        // if target is in sight, seek and attack, else use navmesh towards player.
+        if (targetInSight )
+        {
+            navmeshRef.isStopped = true;
+            EngageTarget();   
+        }
+        else // navemesh
+        { }
+    }
+
+
+    /// <summary>
+    /// move towards target and attack
+    /// </summary>
+    void EngageTarget()
+    {
+        if (Vector3.Distance(attackTarget.position, transform.position) > distanceToTarget)
+        {
+            //seek
+            float movementFactor = 1f;
+            Vector3 direction = (attackTarget.position - transform.position);
+            if (Vector3.Angle(attackTarget.forward, transform.forward) > 15)
+            {
+                AlignOrientation(direction);
+                movementFactor = 0.4f;
+            }
+            if (Vector3.Distance(attackTarget.position, transform.position) > distanceToTarget + 5)
+            {
+                Seek(direction, runSpeed * movementFactor);
+
+                if (animator.GetFloat("Locomotion") < 1)
+                    animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+            }
+            else
+            {
+                Seek(direction, walkSpeed * movementFactor);
+
+                if (animator.GetFloat("Locomotion") >0.52f)
+                    animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
+
+                if (animator.GetFloat("Locomotion") <0.5f)
+                        animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") + 0.04f);
+            }
+        }
+        else
+        {
+            //attack
+            if (animator.GetFloat("Locomotion") > 0)
+                animator.SetFloat("Locomotion", animator.GetFloat("Locomotion") - 0.04f);
         }
     }
 
@@ -114,8 +178,10 @@ public class NPC_CombatBehavior : MonoBehaviour
         transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, 4f);
     }
 
-    void Seek(Vector3 pos, Vector3 direction)
+    //void Seek(Vector3 pos,Vector3 direction)
+    void Seek(Vector3 direction, float speed)
     {
-        
+        direction.y = 0f;
+        Holder.Translate(speed*direction*Time.deltaTime);
     }
 }

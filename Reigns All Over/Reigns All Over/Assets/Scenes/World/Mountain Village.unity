@@ -5614,7 +5614,7 @@ Transform:
   m_LocalScale: {x: 3.0566, y: 3.0566, z: 3.0566}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &803577598
 GameObject:
@@ -7161,7 +7161,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &984127030
 GameObject:
@@ -9659,6 +9659,37 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.03737071, y: 0.051787727, z: -0.00000029802322}
     m_Extent: {x: 0.92582786, y: 0.21863288, z: 0.8901167}
   m_DirtyAABB: 0
+--- !u!1 &1184919765
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1184919766}
+  m_Layer: 0
+  m_Name: GuardHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1184919766
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1184919765}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 246.38576, y: 3.4588494, z: 77.67973}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 7925926829720738032}
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1202015602
 GameObject:
   m_ObjectHideFlags: 0
@@ -15416,7 +15447,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: -63.826004, z: 0}
 --- !u!1001 &1954361133
 PrefabInstance:
@@ -21488,8 +21519,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bb589c552d3ff647acc5c05d3f6ed96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  walkSpeed: 0.4
+  runSpeed: 0.3
   attackDMG: 5
   attackTarget: {fileID: 1687970379}
+  distanceToTarget: 2
   equipped: 0
   inCombat: 0
   targetInSight: 0
@@ -22772,16 +22806,16 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7925926829720437968}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 246.38576, y: 3.4588494, z: 77.67973}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7925926829720738034}
   - {fileID: 7925926829720738038}
   - {fileID: 7925926829720738036}
   - {fileID: 7925926829720738046}
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_Father: {fileID: 1184919766}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!4 &7925926829720738034
 Transform:
