@@ -6302,6 +6302,19 @@ PrefabInstance:
       propertyPath: maxMeleeEnemies
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 520976211, guid: 749f5920f46552d47940df86fd71dfa5, type: 3}
+      propertyPath: BloodParticle
+      value: 
+      objectReference: {fileID: 6230759068965084250, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+    - target: {fileID: 520976211, guid: 749f5920f46552d47940df86fd71dfa5, type: 3}
+      propertyPath: baseDamage
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 520976211, guid: 749f5920f46552d47940df86fd71dfa5, type: 3}
+      propertyPath: criticalChance
+      value: 16
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 749f5920f46552d47940df86fd71dfa5, type: 3}
 --- !u!1 &767042877
@@ -24151,6 +24164,80 @@ Transform:
   m_Father: {fileID: 4426130816446935539}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &6230759068264844509
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6230759068965084250, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+      propertyPath: m_Name
+      value: Blood_FX
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230759068965084250, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230759068965084247, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 182.29
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230759068965084247, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.72
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230759068965084247, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 105.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230759068965084247, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230759068965084247, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230759068965084247, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230759068965084247, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230759068965084247, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230759068965084247, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230759068965084247, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230759068965084247, guid: 3c17fd170277c174985cc808cbfd58ef,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3c17fd170277c174985cc808cbfd58ef, type: 3}
 --- !u!33 &7925926829717346514
 MeshFilter:
   m_ObjectHideFlags: 0

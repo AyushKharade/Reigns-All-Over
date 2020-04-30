@@ -43,6 +43,7 @@ public class Weapon : MonoBehaviour
     Combat CombatRef;
     public GameObject PlayerRef;
     public GameObject DamagePopUpPrefab;
+    public GameObject BloodParticle;
 
     void Start()
     {
@@ -160,6 +161,13 @@ public class Weapon : MonoBehaviour
                     GB.GetComponent<TextMesh>().text = dealtDMG + "";
                     if (doingCritDMG)
                         GB.GetComponent<TextMesh>().color = Color.red;
+
+                    if (BloodParticle != null)
+                    {
+                        GB = Instantiate(BloodParticle, other.transform.position, Quaternion.identity);
+                        GB.transform.Translate(Vector3.up * 1.3f);
+                        Destroy(GB, 1f);
+                    }
                 }
             }
 
