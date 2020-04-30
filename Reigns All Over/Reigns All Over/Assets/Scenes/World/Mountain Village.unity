@@ -6178,17 +6178,17 @@ PrefabInstance:
     - target: {fileID: 2639881462057730917, guid: 749f5920f46552d47940df86fd71dfa5,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 263.48
+      value: 237.02
       objectReference: {fileID: 0}
     - target: {fileID: 2639881462057730917, guid: 749f5920f46552d47940df86fd71dfa5,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.65
+      value: 3.153
       objectReference: {fileID: 0}
     - target: {fileID: 2639881462057730917, guid: 749f5920f46552d47940df86fd71dfa5,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 61.85
+      value: 71.33
       objectReference: {fileID: 0}
     - target: {fileID: 2639881462057730917, guid: 749f5920f46552d47940df86fd71dfa5,
         type: 3}
@@ -10792,6 +10792,12 @@ Transform:
   m_Father: {fileID: 1640411937}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1160057461 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2639881460652904268, guid: 749f5920f46552d47940df86fd71dfa5,
+    type: 3}
+  m_PrefabInstance: {fileID: 764511264}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1170398086
 GameObject:
   m_ObjectHideFlags: 0
@@ -11345,20 +11351,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bb589c552d3ff647acc5c05d3f6ed96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 0.4
+  walkSpeed: 0.25
   runSpeed: 0.3
   attackDMG: 5
-  attackTarget: {fileID: 7925926829720738032}
+  attackTarget: {fileID: 1160057461}
   attacks:
-  - frequency: 0.688
+  - frequency: 0.305
     attackDamage: 16
     blendValue: 0
     retracts: 0
-  - frequency: 1
+  - frequency: 0.806
     attackDamage: 22
+    blendValue: 0.5
+    retracts: 0
+  - frequency: 1
+    attackDamage: 27
     blendValue: 1
     retracts: 0
-  attackDistance: 1.6
+  attackDistance: 1.9
   distanceToRequestAttack: 3
   equipped: 0
   inCombat: 0
@@ -11366,7 +11376,7 @@ MonoBehaviour:
   usingNavmesh: 0
   attacking: 0
   hasAttackPermission: 0
-  attackFrequency: 0.7
+  attackFrequency: 0.85
   HandWeapon: {fileID: 749012461}
   SheathWeapon: {fileID: 496557519}
   distanceToTarget: 0
@@ -24967,20 +24977,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bb589c552d3ff647acc5c05d3f6ed96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 0.4
+  walkSpeed: 0.25
   runSpeed: 0.3
   attackDMG: 5
-  attackTarget: {fileID: 1215926220}
+  attackTarget: {fileID: 1160057461}
   attacks:
-  - frequency: 0.614
+  - frequency: 0.325
     attackDamage: 15
     blendValue: 0
     retracts: 0
-  - frequency: 1
+  - frequency: 0.77
     attackDamage: 20
+    blendValue: 0.5
+    retracts: 0
+  - frequency: 1
+    attackDamage: 26
     blendValue: 1
     retracts: 0
-  attackDistance: 1.6
+  attackDistance: 1.9
   distanceToRequestAttack: 3
   equipped: 0
   inCombat: 0
@@ -24988,7 +25002,7 @@ MonoBehaviour:
   usingNavmesh: 0
   attacking: 0
   hasAttackPermission: 0
-  attackFrequency: 0.6
+  attackFrequency: 0.85
   HandWeapon: {fileID: 593543113}
   SheathWeapon: {fileID: 1526621848}
   distanceToTarget: 0

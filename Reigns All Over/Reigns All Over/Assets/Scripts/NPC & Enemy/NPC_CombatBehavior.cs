@@ -81,6 +81,8 @@ public class NPC_CombatBehavior : MonoBehaviour
         }
 
 
+        if (!attacking && animator.GetLayerWeight(2) > 0)
+            animator.SetLayerWeight(2, animator.GetLayerWeight(2) - 0.02f);
 
         // testing stuff
         distanceToTarget = Vector3.Distance(attackTarget.position,transform.position);
@@ -112,8 +114,6 @@ public class NPC_CombatBehavior : MonoBehaviour
             }
             CombatBehavior(dist);
 
-            // testing
-            //animator.SetFloat("Locomotion",0f);
         }
         else
         {
@@ -147,15 +147,17 @@ public class NPC_CombatBehavior : MonoBehaviour
         Vector3 directionTowardsTarget = (attackTarget.position - transform.position);
         if (attackTarget.CompareTag("Player"))
         {
+            /*
             // move until request distance.
             if (distance > distanceToRequestAttack)
             {
                 animator.SetFloat("Locomotion", 0.5f);  // walk
                 AlignOrientation(directionTowardsTarget);
-                Seek(directionTowardsTarget,walkSpeed);
+                Seek(directionTowardsTarget, walkSpeed);
             }
-            else if(distance > attackDistance)
+            else if (distance > attackDistance)
             {
+
                 //request attack
                 hasAttackPermission = attackTarget.GetComponent<PlayerAttributes>().RequestAttack();
 
@@ -177,14 +179,9 @@ public class NPC_CombatBehavior : MonoBehaviour
             {
 
             }
-        }
-
-
-
-
-        // targets are other npcs.
-        else // npc, dont request attacks
-        {
+            */
+            //--------------------------------------------------------------------
+            // npc vs npc code just to see
             // get close enough and attack.
             if (distance > attackDistance)
             {
@@ -199,12 +196,41 @@ public class NPC_CombatBehavior : MonoBehaviour
 
             }
         }
-        
+
+
+
+
+        // targets are other npcs.
+        else if (!attackTarget.GetComponent<NPC_Attributes>().isDead)// npc, dont request attacks
+        {
+            // get close enough and attack.
+            if (distance > attackDistance && !attacking)
+            {
+                animator.SetFloat("Locomotion", 0.5f);  // walk
+                AlignOrientation(directionTowardsTarget);
+                Seek(directionTowardsTarget, walkSpeed);
+            }
+            else if(!attacking)// attack
+            {
+                animator.SetFloat("Locomotion", 0f);  // walk
+                AttackingBehavior();
+
+            }
+        }
+
+        else
+        {
+            Debug.Log("Target is dead");
+            attackTarget = null;
+            canAttack = false;
+            attackTimer = 0f;
+        }
     }
 
 
     float attackTimer = 0f;
     bool canAttack;
+    int selectedAttackDMG;
     /// <summary>
     /// Do different types of attack based on behavior
     /// </summary>
@@ -229,8 +255,26 @@ public class NPC_CombatBehavior : MonoBehaviour
         if (attackType == "OneHanded")
         {
 
-            if (canAttack && Vector3.Angle(transform.forward, targetDirection ) < 15 && canAttack)
+            if (Vector3.Angle(transform.forward, targetDirection ) < 15 && canAttack && !attacking)
             {
+
+                // roll and choose which attack out of many given, randomize attack speed (anim speed)
+
+                float r = Random.Range(0f, 1f);
+                int whichAttack = 0;
+                for (int i = 0; i < attacks.Count; i++)
+                {
+                    whichAttack = i;
+                    if (r <= attacks[i].frequency)
+                        break;
+                }
+
+
+                // got which attack is about to happen.
+                animator.SetFloat("AttackAnim",attacks[whichAttack].blendValue);
+                selectedAttackDMG = attacks[whichAttack].attackDamage;
+
+
                 animator.SetLayerWeight(2,1);
                 animator.SetBool("Attacking",true);
                 attacking = true;
@@ -242,14 +286,28 @@ public class NPC_CombatBehavior : MonoBehaviour
         }
     }
 
-
-    void EndNPCAttack()
+    void AttackTarget()
     {
+        if (attackTarget.tag != "Player")
+        {
+            if (Vector3.Angle(transform.forward, (attackTarget.position - transform.position)) < 30)
+                attackTarget.GetComponent<NPC_Attributes>().DealDamageNPC(selectedAttackDMG, transform.forward);
+        }
+        else
+        {
+            if (Vector3.Angle(transform.forward, (attackTarget.position - transform.position)) < 20 && Vector3.Distance(transform.position,attackTarget.position)<attackDistance)
+                attackTarget.GetComponent<PlayerAttributes>().DealDamage(selectedAttackDMG);
+        }
+    }
+
+    
+    public void EndNPCAttack()
+    {
+        RandomizeAttackFrequency();
         animator.SetBool("Attacking",false);
-        attacking = true;
+        attacking = false;
         attackTimer = 0f;
         canAttack = false;
-        RandomizeAttackFrequency();
     }
 
     /// <summary>
@@ -343,8 +401,10 @@ public class NPC_CombatBehavior : MonoBehaviour
         Debug.DrawRay(castPos,raycastDir,Color.red);
         RaycastHit hit;
         Physics.Raycast(castPos,raycastDir,out hit);
-        if (hit.collider.CompareTag("Player") || hit.collider.gameObject.layer== LayerMask.NameToLayer("NPC"))
+
+        if (hit.collider.CompareTag("Player") || hit.collider.gameObject.layer == LayerMask.NameToLayer("NPC"))
             return true;
+       
         return false;
             
     }
@@ -369,13 +429,7 @@ public class NPC_CombatBehavior : MonoBehaviour
         animator.SetBool("EquipWeapon",false);
     }
 
-    void AttackTarget()
-    {
-        if (attackTarget.tag != "Player")
-        {
-            attackTarget.GetComponent<NPC_Attributes>().DealDamageNPC(10,transform.forward);
-        }
-    }
+   
 
     void RandomizeAttackFrequency()
     {

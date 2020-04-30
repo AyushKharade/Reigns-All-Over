@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 81bc9807aacb85c44824978353c7dd9c
+guid: 878aeeccff7f9294f8eb82eaaf350403
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: OneHanded_attack2
+    second: OneHandedCombo1
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,13 +35,13 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: OneHanded_attack2
+      name: OneHandedCombo1
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 68
+      lastFrame: 136
       wrapMode: 0
-      orientationOffsetY: -58.51
+      orientationOffsetY: -53.8
       level: 0
       cycleOffset: 0
       loop: 0
@@ -59,15 +59,29 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.35000002
+      - time: 0.23571429
         functionName: AttackTarget
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.78620523
+      - time: 0.45238096
+        functionName: AttackTarget
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.90238094
         functionName: EndNPCAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.6642857
+        functionName: AttackTarget
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
