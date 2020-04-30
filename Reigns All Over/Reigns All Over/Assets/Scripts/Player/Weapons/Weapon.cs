@@ -43,6 +43,7 @@ public class Weapon : MonoBehaviour
     Combat CombatRef;
     public GameObject PlayerRef;
     public GameObject DamagePopUpPrefab;
+    public GameObject BloodParticle;
 
     void Start()
     {
@@ -112,6 +113,7 @@ public class Weapon : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
+        /*
         if (other.tag == "Enemy" && doDMG && CombatRef.attacking)
         {
             if (!other.GetComponent<TestEnemyDummy>().isDead)
@@ -129,6 +131,46 @@ public class Weapon : MonoBehaviour
                     GB.GetComponent<TextMesh>().color = Color.red;
 
             }
+        }
+        */
+
+        if (LayerMask.LayerToName(other.gameObject.layer) == "NPC")
+        {
+            // various cases such as creature or hostile npc, etc. Do not hurt civilians (in future dont let the player swing)
+            NPC_Attributes nAttributes = other.GetComponent<NPC_Attributes>();
+
+            bool shouldAttack;
+            if (nAttributes.Get_NPC_Type() == "Creature" || nAttributes.Get_NPC_Type() == "Bandit")
+                shouldAttack = true;
+
+            else if (nAttributes.Get_NPC_PlayeRelation() == "Hostile")
+                shouldAttack = true;
+
+            // attack the target.
+            if (!nAttributes.isDead && doDMG && CombatRef.attacking)
+            {
+                int dmg = (int)(DealHowMuchDMG());
+                float dealtDMG=nAttributes.DealDamageNPC(dmg,PlayerRef.transform.forward);
+                doDMG = false;
+
+                //instantiate popup.
+                if (dealtDMG > 0)
+                {
+                    GameObject GB = Instantiate(DamagePopUpPrefab, other.transform.position, Quaternion.identity);
+                    GB.transform.Translate(Vector3.up * 1.75f);
+                    GB.GetComponent<TextMesh>().text = dealtDMG + "";
+                    if (doingCritDMG)
+                        GB.GetComponent<TextMesh>().color = Color.red;
+
+                    if (BloodParticle != null)
+                    {
+                        GB = Instantiate(BloodParticle, other.transform.position, Quaternion.identity);
+                        GB.transform.Translate(Vector3.up * 1.3f);
+                        Destroy(GB, 1f);
+                    }
+                }
+            }
+
         }
     }
 
