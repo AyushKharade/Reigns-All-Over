@@ -165,9 +165,9 @@ public class Combat : MonoBehaviour
         // Spell Controls
         if (ready && !isBlocking && !MovementRef.isDead && !MovementRef.isDodging)
         {
-            if (!isCastingSpell && Input.GetMouseButtonDown(2) && PAttributesRef.HasEnoughMana(EquippedSpell.GetComponent<DummyForceSpell>().cost))
+            if (!isCastingSpell && Input.GetMouseButtonDown(2) && PAttributesRef.HasEnoughMana(EquippedSpell.GetComponent<Spell>().cost))
             {
-                PAttributesRef.ConsumeMana(EquippedSpell.GetComponent<DummyForceSpell>().cost);
+                PAttributesRef.ConsumeMana(EquippedSpell.GetComponent<Spell>().cost);
 
                 if (attacking)
                     InteruptAttack();
@@ -375,6 +375,7 @@ public class Combat : MonoBehaviour
     public void CastSpell()
     {
         GameObject spell = Instantiate(EquippedSpell,CastHandRef.position,Quaternion.identity);
+        spell.GetComponent<Spell>().Target = this.gameObject;
         //spell.transform.LookAt(transform.forward);
     }
 

@@ -70,6 +70,8 @@ public class NPC_CombatBehavior : MonoBehaviour
 
         noOfAttacks = attacks.Count;
         ogAttackFrequency = attackFrequency;
+
+        HandWeapon.SetActive(false);
     }
 
     void Update()
@@ -417,6 +419,8 @@ public class NPC_CombatBehavior : MonoBehaviour
         animator.SetLayerWeight(1, 1);
         animator.SetBool("EquipWeapon", true);
         animator.SetBool("InCombat",true);
+
+        SheathWeapon.SetActive(false);
 
     }
 

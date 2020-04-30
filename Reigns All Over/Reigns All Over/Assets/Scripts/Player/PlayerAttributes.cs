@@ -176,6 +176,9 @@ public class PlayerAttributes : MonoBehaviour
       
     }
     
+
+
+
     void KillPlayer()
     {
         MovementRef.isDead = true;
@@ -183,6 +186,17 @@ public class PlayerAttributes : MonoBehaviour
         animator.SetLayerWeight(1, 0);    // Turn off combat layer since death is on first
 
     }
+
+
+
+
+    public void HealPlayer(float HP)
+    {
+        health += HP;
+        if (health > maxHealth)
+            health = maxHealth;
+    }
+
 
     /// <summary>
     /// Consume stamina from actions, called from other scripts that do actions.
@@ -201,11 +215,21 @@ public class PlayerAttributes : MonoBehaviour
     {
         mana -= cost;
         onManaRegenDelay = true;
-        manaSlots[curManaSlotIndex-1] = 0f;      // so ui update reflects on this
+
+        for (int i = curManaSlotIndex-1; i >= mana; i--)
+        {
+            manaSlots[i] = 0f;      // so ui update reflects on this
+
+        }
+
+        //manaSlots[curManaSlotIndex-1] = 0f;      // so ui update reflects on this
+
+
         // also remove all charges from the next slot, this will be an upgrade so partial charges on a stone remain.
-        if(mana!=manaCapacity-1)
+        if (mana!=manaCapacity-1)
             manaSlots[curManaSlotIndex] = 0f;      // so ui update reflects on this
-        curManaSlotIndex--;
+
+        curManaSlotIndex=mana;
     }
 
     public bool HasEnoughMana(int val)
