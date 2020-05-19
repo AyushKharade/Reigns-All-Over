@@ -16094,7 +16094,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1978581836
 Transform:
   m_ObjectHideFlags: 0
@@ -20343,7 +20343,7 @@ MonoBehaviour:
   walkSpeed: 0.25
   runSpeed: 0.3
   attackDMG: 5
-  attackTarget: {fileID: 989008364}
+  attackTarget: {fileID: 8327561682822847431}
   attacks:
   - frequency: 0.325
     attackDamage: 15
@@ -22222,7 +22222,7 @@ Animator:
   m_GameObject: {fileID: 8327561682822416361}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: b53c8dcaba88c204a898b17ea1b57305, type: 3}
-  m_Controller: {fileID: 9100000, guid: 5e24976b7305ab04e88c70c5998c2945, type: 2}
+  m_Controller: {fileID: 9100000, guid: 9b02c2cd36d1927488c15fba49a3d870, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -23343,13 +23343,13 @@ MonoBehaviour:
   walkSpeed: 0.25
   runSpeed: 0.3
   attackDMG: 5
-  attackTarget: {fileID: 989008364}
+  attackTarget: {fileID: 7925926829720738032}
   attacks:
   - frequency: 0.325
     attackDamage: 15
     blendValue: 0
     retracts: 0
-  - frequency: 0.77
+  - frequency: 0.732
     attackDamage: 20
     blendValue: 0.5
     retracts: 0
@@ -23357,7 +23357,7 @@ MonoBehaviour:
     attackDamage: 26
     blendValue: 1
     retracts: 0
-  attackDistance: 2.3
+  attackDistance: 2.2
   distanceToRequestAttack: 3
   equipped: 0
   inCombat: 0
@@ -23855,7 +23855,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8327561682822416337}
-  m_LocalRotation: {x: -0.0004999876, y: -0.029900404, z: 0.999413, w: -0.01671196}
+  m_LocalRotation: {x: -0.0004999876, y: -0.029900406, z: 0.999413, w: -0.016711961}
   m_LocalPosition: {x: 0.08778681, y: -0.054744568, z: 0.0017710506}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
