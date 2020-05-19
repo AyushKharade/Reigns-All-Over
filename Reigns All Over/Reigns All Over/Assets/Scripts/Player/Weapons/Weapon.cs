@@ -45,9 +45,17 @@ public class Weapon : MonoBehaviour
     public GameObject DamagePopUpPrefab;
     public GameObject BloodParticle;
 
+    [Header("Weapon Sounds")]
+    AudioSource AudioSource;
+    public List<AudioClip> audioList = new List<AudioClip>();
+
+
+    //################################################################ start
+
     void Start()
     {
         CombatRef = PlayerRef.GetComponent<Combat>();
+        AudioSource = GetComponent<AudioSource>();
     }
 
     bool RollCritical()
@@ -132,7 +140,7 @@ public class Weapon : MonoBehaviour
 
             }
         }
-        */
+        //*/
 
         if (LayerMask.LayerToName(other.gameObject.layer) == "NPC")
         {
@@ -168,10 +176,24 @@ public class Weapon : MonoBehaviour
                         GB.transform.Translate(Vector3.up * 1.3f);
                         Destroy(GB, 1f);
                     }
+
+                    PlayStabSound();
                 }
             }
 
         }
+    }
+    
+    
+
+    void PlayStabSound()
+    {
+        int r = Random.Range(0, audioList.Count);
+
+
+        AudioSource.clip = audioList[r];
+        AudioSource.Play();
+
     }
 
 }
