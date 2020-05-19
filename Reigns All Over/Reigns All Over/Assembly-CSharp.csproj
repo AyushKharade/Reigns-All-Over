@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\NPC &amp; Enemy\NPC_Attributes.cs" />
     <Compile Include="Assets\Scripts\NPC &amp; Enemy\NPC_Behavior.cs" />
     <Compile Include="Assets\Scripts\NPC &amp; Enemy\NPC_CombatBehavior.cs" />
+    <Compile Include="Assets\Scripts\NPC &amp; Enemy\Vision.cs" />
     <Compile Include="Assets\Scripts\Player\Combat.cs" />
     <Compile Include="Assets\Scripts\Player\Interaction.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerAttributes.cs" />
@@ -75,11 +76,6 @@
     <Compile Include="Assets\Scripts\Player\Weapons\Weapon.cs" />
     <Compile Include="Assets\Scripts\Spells\Spell.cs" />
     <Compile Include="Assets\Scripts\Test Combat\DMGPopUp.cs" />
-    <Compile Include="Assets\Scripts\Test Combat\DummyForceSpell.cs" />
-    <Compile Include="Assets\Scripts\Test Combat\NPC_Combat.cs" />
-    <Compile Include="Assets\Scripts\Test Combat\NPC_Events.cs" />
-    <Compile Include="Assets\Scripts\Test Combat\NPCBehavior.cs" />
-    <Compile Include="Assets\Scripts\Test Combat\TestEnemyDummy.cs" />
     <None Include="Assets\Models\World\Medieval village\Documentation\Readme.txt" />
     <None Include="Assets\Models\Terrain\Terrain Tools\Terrain Assets\ThirdPartyNotices.txt" />
     <None Include="Assets\Models\Characters\Enemies\cave_troll\shaders\Standard Two Sided Soft Blend.shader" />

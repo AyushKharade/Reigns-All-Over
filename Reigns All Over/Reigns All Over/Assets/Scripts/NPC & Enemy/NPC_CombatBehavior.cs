@@ -8,11 +8,14 @@ using UnityEngine.AI;
 /// </summary>
 public class NPC_CombatBehavior : MonoBehaviour
 {
+    #region Variables
     [Header("Variables")]
     public float walkSpeed;
     public float runSpeed;               // run speed maybe less if using root motion.
     public int attackDMG;
     public Transform attackTarget;
+
+    
 
     public List<AttackDetails> attacks = new List<AttackDetails>();
     int noOfAttacks;
@@ -57,7 +60,8 @@ public class NPC_CombatBehavior : MonoBehaviour
     /// to track NPC's navmesh destination and so to check if this destination is too far from intended destination if so update it
     /// </summary>
     Vector3 navmeshTarget;
-    
+
+    #endregion
 
     void Start()
     {
@@ -78,8 +82,23 @@ public class NPC_CombatBehavior : MonoBehaviour
     {
         if (attackTarget != null && !NAttributesRef.isDead)
         {
-            // check if they are dead already, then move on.
-            EngageCombat();
+            // check if current target died in this frame
+            if (attackTarget.CompareTag("Player"))
+            {
+                if (attackTarget.GetComponent<PlayerMovement>().isDead)
+                    ExitCombat();
+            }
+            else // its an npc
+            {
+                if (attackTarget.GetComponent<NPC_Attributes>().isDead)
+                    ExitCombat();
+            }
+
+            if (attackTarget != null)
+            {
+                EngageCombat();
+                inCombat = true;
+            }
         }
 
 
@@ -87,7 +106,20 @@ public class NPC_CombatBehavior : MonoBehaviour
             animator.SetLayerWeight(2, animator.GetLayerWeight(2) - 0.02f);
 
         // testing stuff
-        distanceToTarget = Vector3.Distance(attackTarget.position,transform.position);
+        //distanceToTarget = Vector3.Distance(attackTarget.position,transform.position);
+    }
+
+    // unequip and cancel variables.
+    void ExitCombat()
+    {
+        attackTarget = null;
+        inCombat = false;
+        attacking = false;
+        animator.SetBool("InCombat", false);
+        animator.SetBool("Attacking", false);
+        animator.SetTrigger("SheathWeapon");
+
+        animator.SetLayerWeight(2, 0);
     }
 
 
@@ -114,7 +146,8 @@ public class NPC_CombatBehavior : MonoBehaviour
                 usingNavmesh = false;
                 navmeshRef.ResetPath();
             }
-            CombatBehavior(dist);
+            if(equipped)
+                CombatBehavior(dist);
 
         }
         else
@@ -302,7 +335,9 @@ public class NPC_CombatBehavior : MonoBehaviour
         }
     }
 
-    
+    /// <summary>
+    /// Anim event
+    /// </summary>
     public void EndNPCAttack()
     {
         RandomizeAttackFrequency();
@@ -332,7 +367,7 @@ public class NPC_CombatBehavior : MonoBehaviour
                 navmeshRef.ResetPath();
                 navmeshRef.SetDestination(attackTarget.position);
                 navmeshTarget = attackTarget.position;
-                Debug.Log("Updated chasing location");
+                //Debug.Log("Updated chasing location");
             }
 
             NavmeshAnimationUpdate();
@@ -414,23 +449,46 @@ public class NPC_CombatBehavior : MonoBehaviour
 
     void EquipWeapon()
     {
-        equipped = true;
 
         animator.SetLayerWeight(1, 1);
-        animator.SetBool("EquipWeapon", true);
+        //animator.SetBool("EquipWeapon", true);
+        animator.SetTrigger("EquipWeapon");
+
         animator.SetBool("InCombat",true);
 
-        SheathWeapon.SetActive(false);
+
+    }
+
+    void UnEquipWeapon()
+    {
+        // once combat ends.
+        equipped = false;
+
+        animator.SetLayerWeight(1, 0);
+        //animator.SetBool("SheathWeapon", true);
+        animator.SetTrigger("EquipWeapon");
+
+        animator.SetBool("InCombat", false);
 
     }
 
 
     // animation event
-    void EnterCombat()
+    void EnterNPCCombat()
     {
+        equipped = true;
+
         HandWeapon.SetActive(true);
+        SheathWeapon.SetActive(false);
+        //animator.SetBool("EquipWeapon",false);
+    }
+
+    void ExitNPCCombat()
+    {
+        HandWeapon.SetActive(false);
         SheathWeapon.SetActive(true);
-        animator.SetBool("EquipWeapon",false);
+        equipped = false;
+        //animator.SetBool("SheathWeapon",false);
     }
 
    
@@ -483,7 +541,7 @@ public class NPC_CombatBehavior : MonoBehaviour
 
 
 
-
+    /*
     private void OnTriggerEnter(Collider other)
     {
         // detect if this trigger is a hostile target, engage it, if theres a condition assigned to not stray away from actual location. Do not stray away.
@@ -493,6 +551,7 @@ public class NPC_CombatBehavior : MonoBehaviour
             attackTarget = other.transform;
         }
     }
+    */
 }
 
 
