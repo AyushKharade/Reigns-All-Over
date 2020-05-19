@@ -298,7 +298,7 @@ public class NPC_CombatBehavior : MonoBehaviour
         else
         {
             if (Vector3.Angle(transform.forward, (attackTarget.position - transform.position)) < 20 && Vector3.Distance(transform.position,attackTarget.position)<attackDistance)
-                attackTarget.GetComponent<PlayerAttributes>().DealDamage(selectedAttackDMG);
+                attackTarget.GetComponent<PlayerAttributes>().DealDamage(selectedAttackDMG,transform.forward);
         }
     }
 

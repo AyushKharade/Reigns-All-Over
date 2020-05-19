@@ -31,7 +31,7 @@ public class NPC_Events : MonoBehaviour
         if (GetComponent<NPC_Combat>().distance < GetComponent<NPC_Combat>().distanceToAttack)
         {
             if(Vector3.Angle(transform.forward,(GetComponent<NPC_Combat>().Target.position-transform.position))<15)
-                GetComponent<NPC_Combat>().Target.GetComponent<PlayerAttributes>().DealDamage(GetComponent<NPC_Combat>().damage);
+                GetComponent<NPC_Combat>().Target.GetComponent<PlayerAttributes>().DealDamage(GetComponent<NPC_Combat>().damage,transform.forward);
         }
     }
 }

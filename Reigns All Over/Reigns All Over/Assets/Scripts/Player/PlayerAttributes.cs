@@ -40,6 +40,16 @@ public class PlayerAttributes : MonoBehaviour
     [HideInInspector] public bool invincible;
     [HideInInspector] public bool dodgeInvincible;
 
+    /// <summary>
+    /// if you get hit from behind while blocking, you wont be able to block for the next 'x' seconds.
+    /// </summary>
+    float blockRecoveryTimer=0f;
+
+    /// <summary>
+    /// is set true, if you get hit from behind while blocking, you canot block for the next 'x' seconds.
+    /// </summary>
+    [HideInInspector] public bool blockRecovery;
+
 
     [Header("Character Development")]
     public CharacterDev character=new CharacterDev();
@@ -72,6 +82,17 @@ public class PlayerAttributes : MonoBehaviour
         {
             RegenStamina();
             RegenerateMana();
+        }
+
+        // cooldown on blockrecovery
+        if (blockRecovery)
+        {
+            blockRecoveryTimer += Time.deltaTime;
+            if (blockRecoveryTimer > 1f)
+            {
+                blockRecovery = false;
+                blockRecoveryTimer = 0f;
+            }
         }
     }
 
@@ -138,16 +159,20 @@ public class PlayerAttributes : MonoBehaviour
     /// General Damage from Environment, make a new function for enemies that includes a direction of attack,
     /// </summary>
     /// <param name="dmg"> How much damage to deal.</param>
-    public void DealDamage(float dmg)
+    public void DealDamage(float dmg, Vector3 dir)
     {
         if (!MovementRef.isDead && !invincible && !dodgeInvincible)
         {
-            if (CombatRef.isBlocking)
+            // see if block was front front, else take full damage [Skill allows block from all directions]
+
+
+
+            if (CombatRef.isBlocking && Vector3.Angle(dir, transform.forward) > 50)
             {
                 health -= (dmg - dmg * blockDMG_Absorb);          // make sure to take into consideration blocktime from Combat
 
 
-                Debug.Log("Blocked Damage: "+dmg +" >> "+ (dmg - dmg * blockDMG_Absorb));
+                Debug.Log("Blocked Damage: " + dmg + " >> " + (dmg - dmg * blockDMG_Absorb));
                 if (!animator.GetBool("BlockingImpact"))
                     animator.SetBool("BlockingImpact", true);
                 else
@@ -158,7 +183,11 @@ public class PlayerAttributes : MonoBehaviour
             {
                 health -= dmg;
                 animator.SetBool("Hurting", true);
-            }
+
+                if (CombatRef.isBlocking)
+                    CancelPlayerBlock();   
+            } 
+
             if (!CombatRef.inCombat)
                 animator.SetLayerWeight(1, 1);
 
@@ -175,8 +204,15 @@ public class PlayerAttributes : MonoBehaviour
         }
       
     }
-    
 
+    /// <summary>
+    /// sets block recovery bool to true, player cannot block for the next 'x' seconds. should be small enough.
+    /// </summary>
+    public void CancelPlayerBlock()
+    {
+        blockRecovery = true;
+        blockRecoveryTimer = 0f;
+    }
 
 
     void KillPlayer()
