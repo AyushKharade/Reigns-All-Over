@@ -80,17 +80,18 @@ public class NPC_CombatBehavior : MonoBehaviour
 
     void Update()
     {
-        if (attackTarget != null && !NAttributesRef.isDead)
+        if (!attackTarget.Equals(null)  && !NAttributesRef.isDead)
         {
+            Debug.Log("no target still going?"+attackTarget.name);
             // check if current target died in this frame
             if (attackTarget.CompareTag("Player"))
             {
-                if (attackTarget.GetComponent<PlayerMovement>().isDead)
+                if (attackTarget.GetComponent<PlayerMovement>().isDead && inCombat)
                     ExitCombat();
             }
             else // its an npc
             {
-                if (attackTarget.GetComponent<NPC_Attributes>().isDead)
+                if (attackTarget.GetComponent<NPC_Attributes>().isDead && inCombat)
                     ExitCombat();
             }
 
@@ -120,6 +121,7 @@ public class NPC_CombatBehavior : MonoBehaviour
         animator.SetTrigger("SheathWeapon");
 
         animator.SetLayerWeight(2, 0);
+        Debug.Log("Called Exit combat");
     }
 
 
@@ -466,7 +468,7 @@ public class NPC_CombatBehavior : MonoBehaviour
 
         animator.SetLayerWeight(1, 0);
         //animator.SetBool("SheathWeapon", true);
-        animator.SetTrigger("EquipWeapon");
+        animator.SetTrigger("SheathWeapon");
 
         animator.SetBool("InCombat", false);
 

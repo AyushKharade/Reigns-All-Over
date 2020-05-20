@@ -121,41 +121,30 @@ public class Weapon : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        /*
-        if (other.tag == "Enemy" && doDMG && CombatRef.attacking)
-        {
-            if (!other.GetComponent<TestEnemyDummy>().isDead)
-            {
-                // calculate damage
-                int dmg = (int)(DealHowMuchDMG());
-                other.GetComponent<TestEnemyDummy>().DealDamage(dmg);
-                doDMG = false;
+      
 
-                // instantiate popup.
-                GameObject GB = Instantiate(DamagePopUpPrefab, other.transform.position, Quaternion.identity);
-                GB.transform.Translate(Vector3.up * 1.75f);
-                GB.GetComponent<TextMesh>().text = dmg + "";
-                if (doingCritDMG)
-                    GB.GetComponent<TextMesh>().color = Color.red;
-
-            }
-        }
-        //*/
-
-        if (LayerMask.LayerToName(other.gameObject.layer) == "NPC")
+        if (LayerMask.LayerToName(other.gameObject.layer) == "NPC" && doDMG)
         {
             // various cases such as creature or hostile npc, etc. Do not hurt civilians (in future dont let the player swing)
             NPC_Attributes nAttributes = other.GetComponent<NPC_Attributes>();
 
-            bool shouldAttack;
+            bool shouldAttack=false;
             if (nAttributes.Get_NPC_Type() == "Creature" || nAttributes.Get_NPC_Type() == "Bandit")
                 shouldAttack = true;
+            else if (nAttributes.Get_NPC_Type() == "Guard")
+            {
+                if (nAttributes.Get_NPC_PlayerRelation() != "Hostile")
+                    nAttributes.Set_NPC_PlayerRelation("Hostile");
 
-            else if (nAttributes.Get_NPC_PlayeRelation() == "Hostile")
                 shouldAttack = true;
+            }
+            //
+            //else if (nAttributes.Get_NPC_PlayerRelation() == "Hostile")
+            //    shouldAttack = true;
+            //
 
             // attack the target.
-            if (!nAttributes.isDead && doDMG && CombatRef.attacking)
+            if (!nAttributes.isDead && doDMG && CombatRef.attacking && shouldAttack)
             {
                 int dmg = (int)(DealHowMuchDMG());
                 float dealtDMG=nAttributes.DealDamageNPC(dmg,PlayerRef.transform.forward);

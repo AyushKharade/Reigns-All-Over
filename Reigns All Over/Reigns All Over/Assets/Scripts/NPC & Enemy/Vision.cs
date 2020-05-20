@@ -16,6 +16,7 @@ public class Vision : MonoBehaviour
 
     //references
     NPC_CombatBehavior npcCombatRef;
+    NPC_Attributes npcAttributes;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +24,7 @@ public class Vision : MonoBehaviour
         GetComponent<SphereCollider>().radius = visionMaxRange;
 
         npcCombatRef = transform.parent.GetComponent<NPC_CombatBehavior>();
+        npcAttributes = transform.parent.GetComponent<NPC_Attributes>();
     }
 
     // Update is called once per frame
@@ -31,8 +33,31 @@ public class Vision : MonoBehaviour
         
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        // various cases.
+        if (other.CompareTag("Player"))
+            ProcessVisionPlayer(other.gameObject);
+        else if (LayerMask.LayerToName(other.gameObject.layer) == "NPC")
+            ProcessVisionNPC(other.gameObject);
+    }
+
+
+    // These methods deal with detection combat/ with npcs and player
+    void ProcessVisionPlayer(GameObject obj)
+    {
+        // attack depending upon faction relation.
+        if (!obj.GetComponent<PlayerMovement>().isDead)
+        {
+            if (npcAttributes.Get_NPC_Type() == "Guard")
+            {
+                // only attack if relation is hostile i.e. if player attacks or is wanted.
+                if (npcAttributes.Get_NPC_PlayerRelation() == "Hostile")
+                    npcCombatRef.attackTarget = obj.transform;
+            }
+        }
+    }
+
+    void ProcessVisionNPC(GameObject obj)
+    {
     }
 }

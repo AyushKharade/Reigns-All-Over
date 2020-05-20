@@ -11045,7 +11045,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visionMaxRange: 40
-  detectionRate: 0
+  detectionRate: 0.194
 --- !u!135 &1495890894
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -20276,7 +20276,6 @@ GameObject:
   - component: {fileID: 7925926829720437979}
   - component: {fileID: 7925926829720437977}
   - component: {fileID: 7925926829720437975}
-  - component: {fileID: 7925926829720437981}
   m_Layer: 9
   m_Name: Guard
   m_TagString: Enemy
@@ -20492,7 +20491,7 @@ MonoBehaviour:
   isDead: 0
   npcType: 1
   combatType: 1
-  playerRelation: 3
+  playerRelation: 0
   HP: {fileID: 1499074014}
   UIParent: {fileID: 1499074013}
   CameraRef: {fileID: 0}
@@ -20512,19 +20511,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!135 &7925926829720437981
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7925926829720437968}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 30.94
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7925926829720437982
 GameObject:
   m_ObjectHideFlags: 0
