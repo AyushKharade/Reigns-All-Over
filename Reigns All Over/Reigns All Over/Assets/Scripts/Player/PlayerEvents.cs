@@ -29,7 +29,11 @@ public class PlayerEvents : MonoBehaviour
     public void EnterCombat()
     {
         CombatRef.ready = true;
-        CombatRef.EquipWeapon();
+
+        if (CombatRef.fightStyle == Combat.CurrentFightStyle.Melee)
+            CombatRef.EquipWeapon();
+        else
+            CombatRef.EquipBow();
         animator.SetBool("EnteredCombat",false);
     }
 
@@ -146,7 +150,10 @@ public class PlayerEvents : MonoBehaviour
     /// </summary>
     public void UnEquip()
     {
-        CombatRef.UnEquipWeapon();
+        if (CombatRef.fightStyle == Combat.CurrentFightStyle.Melee)
+            CombatRef.UnEquipWeapon();
+        else
+            CombatRef.UnEquipBow();
     }
 
     /// <summary>
@@ -154,7 +161,10 @@ public class PlayerEvents : MonoBehaviour
     /// </summary>
     public void Equip()
     {
-        CombatRef.EquipWeapon();
+        if (CombatRef.fightStyle == Combat.CurrentFightStyle.Melee)
+            CombatRef.EquipWeapon();
+        else
+            CombatRef.EquipBow();
     }
 
 }

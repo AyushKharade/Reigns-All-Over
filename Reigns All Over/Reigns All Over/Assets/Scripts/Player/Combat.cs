@@ -184,7 +184,11 @@ public class Combat : MonoBehaviour
             }
             else if (!MovementRef.isDodging && MovementRef.isGrounded && !attacking && !isCastingSpell)
             {
-                animator.SetLayerWeight(1, 1);
+                if (fightStyle == CurrentFightStyle.Melee)
+                    animator.SetLayerWeight(1, 1);
+                else
+                    animator.SetLayerWeight(3, 1);
+
                 MovementRef.isWalking = false;
                 inCombat = true;
                 ready = false;
@@ -383,8 +387,12 @@ public class Combat : MonoBehaviour
     {
         if (!inCombat && !animator.GetBool("Hurting"))
         {
-            if (animator.GetLayerWeight(1) > 0)
+            if (animator.GetLayerWeight(1) > 0)                                   // melee upperbody layer
                 animator.SetLayerWeight(1, animator.GetLayerWeight(1)-0.02f);
+
+            if (animator.GetLayerWeight(3) > 0)                                    // archer upperbody layer
+                animator.SetLayerWeight(3, animator.GetLayerWeight(1) - 0.02f);
+
         }
         if (!attacking)
         {
