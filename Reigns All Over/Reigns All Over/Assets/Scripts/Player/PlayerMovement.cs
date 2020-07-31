@@ -167,9 +167,9 @@ public class PlayerMovement : MonoBehaviour
             if (attackDir == Vector3.zero)
                 attackDir = transform.forward;
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && CombatRef.fightStyle==Combat.CurrentFightStyle.Melee)
                 CombatRef.FightingControls(0, attackDir);
-            else if (Input.GetMouseButtonDown(1))
+            else if (Input.GetMouseButtonDown(1) && CombatRef.fightStyle == Combat.CurrentFightStyle.Melee)
                 CombatRef.FightingControls(1, attackDir);
         }
 

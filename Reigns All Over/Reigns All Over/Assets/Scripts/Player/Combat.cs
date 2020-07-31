@@ -391,7 +391,7 @@ public class Combat : MonoBehaviour
                 animator.SetLayerWeight(1, animator.GetLayerWeight(1)-0.02f);
 
             if (animator.GetLayerWeight(3) > 0)                                    // archer upperbody layer
-                animator.SetLayerWeight(3, animator.GetLayerWeight(1) - 0.02f);
+                animator.SetLayerWeight(3, animator.GetLayerWeight(3) - 0.02f);
 
         }
         if (!attacking)

@@ -59,15 +59,15 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.8248694
-        functionName: EnterCombat
+      - time: 0.3773585
+        functionName: Equip
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.3773585
-        functionName: Equip
+      - time: 0.67737675
+        functionName: EnterCombat
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
