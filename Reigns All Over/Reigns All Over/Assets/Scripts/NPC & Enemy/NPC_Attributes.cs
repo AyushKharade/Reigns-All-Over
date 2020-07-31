@@ -114,9 +114,19 @@ public class NPC_Attributes : MonoBehaviour
     {
         return combatType + "";
     }
-    public string Get_NPC_PlayeRelation()
+    public string Get_NPC_PlayerRelation()
     {
         return playerRelation + "";
+    }
+
+    //setters
+    public void Set_NPC_PlayerRelation(string relation)
+    {
+        if (relation == "Hostile")
+            playerRelation = stateTowardsPlayer.Hostile;
+        else
+            Debug.Log("Assigned incorrect player relation on NPC: " + transform.name);
+        // other ones
     }
 
 }

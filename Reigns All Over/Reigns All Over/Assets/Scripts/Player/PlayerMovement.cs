@@ -67,7 +67,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.K))
         {
-            PAttributesRef.DealDamage(10);
+            PAttributesRef.DealDamage(10,transform.forward*-1);
         }
 
     }
@@ -345,7 +345,7 @@ public class PlayerMovement : MonoBehaviour
             // check if fell for too long and kill
             if (fallDuration > 2f)
             {
-                PAttributesRef.DealDamage(1000);
+                PAttributesRef.DealDamage(1000,transform.forward*-1);
             }
             fallDuration = 0f;
         }

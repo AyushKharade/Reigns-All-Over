@@ -140,7 +140,7 @@ public class Combat : MonoBehaviour
         }
 
         // blocking controls
-        if (ready && Input.GetKey(KeyCode.X) && !MovementRef.isDodging && !MovementRef.isDead && MovementRef.isGrounded)
+        if (ready && Input.GetKey(KeyCode.X) && !MovementRef.isDodging && !MovementRef.isDead && MovementRef.isGrounded && !PAttributesRef.blockRecovery)
         {
             isBlocking = true;
             animator.SetBool("Blocking",true);
