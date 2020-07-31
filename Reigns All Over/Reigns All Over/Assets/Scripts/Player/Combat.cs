@@ -54,17 +54,23 @@ public class Combat : MonoBehaviour
     public GameObject EquippedWeapon;
     public GameObject SheathedWeapon;
 
+    public GameObject EquippedBow;
+    public GameObject SheathedBow;
+
     [Header("Equipped Spells")]
     public Transform CastHandRef;
     public GameObject EquippedSpell;
     public GameObject QuickSpell1;
     public GameObject QuickSpell2;
 
-
+    public enum CurrentFightStyle { Melee, Archery};
+    [Header("Current Weapon (Sword/Archery)")]
+    public CurrentFightStyle fightStyle = new CurrentFightStyle();
 
     // script ref
     PlayerMovement MovementRef;
     PlayerAttributes PAttributesRef;
+    PlayerEvents PEventsRef;
     Animator animator;
 
     #endregion
@@ -78,11 +84,15 @@ public class Combat : MonoBehaviour
 
         MovementRef = GetComponent<PlayerMovement>();
         PAttributesRef = GetComponent<PlayerAttributes>();
+        PEventsRef = GetComponent<PlayerEvents>();
+
+        fightStyle = CurrentFightStyle.Archery;                       // for now to test archery
+        UnEquipBow();
     }
 
     void Update()
     {
-
+        ChangeFightStyleInput();
         CombatControls();
         AttackOrient();
         SmoothSwitchOffCombatLayers();
@@ -110,6 +120,51 @@ public class Combat : MonoBehaviour
 
 
     }
+
+    /// <summary>
+    /// Press a button to switch between melee and archery.
+    /// </summary>
+    public void ChangeFightStyleInput()
+    {
+        if (!MovementRef.isDead && !MovementRef.controlLock)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha2) && fightStyle == CurrentFightStyle.Melee)
+                ChangeFightStyleTo(CurrentFightStyle.Archery);
+            if(Input.GetKeyDown(KeyCode.Alpha1) && fightStyle==CurrentFightStyle.Archery)
+                ChangeFightStyleTo(CurrentFightStyle.Melee);
+        }
+    }
+
+
+    /// <summary>
+    /// actual do the process to change styles, update animatons and UI.
+    /// </summary>
+    /// <param name="style">Enumerator value of current fighting style.</param>
+    void ChangeFightStyleTo(CurrentFightStyle style)
+    {
+        if (style == CurrentFightStyle.Archery)
+        {
+            fightStyle = CurrentFightStyle.Archery;
+
+            if (inCombat)          // exit combat first the equip the other weapon
+            {
+                PEventsRef.ExitCombat();
+
+                animator.SetBool("inCombat", false);
+                animator.SetBool("Hurting", false);
+                //animator.SetBool("ExitedCombat", true);         // does sheathing
+                ready = false;
+            }
+        }
+        else
+        {
+            fightStyle = CurrentFightStyle.Melee;
+            if (inCombat)
+                PEventsRef.ExitCombat();
+
+        }
+    }
+
 
     /// <summary>
     /// Equip & Unequip weapons, block and cast spells, Takes keyboard input and calls functions to attack/block/cast spells.
@@ -182,6 +237,13 @@ public class Combat : MonoBehaviour
             }
         }
     }
+
+
+
+
+
+
+    //############################################# controls above
 
 
     float attackStaminaCost=0f;
@@ -412,6 +474,18 @@ public class Combat : MonoBehaviour
     {
         EquippedWeapon.SetActive(false);
         SheathedWeapon.SetActive(true);
+    }
+
+    public void EquipBow()
+    {
+        EquippedBow.SetActive(true);
+        SheathedBow.SetActive(false);
+    }
+
+    public void UnEquipBow()
+    {
+        EquippedBow.SetActive(false);
+        SheathedBow.SetActive(true);
     }
 
     /// <summary>
