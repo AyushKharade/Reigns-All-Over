@@ -28,7 +28,9 @@ public class Combat : MonoBehaviour
     /// <summary>
     /// If user chained attack during the chain window (Window Duration: StartChain to EndAttack)
     /// </summary>
-    public bool chainAttack;           
+    public bool chainAttack;
+
+
 
     /// <summary>
     /// Shows if chaining can be performed. (input can be accepted before attack can be chained. If this value is true, it means 
@@ -43,6 +45,12 @@ public class Combat : MonoBehaviour
     public float arenalineGainRate;
 
     Vector3 attackDirection;           // orient here.
+
+
+    [Header("Archery States")]
+    public bool archerAiming;             // Holding RMB
+    public bool archerBowDraw;            // holding LMB
+
 
     [Header("Rates / Cooldowns")]
     public float heavyAttackCost;
@@ -87,6 +95,7 @@ public class Combat : MonoBehaviour
         PEventsRef = GetComponent<PlayerEvents>();
 
         fightStyle = CurrentFightStyle.Archery;                       // for now to test archery
+        animator.SetBool("usingArchery", true);
         UnEquipBow();
     }
 
@@ -155,12 +164,17 @@ public class Combat : MonoBehaviour
                 //animator.SetBool("ExitedCombat", true);         // does sheathing
                 ready = false;
             }
+
+            animator.SetBool("usingArchery", true);
         }
         else
         {
             fightStyle = CurrentFightStyle.Melee;
             if (inCombat)
                 PEventsRef.ExitCombat();
+
+
+            animator.SetBool("usingArchery", false);
 
         }
     }

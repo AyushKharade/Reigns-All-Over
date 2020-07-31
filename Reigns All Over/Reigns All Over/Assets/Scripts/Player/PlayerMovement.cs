@@ -163,14 +163,26 @@ public class PlayerMovement : MonoBehaviour
         // fighting input direction.
         if (!isDead && isGrounded && !isDodging && CombatRef.ready)
         {
-            Vector3 attackDir=PlayerDirection;
+            Vector3 attackDir = PlayerDirection;
             if (attackDir == Vector3.zero)
                 attackDir = transform.forward;
 
-            if (Input.GetMouseButtonDown(0) && CombatRef.fightStyle==Combat.CurrentFightStyle.Melee)
-                CombatRef.FightingControls(0, attackDir);
-            else if (Input.GetMouseButtonDown(1) && CombatRef.fightStyle == Combat.CurrentFightStyle.Melee)
-                CombatRef.FightingControls(1, attackDir);
+            if (CombatRef.fightStyle == Combat.CurrentFightStyle.Melee)
+            {
+                if (Input.GetMouseButtonDown(0))
+                    CombatRef.FightingControls(0, attackDir);
+                else if (Input.GetMouseButtonDown(1))
+                    CombatRef.FightingControls(1, attackDir);
+            }
+            else   // archery
+            {
+                if (Input.GetMouseButton(1))
+                    CombatRef.archerBowDraw = true;
+                else
+                    CombatRef.archerBowDraw = false;
+            }
+
+            //
         }
 
 
