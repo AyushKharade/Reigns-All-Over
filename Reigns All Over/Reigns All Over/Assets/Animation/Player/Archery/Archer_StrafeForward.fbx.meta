@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 8a56a73cad4c33946839d3bec27c2a83
+guid: 44e8ef7171c9f4c40873f0d295e5e117
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: Archer_RunForward
+    second: Archer_StrafeForward
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,13 +35,13 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Archer_RunForward
+      name: Archer_StrafeForward
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 26
+      lastFrame: 36
       wrapMode: 0
-      orientationOffsetY: -25.99
+      orientationOffsetY: -72.58
       level: 0
       cycleOffset: 0
       loop: 0
@@ -49,7 +49,7 @@ ModelImporter:
       loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 1
-      loopBlendPositionY: 1
+      loopBlendPositionY: 0
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
       keepOriginalPositionY: 1
