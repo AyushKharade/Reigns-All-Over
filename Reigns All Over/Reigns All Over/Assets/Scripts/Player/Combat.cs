@@ -75,12 +75,13 @@ public class Combat : MonoBehaviour
     [Header("Current Weapon (Sword/Archery)")]
     public CurrentFightStyle fightStyle = new CurrentFightStyle();
 
-    // script ref
+    // script ref & other references
     PlayerMovement MovementRef;
     PlayerAttributes PAttributesRef;
     PlayerEvents PEventsRef;
     Animator animator;
 
+    GameObject mainCam;
     #endregion
 
     void Start()
@@ -97,6 +98,8 @@ public class Combat : MonoBehaviour
         fightStyle = CurrentFightStyle.Archery;                       // for now to test archery
         animator.SetBool("usingArchery", true);
         UnEquipBow();
+
+        mainCam = Camera.main.gameObject;
     }
 
     void Update()
@@ -254,6 +257,14 @@ public class Combat : MonoBehaviour
                 // if spell has condition that you cannot move dont make player move.
             }
         }
+
+
+        // archer controls
+        if (ready && fightStyle == CurrentFightStyle.Archery && archerBowDraw)
+        {
+            if (Input.GetMouseButtonDown(0))
+                animator.SetTrigger("BowShoot");
+        }
     }
 
 
@@ -377,9 +388,9 @@ public class Combat : MonoBehaviour
         if (attacking)
             MovementRef.AlignOrientation(attackDirection);
 
-        if (isBlocking)
+        if (isBlocking || archerBowDraw)
         {
-            Vector3 blockLookAt = Camera.main.transform.forward;
+            Vector3 blockLookAt = mainCam.transform.forward;
             blockLookAt.y = 0;
             MovementRef.AlignOrientation(blockLookAt);
         }
@@ -402,7 +413,7 @@ public class Combat : MonoBehaviour
         if (!inCombat && !animator.GetBool("Hurting"))
         {
             if (animator.GetLayerWeight(1) > 0)                                   // melee upperbody layer
-                animator.SetLayerWeight(1, animator.GetLayerWeight(1)-0.02f);
+                animator.SetLayerWeight(1, animator.GetLayerWeight(1) - 0.02f);
 
             if (animator.GetLayerWeight(3) > 0)                                    // archer upperbody layer
                 animator.SetLayerWeight(3, animator.GetLayerWeight(3) - 0.02f);
@@ -415,8 +426,11 @@ public class Combat : MonoBehaviour
         }
 
         // Smoothly turn off combat layer when player is dodging.
-        if(MovementRef.isDodging && animator.GetLayerWeight(1)>0)
+        if (MovementRef.isDodging && animator.GetLayerWeight(1) > 0)
             animator.SetLayerWeight(1, animator.GetLayerWeight(1) - 0.025f);
+
+        if (MovementRef.isDodging && animator.GetLayerWeight(3) > 0)
+            animator.SetLayerWeight(3, animator.GetLayerWeight(3) - 0.025f);
     }
 
 
@@ -438,6 +452,11 @@ public class Combat : MonoBehaviour
         EquippedWeapon.GetComponent<Weapon>().doDMG = false;
 
         animator.SetBool("SprintAttack", false);
+    }
+
+    public void InteruptArchery()
+    {
+        archerBowDraw = false;
     }
 
     /// <summary>
@@ -470,18 +489,26 @@ public class Combat : MonoBehaviour
     /// </summary>
     void BlockingMovementAnim()
     {
-        float x = Input.GetAxis("Horizontal");
-        float y = Input.GetAxis("Vertical");
-
-        animator.SetFloat("180X_Dir_Input",x);
-        animator.SetFloat("180Y_Dir_Input",y);
+        
+        Get_XY_Movement_Anim_Values();
 
         float strafeSpeed = 0.9f;
-        //if (x != 0 && y != 0)
-        //    strafeSpeed = 1.2f;
+        
 
         // add a skill condition
         MovementRef.PlayerHolder.Translate(MovementRef.PlayerDirection * strafeSpeed * Time.deltaTime);
+    }
+
+    /// <summary>
+    /// This function updates the x & y animation values used for 2d free form blend trees.
+    /// </summary>
+    public void Get_XY_Movement_Anim_Values()
+    {
+        float x = Input.GetAxis("Horizontal");
+        float y = Input.GetAxis("Vertical");
+
+        animator.SetFloat("180X_Dir_Input", x);
+        animator.SetFloat("180Y_Dir_Input", y);
     }
 
     // these methods will just turn on and off weapons

@@ -106,6 +106,9 @@
     <Reference Include="Unity.Rider.Editor">
       <HintPath>C:/Users/ASUS/Documents/Unity Projects/Regins All Over RPG/Reigns-All-Over/Reigns All Over/Reigns All Over/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>C:/Users/ASUS/Documents/Unity Projects/Regins All Over RPG/Reigns-All-Over/Reigns All Over/Reigns All Over/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Postprocessing.Runtime">
       <HintPath>C:/Users/ASUS/Documents/Unity Projects/Regins All Over RPG/Reigns-All-Over/Reigns All Over/Reigns All Over/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
     </Reference>

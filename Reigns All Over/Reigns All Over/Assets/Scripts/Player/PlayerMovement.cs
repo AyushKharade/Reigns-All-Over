@@ -176,10 +176,17 @@ public class PlayerMovement : MonoBehaviour
             }
             else   // archery
             {
-                if (Input.GetMouseButton(1))
+                if (Input.GetMouseButton(1) && !isDodging)
+                {
                     CombatRef.archerBowDraw = true;
+                    animator.SetBool("BowDraw", true);
+                    CombatRef.Get_XY_Movement_Anim_Values();
+                }
                 else
+                {
+                    animator.SetBool("BowDraw",false);
                     CombatRef.archerBowDraw = false;
+                }
             }
 
             //
@@ -333,7 +340,11 @@ public class PlayerMovement : MonoBehaviour
         isDodging = false;
         PAttributesRef.dodgeInvincible = false;
 
-        animator.SetLayerWeight(1, 1);       // switch off combat layer until then.
+        if(CombatRef.fightStyle==Combat.CurrentFightStyle.Melee)
+            animator.SetLayerWeight(1, 1);       // switch off combat layer until then.
+        else
+            animator.SetLayerWeight(3, 1);       // switch off combat layer until then.
+
         animator.SetBool("isDodging",false);
         doDodgeAlign = false;
         allowDodgeOrient = false;
