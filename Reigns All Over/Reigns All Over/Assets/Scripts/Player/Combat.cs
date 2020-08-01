@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Class deals with combat system and animations.
@@ -50,6 +51,15 @@ public class Combat : MonoBehaviour
     [Header("Archery States")]
     public bool archerAiming;             // Holding RMB
     public bool archerBowDraw;            // holding LMB
+    public float archerDrawTime=0f;
+    public bool nextShotReady;
+
+    public GameObject aimReticleParent;
+    public Image aimReticleFG;
+    public GameObject equippedArrowPrefab;
+    public float arrowShotForce;
+    public Transform arrowShootPoint;
+
 
 
     [Header("Rates / Cooldowns")]
@@ -109,6 +119,7 @@ public class Combat : MonoBehaviour
         AttackOrient();
         SmoothSwitchOffCombatLayers();
         SmoothSwitchAttacks();
+        UpdateAimReticle();
 
     }
 
@@ -262,11 +273,48 @@ public class Combat : MonoBehaviour
         // archer controls
         if (ready && fightStyle == CurrentFightStyle.Archery && archerBowDraw)
         {
-            if (Input.GetMouseButtonDown(0))
-                animator.SetTrigger("BowShoot");
+            if (Input.GetMouseButton(0) && nextShotReady)
+            {
+                if(archerDrawTime<1f)
+                    archerDrawTime += Time.deltaTime;
+                animator.SetBool("BowShooting",true);
+            }
+            if (Input.GetMouseButtonUp(0) && archerDrawTime >= 0.3f)
+            {
+                animator.SetBool("BowShooting", false);
+                animator.SetTrigger("BowShot");
+
+                ShootArrow(archerDrawTime);
+                archerDrawTime = 0f;
+            }
+            else if (Input.GetMouseButtonUp(0) && archerDrawTime < 0.5f)
+            {
+                InteruptArchery();
+            }
         }
     }
 
+    /// <summary>
+    /// Shooter arrow where aiming, use hold time for shot strength and damage.
+    /// </summary>
+    /// <param name="holdTime"></param>
+    public void ShootArrow(float holdTime)
+    {
+        GameObject arrow = Instantiate(equippedArrowPrefab, arrowShootPoint.position, Quaternion.identity);
+        Destroy(arrow.gameObject, 4f);
+
+        arrow.transform.localScale = new Vector3(arrow.transform.localScale.x * 7f, arrow.transform.localScale.x * 7f, arrow.transform.localScale.x * 7f);
+        Vector3 shotDirection = mainCam.transform.forward;
+
+        arrow.transform.LookAt(shotDirection);
+        shotDirection.y += 0.05f;
+        nextShotReady = false;
+
+        //launch
+        arrow.GetComponent<Rigidbody>().AddForce(shotDirection.normalized*arrowShotForce,ForceMode.Impulse);
+
+
+    }
 
 
 
@@ -457,6 +505,12 @@ public class Combat : MonoBehaviour
     public void InteruptArchery()
     {
         archerBowDraw = false;
+        animator.SetBool("BowDraw", false);
+        animator.ResetTrigger("BowShot");
+        animator.SetBool("BowShooting", false);
+        archerDrawTime = 0f;
+        //nextShotReady = false;
+        nextShotReady = true;
     }
 
     /// <summary>
@@ -529,6 +583,7 @@ public class Combat : MonoBehaviour
     {
         EquippedBow.SetActive(true);
         SheathedBow.SetActive(false);
+        nextShotReady = true;
     }
 
     public void UnEquipBow()
@@ -544,5 +599,18 @@ public class Combat : MonoBehaviour
     {
         MovementRef.PlayerHolder.GetComponent<PlayerUI>().WarnNoStaminaUI();
     }
-    
+
+
+    void UpdateAimReticle()
+    {
+        if (archerBowDraw)
+        {
+            aimReticleParent.SetActive(true);
+            aimReticleFG.fillAmount = (archerDrawTime / 1f);
+        }
+        else
+        {
+            aimReticleParent.SetActive(false);
+        }
+    }
 }

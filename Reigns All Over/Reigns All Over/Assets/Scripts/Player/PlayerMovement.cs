@@ -181,10 +181,19 @@ public class PlayerMovement : MonoBehaviour
                     CombatRef.archerBowDraw = true;
                     animator.SetBool("BowDraw", true);
                     CombatRef.Get_XY_Movement_Anim_Values();
+
+                    //testing shotdirection
+                    Vector3 camEnd = CamRef.GetComponent<Camera>().ViewportToWorldPoint(new Vector3(0.5f,0.5f,0f));
+                    Vector3 shotDirection = (camEnd - CombatRef.aimReticleParent.transform.position).normalized;
+
+
+                    
+                    Debug.DrawRay(CamRef.transform.position, CamRef.transform.forward,Color.red);
                 }
                 else
                 {
                     animator.SetBool("BowDraw",false);
+                    animator.SetBool("BowShooting",false);
                     CombatRef.archerBowDraw = false;
                 }
             }
@@ -289,6 +298,8 @@ public class PlayerMovement : MonoBehaviour
             CombatRef.InteruptAttack();
         if(CombatRef.isCastingSpell)
             CombatRef.InteruptSpellCast();
+        if (CombatRef.fightStyle == Combat.CurrentFightStyle.Archery)
+            CombatRef.InteruptArchery();
 
         PAttributesRef.ReduceStamina(0);         // its fine if we have zero stamina we can roll, just dont let player regen a lot of stamina
 

@@ -167,4 +167,10 @@ public class PlayerEvents : MonoBehaviour
             CombatRef.EquipBow();
     }
 
+    public void Archer_NextShotReady()
+    {
+        Debug.Log("Event Called");
+        CombatRef.nextShotReady = true;
+    }
+
 }

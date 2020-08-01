@@ -5,7 +5,7 @@ ModelImporter:
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: Archer_Aim_Draw
+    second: Archer_Aim_Ready
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,11 +35,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Archer_Aim_Draw
+      name: Archer_Aim_Ready
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 31
+      lastFrame: 19
       wrapMode: 0
       orientationOffsetY: -57.68
       level: 0
@@ -58,7 +58,14 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.9584775
+        functionName: Archer_NextShotReady
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}

@@ -38,7 +38,7 @@ ModelImporter:
       name: Archer_Aim_Draw
       takeName: mixamo.com
       internalID: 0
-      firstFrame: 0
+      firstFrame: 17
       lastFrame: 31
       wrapMode: 0
       orientationOffsetY: -57.68
