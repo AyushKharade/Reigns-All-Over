@@ -80,9 +80,9 @@ public class NPC_CombatBehavior : MonoBehaviour
 
     void Update()
     {
-        if (!attackTarget.Equals(null)  && !NAttributesRef.isDead)
+        if (!NAttributesRef.isDead && !attackTarget.Equals(null))
         {
-            Debug.Log("no target still going?"+attackTarget.name);
+            //Debug.Log("no target still going?"+attackTarget.name);
             // check if current target died in this frame
             if (attackTarget.CompareTag("Player"))
             {

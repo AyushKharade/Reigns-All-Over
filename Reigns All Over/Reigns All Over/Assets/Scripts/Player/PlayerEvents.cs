@@ -169,7 +169,6 @@ public class PlayerEvents : MonoBehaviour
 
     public void Archer_NextShotReady()
     {
-        Debug.Log("Event Called");
         CombatRef.nextShotReady = true;
     }
 

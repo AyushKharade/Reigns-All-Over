@@ -10,6 +10,7 @@ public class Arrow : MonoBehaviour
     public string desc;
 
     public int baseDamage;
+    [HideInInspector] public Vector3 shotDirection=Vector3.zero;
 
     [Range(0, 100)] public float criticalChance;
 
@@ -19,6 +20,9 @@ public class Arrow : MonoBehaviour
     public GameObject DamagePopUpPrefab;
     public GameObject BloodParticle;
     // Start is called before the first frame update
+
+    bool orientationSet;
+
     void Start()
     {
 
@@ -27,6 +31,17 @@ public class Arrow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (shotDirection != Vector3.zero && !orientationSet)
+        {
+            Quaternion lookDirection;
+
+            //set quaternion to this dir
+            lookDirection = Quaternion.LookRotation(shotDirection, Vector3.up);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, 100f);
+
+            if (Vector3.Angle(shotDirection, transform.forward) < 5)
+                orientationSet = true;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -70,6 +85,8 @@ public class Arrow : MonoBehaviour
 
                 //PlayStabSound();
             }
+            Destroy(this.gameObject);
+
         }
 
 

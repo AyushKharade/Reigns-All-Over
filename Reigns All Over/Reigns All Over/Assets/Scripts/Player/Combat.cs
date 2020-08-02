@@ -60,6 +60,9 @@ public class Combat : MonoBehaviour
     public float arrowShotForce;
     public Transform arrowShootPoint;
 
+    [Header("Archer Aim Offsets")]
+    public float xOffset_Aim;
+    public float yOffset_Aim;
 
 
     [Header("Rates / Cooldowns")]
@@ -250,7 +253,7 @@ public class Combat : MonoBehaviour
 
 
         // Spell Controls
-        if (ready && !isBlocking && !MovementRef.isDead && !MovementRef.isDodging)
+        if (ready && !isBlocking && !MovementRef.isDead && !MovementRef.isDodging && fightStyle==CurrentFightStyle.Melee)
         {
             if (!isCastingSpell && Input.GetMouseButtonDown(2) && PAttributesRef.HasEnoughMana(EquippedSpell.GetComponent<Spell>().cost))
             {
@@ -300,20 +303,28 @@ public class Combat : MonoBehaviour
     /// <param name="holdTime"></param>
     public void ShootArrow(float holdTime)
     {
-        GameObject arrow = Instantiate(equippedArrowPrefab, arrowShootPoint.position, Quaternion.identity);
-        Destroy(arrow.gameObject, 4f);
+        //GameObject arrow = Instantiate(equippedArrowPrefab, arrowShootPoint.position, Quaternion.identity);
+        Vector3 centerShootPos = transform.position;
+        centerShootPos.y = arrowShootPoint.position.y;
+        //GameObject arrow = Instantiate(equippedArrowPrefab, centerShootPos, Quaternion.identity);
+        GameObject arrow = Instantiate(equippedArrowPrefab, mainCam.transform.position, Quaternion.identity);
 
-        arrow.transform.localScale = new Vector3(arrow.transform.localScale.x * 7f, arrow.transform.localScale.x * 7f, arrow.transform.localScale.x * 7f);
+        //arrow.transform.localScale = new Vector3(arrow.transform.localScale.x * 7f, arrow.transform.localScale.x * 7f, arrow.transform.localScale.x * 7f);
         Vector3 shotDirection = mainCam.transform.forward;
+        //Vector3 shotDirection = transform.forward;
+        //shotDirection.y = mainCam.transform.position.y;
 
         arrow.transform.LookAt(shotDirection);
-        shotDirection.y += 0.05f;
+        //arrow.transform.LookAt(Vector3.up);
+        arrow.GetComponent<Arrow>().shotDirection = shotDirection;
+
+        shotDirection.y += 0.025f;
         nextShotReady = false;
 
         //launch
         arrow.GetComponent<Rigidbody>().AddForce(shotDirection.normalized*arrowShotForce,ForceMode.Impulse);
 
-
+        Destroy(arrow.gameObject, 4f);
     }
 
 

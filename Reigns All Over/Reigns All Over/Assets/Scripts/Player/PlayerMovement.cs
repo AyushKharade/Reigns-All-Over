@@ -53,7 +53,10 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         // to make camera follow on jumps and fall
-        TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        if(CombatRef.archerBowDraw)
+            TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z+2.25f);
+        else
+            TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 
         CheckGrounded();
 
