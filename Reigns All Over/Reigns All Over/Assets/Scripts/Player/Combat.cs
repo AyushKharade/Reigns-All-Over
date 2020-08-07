@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Class deals with combat system and animations.
@@ -28,7 +29,9 @@ public class Combat : MonoBehaviour
     /// <summary>
     /// If user chained attack during the chain window (Window Duration: StartChain to EndAttack)
     /// </summary>
-    public bool chainAttack;           
+    public bool chainAttack;
+
+
 
     /// <summary>
     /// Shows if chaining can be performed. (input can be accepted before attack can be chained. If this value is true, it means 
@@ -44,6 +47,24 @@ public class Combat : MonoBehaviour
 
     Vector3 attackDirection;           // orient here.
 
+
+    [Header("Archery States")]
+    public bool archerAiming;             // Holding RMB
+    public bool archerBowDraw;            // holding LMB
+    public float archerDrawTime=0f;
+    public bool nextShotReady;
+
+    public GameObject aimReticleParent;
+    public Image aimReticleFG;
+    public GameObject equippedArrowPrefab;
+    public float arrowShotForce;
+    public Transform arrowShootPoint;
+
+    [Header("Archer Aim Offsets")]
+    public float xOffset_Aim;
+    public float yOffset_Aim;
+
+
     [Header("Rates / Cooldowns")]
     public float heavyAttackCost;
     public float sprintAttackCost;
@@ -54,19 +75,26 @@ public class Combat : MonoBehaviour
     public GameObject EquippedWeapon;
     public GameObject SheathedWeapon;
 
+    public GameObject EquippedBow;
+    public GameObject SheathedBow;
+
     [Header("Equipped Spells")]
     public Transform CastHandRef;
     public GameObject EquippedSpell;
     public GameObject QuickSpell1;
     public GameObject QuickSpell2;
 
+    public enum CurrentFightStyle { Melee, Archery};
+    [Header("Current Weapon (Sword/Archery)")]
+    public CurrentFightStyle fightStyle = new CurrentFightStyle();
 
-
-    // script ref
+    // script ref & other references
     PlayerMovement MovementRef;
     PlayerAttributes PAttributesRef;
+    PlayerEvents PEventsRef;
     Animator animator;
 
+    GameObject mainCam;
     #endregion
 
     void Start()
@@ -78,15 +106,23 @@ public class Combat : MonoBehaviour
 
         MovementRef = GetComponent<PlayerMovement>();
         PAttributesRef = GetComponent<PlayerAttributes>();
+        PEventsRef = GetComponent<PlayerEvents>();
+
+        fightStyle = CurrentFightStyle.Archery;                       // for now to test archery
+        animator.SetBool("usingArchery", true);
+        UnEquipBow();
+
+        mainCam = Camera.main.gameObject;
     }
 
     void Update()
     {
-
+        ChangeFightStyleInput();
         CombatControls();
         AttackOrient();
         SmoothSwitchOffCombatLayers();
         SmoothSwitchAttacks();
+        UpdateAimReticle();
 
     }
 
@@ -112,6 +148,56 @@ public class Combat : MonoBehaviour
     }
 
     /// <summary>
+    /// Press a button to switch between melee and archery.
+    /// </summary>
+    public void ChangeFightStyleInput()
+    {
+        if (!MovementRef.isDead && !MovementRef.controlLock)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha2) && fightStyle == CurrentFightStyle.Melee)
+                ChangeFightStyleTo(CurrentFightStyle.Archery);
+            if(Input.GetKeyDown(KeyCode.Alpha1) && fightStyle==CurrentFightStyle.Archery)
+                ChangeFightStyleTo(CurrentFightStyle.Melee);
+        }
+    }
+
+
+    /// <summary>
+    /// actual do the process to change styles, update animatons and UI.
+    /// </summary>
+    /// <param name="style">Enumerator value of current fighting style.</param>
+    void ChangeFightStyleTo(CurrentFightStyle style)
+    {
+        if (style == CurrentFightStyle.Archery)
+        {
+            fightStyle = CurrentFightStyle.Archery;
+
+            if (inCombat)          // exit combat first the equip the other weapon
+            {
+                PEventsRef.ExitCombat();
+
+                animator.SetBool("inCombat", false);
+                animator.SetBool("Hurting", false);
+                //animator.SetBool("ExitedCombat", true);         // does sheathing
+                ready = false;
+            }
+
+            animator.SetBool("usingArchery", true);
+        }
+        else
+        {
+            fightStyle = CurrentFightStyle.Melee;
+            if (inCombat)
+                PEventsRef.ExitCombat();
+
+
+            animator.SetBool("usingArchery", false);
+
+        }
+    }
+
+
+    /// <summary>
     /// Equip & Unequip weapons, block and cast spells, Takes keyboard input and calls functions to attack/block/cast spells.
     /// </summary>
     void CombatControls()
@@ -129,7 +215,11 @@ public class Combat : MonoBehaviour
             }
             else if (!MovementRef.isDodging && MovementRef.isGrounded && !attacking && !isCastingSpell)
             {
-                animator.SetLayerWeight(1, 1);
+                if (fightStyle == CurrentFightStyle.Melee)
+                    animator.SetLayerWeight(1, 1);
+                else
+                    animator.SetLayerWeight(3, 1);
+
                 MovementRef.isWalking = false;
                 inCombat = true;
                 ready = false;
@@ -163,7 +253,7 @@ public class Combat : MonoBehaviour
 
 
         // Spell Controls
-        if (ready && !isBlocking && !MovementRef.isDead && !MovementRef.isDodging)
+        if (ready && !isBlocking && !MovementRef.isDead && !MovementRef.isDodging && fightStyle==CurrentFightStyle.Melee)
         {
             if (!isCastingSpell && Input.GetMouseButtonDown(2) && PAttributesRef.HasEnoughMana(EquippedSpell.GetComponent<Spell>().cost))
             {
@@ -181,7 +271,67 @@ public class Combat : MonoBehaviour
                 // if spell has condition that you cannot move dont make player move.
             }
         }
+
+
+        // archer controls
+        if (ready && fightStyle == CurrentFightStyle.Archery && archerBowDraw)
+        {
+            if (Input.GetMouseButton(0) && nextShotReady)
+            {
+                if(archerDrawTime<1f)
+                    archerDrawTime += Time.deltaTime;
+                animator.SetBool("BowShooting",true);
+            }
+            if (Input.GetMouseButtonUp(0) && archerDrawTime >= 0.3f)
+            {
+                animator.SetBool("BowShooting", false);
+                animator.SetTrigger("BowShot");
+
+                ShootArrow(archerDrawTime);
+                archerDrawTime = 0f;
+            }
+            else if (Input.GetMouseButtonUp(0) && archerDrawTime < 0.5f)
+            {
+                InteruptArchery();
+            }
+        }
     }
+
+    /// <summary>
+    /// Shooter arrow where aiming, use hold time for shot strength and damage.
+    /// </summary>
+    /// <param name="holdTime"></param>
+    public void ShootArrow(float holdTime)
+    {
+        //GameObject arrow = Instantiate(equippedArrowPrefab, arrowShootPoint.position, Quaternion.identity);
+        Vector3 centerShootPos = transform.position;
+        centerShootPos.y = arrowShootPoint.position.y;
+        //GameObject arrow = Instantiate(equippedArrowPrefab, centerShootPos, Quaternion.identity);
+        GameObject arrow = Instantiate(equippedArrowPrefab, mainCam.transform.position, Quaternion.identity);
+
+        //arrow.transform.localScale = new Vector3(arrow.transform.localScale.x * 7f, arrow.transform.localScale.x * 7f, arrow.transform.localScale.x * 7f);
+        Vector3 shotDirection = mainCam.transform.forward;
+        //Vector3 shotDirection = transform.forward;
+        //shotDirection.y = mainCam.transform.position.y;
+
+        arrow.transform.LookAt(shotDirection);
+        //arrow.transform.LookAt(Vector3.up);
+        arrow.GetComponent<Arrow>().shotDirection = shotDirection;
+
+        shotDirection.y += 0.025f;
+        nextShotReady = false;
+
+        //launch
+        arrow.GetComponent<Rigidbody>().AddForce(shotDirection.normalized*arrowShotForce,ForceMode.Impulse);
+
+        Destroy(arrow.gameObject, 4f);
+    }
+
+
+
+
+
+    //############################################# controls above
 
 
     float attackStaminaCost=0f;
@@ -297,9 +447,9 @@ public class Combat : MonoBehaviour
         if (attacking)
             MovementRef.AlignOrientation(attackDirection);
 
-        if (isBlocking)
+        if (isBlocking || archerBowDraw)
         {
-            Vector3 blockLookAt = Camera.main.transform.forward;
+            Vector3 blockLookAt = mainCam.transform.forward;
             blockLookAt.y = 0;
             MovementRef.AlignOrientation(blockLookAt);
         }
@@ -321,8 +471,12 @@ public class Combat : MonoBehaviour
     {
         if (!inCombat && !animator.GetBool("Hurting"))
         {
-            if (animator.GetLayerWeight(1) > 0)
-                animator.SetLayerWeight(1, animator.GetLayerWeight(1)-0.02f);
+            if (animator.GetLayerWeight(1) > 0)                                   // melee upperbody layer
+                animator.SetLayerWeight(1, animator.GetLayerWeight(1) - 0.02f);
+
+            if (animator.GetLayerWeight(3) > 0)                                    // archer upperbody layer
+                animator.SetLayerWeight(3, animator.GetLayerWeight(3) - 0.02f);
+
         }
         if (!attacking)
         {
@@ -331,8 +485,11 @@ public class Combat : MonoBehaviour
         }
 
         // Smoothly turn off combat layer when player is dodging.
-        if(MovementRef.isDodging && animator.GetLayerWeight(1)>0)
+        if (MovementRef.isDodging && animator.GetLayerWeight(1) > 0)
             animator.SetLayerWeight(1, animator.GetLayerWeight(1) - 0.025f);
+
+        if (MovementRef.isDodging && animator.GetLayerWeight(3) > 0)
+            animator.SetLayerWeight(3, animator.GetLayerWeight(3) - 0.025f);
     }
 
 
@@ -354,6 +511,17 @@ public class Combat : MonoBehaviour
         EquippedWeapon.GetComponent<Weapon>().doDMG = false;
 
         animator.SetBool("SprintAttack", false);
+    }
+
+    public void InteruptArchery()
+    {
+        archerBowDraw = false;
+        animator.SetBool("BowDraw", false);
+        animator.ResetTrigger("BowShot");
+        animator.SetBool("BowShooting", false);
+        archerDrawTime = 0f;
+        //nextShotReady = false;
+        nextShotReady = true;
     }
 
     /// <summary>
@@ -386,18 +554,26 @@ public class Combat : MonoBehaviour
     /// </summary>
     void BlockingMovementAnim()
     {
-        float x = Input.GetAxis("Horizontal");
-        float y = Input.GetAxis("Vertical");
-
-        animator.SetFloat("180X_Dir_Input",x);
-        animator.SetFloat("180Y_Dir_Input",y);
+        
+        Get_XY_Movement_Anim_Values();
 
         float strafeSpeed = 0.9f;
-        //if (x != 0 && y != 0)
-        //    strafeSpeed = 1.2f;
+        
 
         // add a skill condition
         MovementRef.PlayerHolder.Translate(MovementRef.PlayerDirection * strafeSpeed * Time.deltaTime);
+    }
+
+    /// <summary>
+    /// This function updates the x & y animation values used for 2d free form blend trees.
+    /// </summary>
+    public void Get_XY_Movement_Anim_Values()
+    {
+        float x = Input.GetAxis("Horizontal");
+        float y = Input.GetAxis("Vertical");
+
+        animator.SetFloat("180X_Dir_Input", x);
+        animator.SetFloat("180Y_Dir_Input", y);
     }
 
     // these methods will just turn on and off weapons
@@ -414,6 +590,19 @@ public class Combat : MonoBehaviour
         SheathedWeapon.SetActive(true);
     }
 
+    public void EquipBow()
+    {
+        EquippedBow.SetActive(true);
+        SheathedBow.SetActive(false);
+        nextShotReady = true;
+    }
+
+    public void UnEquipBow()
+    {
+        EquippedBow.SetActive(false);
+        SheathedBow.SetActive(true);
+    }
+
     /// <summary>
     /// Simply flash stamina BG bar to show that current action requires higher stamin
     /// </summary>
@@ -421,5 +610,18 @@ public class Combat : MonoBehaviour
     {
         MovementRef.PlayerHolder.GetComponent<PlayerUI>().WarnNoStaminaUI();
     }
-    
+
+
+    void UpdateAimReticle()
+    {
+        if (archerBowDraw)
+        {
+            aimReticleParent.SetActive(true);
+            aimReticleFG.fillAmount = (archerDrawTime / 1f);
+        }
+        else
+        {
+            aimReticleParent.SetActive(false);
+        }
+    }
 }

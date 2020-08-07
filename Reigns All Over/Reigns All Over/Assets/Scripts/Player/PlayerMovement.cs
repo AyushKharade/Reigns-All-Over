@@ -53,7 +53,10 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         // to make camera follow on jumps and fall
-        TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        if(CombatRef.archerBowDraw)
+            TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z+2.25f);
+        else
+            TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 
         CheckGrounded();
 
@@ -163,14 +166,42 @@ public class PlayerMovement : MonoBehaviour
         // fighting input direction.
         if (!isDead && isGrounded && !isDodging && CombatRef.ready)
         {
-            Vector3 attackDir=PlayerDirection;
+            Vector3 attackDir = PlayerDirection;
             if (attackDir == Vector3.zero)
                 attackDir = transform.forward;
 
-            if (Input.GetMouseButtonDown(0))
-                CombatRef.FightingControls(0, attackDir);
-            else if (Input.GetMouseButtonDown(1))
-                CombatRef.FightingControls(1, attackDir);
+            if (CombatRef.fightStyle == Combat.CurrentFightStyle.Melee)
+            {
+                if (Input.GetMouseButtonDown(0))
+                    CombatRef.FightingControls(0, attackDir);
+                else if (Input.GetMouseButtonDown(1))
+                    CombatRef.FightingControls(1, attackDir);
+            }
+            else   // archery
+            {
+                if (Input.GetMouseButton(1) && !isDodging)
+                {
+                    CombatRef.archerBowDraw = true;
+                    animator.SetBool("BowDraw", true);
+                    CombatRef.Get_XY_Movement_Anim_Values();
+
+                    //testing shotdirection
+                    Vector3 camEnd = CamRef.GetComponent<Camera>().ViewportToWorldPoint(new Vector3(0.5f,0.5f,0f));
+                    Vector3 shotDirection = (camEnd - CombatRef.aimReticleParent.transform.position).normalized;
+
+
+                    
+                    Debug.DrawRay(CamRef.transform.position, CamRef.transform.forward,Color.red);
+                }
+                else
+                {
+                    animator.SetBool("BowDraw",false);
+                    animator.SetBool("BowShooting",false);
+                    CombatRef.archerBowDraw = false;
+                }
+            }
+
+            //
         }
 
 
@@ -270,6 +301,8 @@ public class PlayerMovement : MonoBehaviour
             CombatRef.InteruptAttack();
         if(CombatRef.isCastingSpell)
             CombatRef.InteruptSpellCast();
+        if (CombatRef.fightStyle == Combat.CurrentFightStyle.Archery)
+            CombatRef.InteruptArchery();
 
         PAttributesRef.ReduceStamina(0);         // its fine if we have zero stamina we can roll, just dont let player regen a lot of stamina
 
@@ -321,7 +354,11 @@ public class PlayerMovement : MonoBehaviour
         isDodging = false;
         PAttributesRef.dodgeInvincible = false;
 
-        animator.SetLayerWeight(1, 1);       // switch off combat layer until then.
+        if(CombatRef.fightStyle==Combat.CurrentFightStyle.Melee)
+            animator.SetLayerWeight(1, 1);       // switch off combat layer until then.
+        else
+            animator.SetLayerWeight(3, 1);       // switch off combat layer until then.
+
         animator.SetBool("isDodging",false);
         doDodgeAlign = false;
         allowDodgeOrient = false;
