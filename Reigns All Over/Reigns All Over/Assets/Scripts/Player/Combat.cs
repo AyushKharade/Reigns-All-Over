@@ -112,7 +112,8 @@ public class Combat : MonoBehaviour
         animator.SetBool("usingArchery", true);
         UnEquipBow();
 
-        mainCam = Camera.main.gameObject;
+        //mainCam = Camera.main.gameObject;
+        mainCam = MovementRef.CamRef.gameObject;
     }
 
     void Update()

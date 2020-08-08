@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\Player\Combat.cs" />
     <Compile Include="Assets\Scripts\Player\Interaction.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerAttributes.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerCam2.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerCamera.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerEvents.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
