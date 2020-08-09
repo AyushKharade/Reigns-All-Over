@@ -6,22 +6,26 @@ public class PlayerCam2 : MonoBehaviour
 {
     [Header("Varaibles")]
     public float camMoveSpeed = 120f;
-    public GameObject cameraFollowObj;
+    public Transform cameraFollowTarget;
+    public Transform cameraAimFollowTarget;
     public GameObject cameraObj;
     public GameObject playerObj;
     Vector3 FollowPOS;
 
     public float clampAngle = 75f;
     public float sensitivity = 150f;
+    public bool invert=true;
 
-    [Header("Inputs")]
-    public float mouseX;
-    public float mouseY;
+    float mouseX;
+    float mouseY;
     public float smoothX;
     public float smoothY;
 
-    public float rotY = 0f;
-    public float rotX = 0f;
+    float rotY = 0f;
+    float rotX = 0f;
+
+    //references
+    Combat combatRef;
 
 
     private void Start()
@@ -32,6 +36,9 @@ public class PlayerCam2 : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+
+        combatRef = playerObj.GetComponent<Combat>();
     }
 
 
@@ -39,10 +46,11 @@ public class PlayerCam2 : MonoBehaviour
     {
         // get input;
         mouseX = Input.GetAxis("Mouse X");
-        mouseY = Input.GetAxis("Mouse Y");
+        mouseY = Input.GetAxis("Mouse Y")*-1;
 
         rotY += mouseX * sensitivity * Time.deltaTime;
         rotX += mouseY * sensitivity * Time.deltaTime;
+        
 
         rotX = Mathf.Clamp(rotX, -clampAngle, clampAngle);
 
@@ -58,8 +66,12 @@ public class PlayerCam2 : MonoBehaviour
 
     void CamPosUpdate()
     {
+        Transform target;
         // follow player
-        Transform target = cameraFollowObj.transform;
+        if (combatRef.archerBowDraw)
+            target = cameraAimFollowTarget;
+        else
+            target = cameraFollowTarget;
 
         // move towards
         float step = camMoveSpeed * Time.deltaTime;

@@ -185,13 +185,8 @@ public class PlayerMovement : MonoBehaviour
                     animator.SetBool("BowDraw", true);
                     CombatRef.Get_XY_Movement_Anim_Values();
 
-                    //testing shotdirection
-                    Vector3 camEnd = CamRef.GetComponent<Camera>().ViewportToWorldPoint(new Vector3(0.5f,0.5f,0f));
-                    Vector3 shotDirection = (camEnd - CombatRef.aimReticleParent.transform.position).normalized;
 
-
-                    
-                    Debug.DrawRay(CamRef.transform.position, CamRef.transform.forward,Color.red);
+                    DebugDrawArcheryLines();
                 }
                 else
                 {
@@ -208,6 +203,21 @@ public class PlayerMovement : MonoBehaviour
         
     }
 
+
+    public Transform aimSphereRef;
+
+    void DebugDrawArcheryLines()
+    {
+        // place this sphere where we are aiming at.
+        Ray ray = CamRef.GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 500f))
+        {
+            if (hit.transform.CompareTag("Enemy"))
+                Debug.Log("Enemy");
+            aimSphereRef.position = hit.point;
+        }
+    }
 
 
 

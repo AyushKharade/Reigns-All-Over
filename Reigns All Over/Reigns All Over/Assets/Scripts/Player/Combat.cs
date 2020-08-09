@@ -298,33 +298,36 @@ public class Combat : MonoBehaviour
         }
     }
 
+    public GameObject aimingAt;
+
     /// <summary>
     /// Shooter arrow where aiming, use hold time for shot strength and damage.
     /// </summary>
     /// <param name="holdTime"></param>
     public void ShootArrow(float holdTime)
     {
-        //GameObject arrow = Instantiate(equippedArrowPrefab, arrowShootPoint.position, Quaternion.identity);
-        Vector3 centerShootPos = transform.position;
-        centerShootPos.y = arrowShootPoint.position.y;
-        //GameObject arrow = Instantiate(equippedArrowPrefab, centerShootPos, Quaternion.identity);
-        GameObject arrow = Instantiate(equippedArrowPrefab, mainCam.transform.position, Quaternion.identity);
+        
+        GameObject arrow = Instantiate(equippedArrowPrefab, arrowShootPoint.position, Quaternion.identity);
+        // set damage based on holdTime.
+  
+        // find the direction of the shot
+        Vector3 shotDirection=Vector3.zero;
+        Ray ray = mainCam.GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 500f))
+        {
+            shotDirection = (hit.point-arrowShootPoint.position).normalized;
+        }
 
-        //arrow.transform.localScale = new Vector3(arrow.transform.localScale.x * 7f, arrow.transform.localScale.x * 7f, arrow.transform.localScale.x * 7f);
-        Vector3 shotDirection = mainCam.transform.forward;
-        //Vector3 shotDirection = transform.forward;
-        //shotDirection.y = mainCam.transform.position.y;
+
 
         arrow.transform.LookAt(shotDirection);
-        //arrow.transform.LookAt(Vector3.up);
         arrow.GetComponent<Arrow>().shotDirection = shotDirection;
 
         shotDirection.y += 0.025f;
         nextShotReady = false;
 
-        //launch
-        arrow.GetComponent<Rigidbody>().AddForce(shotDirection.normalized*arrowShotForce,ForceMode.Impulse);
-
+        arrow.GetComponent<Rigidbody>().AddForce(shotDirection*arrowShotForce,ForceMode.Impulse);
         Destroy(arrow.gameObject, 4f);
     }
 
