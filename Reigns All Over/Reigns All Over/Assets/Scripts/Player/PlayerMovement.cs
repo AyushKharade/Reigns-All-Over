@@ -193,6 +193,7 @@ public class PlayerMovement : MonoBehaviour
                     animator.SetBool("BowDraw",false);
                     animator.SetBool("BowShooting",false);
                     CombatRef.archerBowDraw = false;
+                    CombatRef.archerDrawTime = 0f;
                 }
             }
 
@@ -213,8 +214,6 @@ public class PlayerMovement : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 500f))
         {
-            if (hit.transform.CompareTag("Enemy"))
-                Debug.Log("Enemy");
             aimSphereRef.position = hit.point;
         }
     }

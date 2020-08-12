@@ -195,6 +195,8 @@ public class PlayerAttributes : MonoBehaviour
                 CombatRef.InteruptAttack();
             if (CombatRef.isCastingSpell)
                 CombatRef.InteruptSpellCast();
+            if (CombatRef.archerBowDraw)
+                CombatRef.InteruptArchery();
 
             if (health <= 0)
             {

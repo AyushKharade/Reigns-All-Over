@@ -315,10 +315,9 @@ public class Combat : MonoBehaviour
         Ray ray = mainCam.GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 500f))
-        {
-            shotDirection = (hit.point-arrowShootPoint.position).normalized;
-        }
-
+            shotDirection = (hit.point - arrowShootPoint.position).normalized;
+        else
+            shotDirection = (ray.GetPoint(500f) - arrowShootPoint.position).normalized;
 
 
         arrow.transform.LookAt(shotDirection);
