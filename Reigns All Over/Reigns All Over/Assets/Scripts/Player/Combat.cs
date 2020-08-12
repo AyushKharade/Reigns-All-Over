@@ -77,6 +77,7 @@ public class Combat : MonoBehaviour
 
     public GameObject EquippedBow;
     public GameObject SheathedBow;
+    public GameObject HeldArrow;
 
     [Header("Equipped Spells")]
     public Transform CastHandRef;
@@ -117,6 +118,8 @@ public class Combat : MonoBehaviour
         mainCam = MovementRef.CamRef.gameObject;
 
         bowAnimator = EquippedBow.transform.GetChild(0).GetComponent<Animator>();
+
+
     }
 
     void Update()
@@ -541,6 +544,8 @@ public class Combat : MonoBehaviour
         archerDrawTime = 0f;
         //nextShotReady = false;
         nextShotReady = true;
+
+        PEventsRef.Archer_HideHeldArrow();
     }
 
     /// <summary>

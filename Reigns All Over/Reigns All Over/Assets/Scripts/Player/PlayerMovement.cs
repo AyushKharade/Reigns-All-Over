@@ -40,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
     // script References
     Combat CombatRef;
     PlayerAttributes PAttributesRef;
+    PlayerEvents PEventsRef;
 
     void Start()
     {
@@ -48,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
 
         CombatRef = GetComponent<Combat>();
         PAttributesRef = GetComponent<PlayerAttributes>();
+        PEventsRef = GetComponent<PlayerEvents>();
     }
 
     void Update()
@@ -195,6 +197,8 @@ public class PlayerMovement : MonoBehaviour
                     animator.SetBool("BowShooting",false);
                     CombatRef.archerBowDraw = false;
                     CombatRef.archerDrawTime = 0f;
+
+                    PEventsRef.Archer_HideHeldArrow();
                 }
             }
 
