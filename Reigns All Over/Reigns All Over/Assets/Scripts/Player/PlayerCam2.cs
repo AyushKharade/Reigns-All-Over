@@ -56,6 +56,15 @@ public class PlayerCam2 : MonoBehaviour
 
         Quaternion localRotation = Quaternion.Euler(rotX,rotY,0f);
         transform.rotation = localRotation;
+
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            if (Time.timeScale == 0f)
+                Time.timeScale = 1f;
+            else
+                Time.timeScale = 0f;
+        }
     }
 
 

@@ -38,7 +38,7 @@ ModelImporter:
       name: BowRelease
       takeName: Take 001
       internalID: 0
-      firstFrame: 1
+      firstFrame: 20
       lastFrame: 26
       wrapMode: 0
       orientationOffsetY: 0

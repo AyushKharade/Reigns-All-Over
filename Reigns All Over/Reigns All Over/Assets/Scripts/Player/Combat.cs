@@ -93,6 +93,7 @@ public class Combat : MonoBehaviour
     PlayerAttributes PAttributesRef;
     PlayerEvents PEventsRef;
     Animator animator;
+    [HideInInspector]public Animator bowAnimator;
 
     GameObject mainCam;
     #endregion
@@ -114,6 +115,8 @@ public class Combat : MonoBehaviour
 
         //mainCam = Camera.main.gameObject;
         mainCam = MovementRef.CamRef.gameObject;
+
+        bowAnimator = EquippedBow.transform.GetChild(0).GetComponent<Animator>();
     }
 
     void Update()
@@ -282,6 +285,8 @@ public class Combat : MonoBehaviour
                 if(archerDrawTime<1f)
                     archerDrawTime += Time.deltaTime;
                 animator.SetBool("BowShooting",true);
+                bowAnimator.SetBool("BowDraw", true);
+
             }
             if (Input.GetMouseButtonUp(0) && archerDrawTime >= 0.3f)
             {
@@ -328,9 +333,18 @@ public class Combat : MonoBehaviour
 
         arrow.GetComponent<Rigidbody>().AddForce(shotDirection*arrowShotForce,ForceMode.Impulse);
         Destroy(arrow.gameObject, 4f);
+
+        // bow anims
+        bowAnimator.SetBool("BowShoot",true);
+        bowAnimator.SetBool("BowDraw",false);
+        Invoke("ResetBowAnimAfterShot",0.1f);
     }
 
 
+    void ResetBowAnimAfterShot()
+    {
+        bowAnimator.SetBool("BowShoot", false);
+    }
 
 
 
@@ -520,6 +534,8 @@ public class Combat : MonoBehaviour
     {
         archerBowDraw = false;
         animator.SetBool("BowDraw", false);
+        bowAnimator.SetBool("BowDraw", false);
+        bowAnimator.SetBool("BowShoot", false);
         animator.ResetTrigger("BowShot");
         animator.SetBool("BowShooting", false);
         archerDrawTime = 0f;

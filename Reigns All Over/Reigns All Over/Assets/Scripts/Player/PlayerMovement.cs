@@ -191,6 +191,7 @@ public class PlayerMovement : MonoBehaviour
                 else
                 {
                     animator.SetBool("BowDraw",false);
+                    CombatRef.bowAnimator.SetBool("BowDraw", false);
                     animator.SetBool("BowShooting",false);
                     CombatRef.archerBowDraw = false;
                     CombatRef.archerDrawTime = 0f;
