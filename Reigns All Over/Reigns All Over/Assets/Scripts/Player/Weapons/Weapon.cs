@@ -125,6 +125,13 @@ public class Weapon : MonoBehaviour
 
         if (LayerMask.LayerToName(other.gameObject.layer) == "NPC" && doDMG)
         {
+
+            if (other.CompareTag("Boss"))
+            {
+                DealDamageToBoss(other.transform);
+                return;
+            }
+
             // various cases such as creature or hostile npc, etc. Do not hurt civilians (in future dont let the player swing)
             NPC_Attributes nAttributes = other.GetComponent<NPC_Attributes>();
 
@@ -183,6 +190,45 @@ public class Weapon : MonoBehaviour
         AudioSource.clip = audioList[r];
         AudioSource.Play();
 
+    }
+
+
+    void DealDamageToBoss(Transform targetRef)
+    {
+
+        BossScript bossRef=targetRef.GetComponent<BossScript>();
+
+
+
+        // attack the target.
+        if (!targetRef.GetComponent<BossScript>().isDead && doDMG && CombatRef.attacking )// && shouldAttack)
+        {
+            int dmg = (int)(DealHowMuchDMG());
+           // float dealtDMG = nAttributes.DealDamageNPC(dmg, PlayerRef.transform.forward);
+            float dealtDMG = bossRef.DealDamage(dmg, PlayerRef.transform.forward);
+            doDMG = false;
+
+            
+            //instantiate popup.
+            if (dealtDMG > 0)
+            {
+                GameObject GB = Instantiate(DamagePopUpPrefab, targetRef.transform.position, Quaternion.identity);
+                GB.transform.Translate(Vector3.up * 1.75f);
+                GB.GetComponent<TextMesh>().text = dealtDMG + "";
+                if (doingCritDMG)
+                    GB.GetComponent<TextMesh>().color = Color.red;
+
+                if (BloodParticle != null)
+                {
+                    GB = Instantiate(BloodParticle, targetRef.transform.position, Quaternion.identity);
+                    GB.transform.Translate(Vector3.up * 1.3f);
+                    Destroy(GB, 1f);
+                }
+
+                PlayStabSound();
+            }
+            
+        }
     }
 
 }

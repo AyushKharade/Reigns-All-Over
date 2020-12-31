@@ -110,8 +110,8 @@ public class Combat : MonoBehaviour
         PAttributesRef = GetComponent<PlayerAttributes>();
         PEventsRef = GetComponent<PlayerEvents>();
 
-        fightStyle = CurrentFightStyle.Archery;                       // for now to test archery
-        animator.SetBool("usingArchery", true);
+        //fightStyle = CurrentFightStyle.Archery;                       // for now to test archery
+        //animator.SetBool("usingArchery", true);
         UnEquipBow();
 
         //mainCam = Camera.main.gameObject;
@@ -546,6 +546,7 @@ public class Combat : MonoBehaviour
         nextShotReady = true;
 
         PEventsRef.Archer_HideHeldArrow();
+        GetComponent<PlayerIK_Controller>().useIK = false;
     }
 
     /// <summary>

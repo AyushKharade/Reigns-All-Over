@@ -50,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
         CombatRef = GetComponent<Combat>();
         PAttributesRef = GetComponent<PlayerAttributes>();
         PEventsRef = GetComponent<PlayerEvents>();
+        PEventsRef.Archer_HideHeldArrow();
     }
 
     void Update()
@@ -189,6 +190,7 @@ public class PlayerMovement : MonoBehaviour
 
 
                     DebugDrawArcheryLines();
+                    
                 }
                 else
                 {
@@ -199,6 +201,9 @@ public class PlayerMovement : MonoBehaviour
                     CombatRef.archerDrawTime = 0f;
 
                     PEventsRef.Archer_HideHeldArrow();
+
+                    //set head IK
+                    GetComponent<PlayerIK_Controller>().useIK = false;
                 }
             }
 
@@ -220,6 +225,15 @@ public class PlayerMovement : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 500f))
         {
             aimSphereRef.position = hit.point;
+            //set head IK
+            GetComponent<PlayerIK_Controller>().useIK = true;
+            GetComponent<PlayerIK_Controller>().lookTarget = hit.point;
+            GetComponent<PlayerIK_Controller>().spineLookAtForward = CamRef.transform.forward;
+        }
+        else
+        {
+            GetComponent<PlayerIK_Controller>().lookTarget = ray.GetPoint(500f);
+
         }
     }
 
