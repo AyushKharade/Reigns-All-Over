@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 6bbc4f696f05a7d40843f0c5589325b0
+guid: f41150894c7e3104bbd5f70f5b4cf276
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: Paladin_3Combo
+    second: ShieldUP_Idle
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,18 +35,18 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Paladin_3Combo
+      name: ShieldUP_Idle
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 106
+      lastFrame: 42
       wrapMode: 0
-      orientationOffsetY: -50.65
+      orientationOffsetY: 31.91
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 0
