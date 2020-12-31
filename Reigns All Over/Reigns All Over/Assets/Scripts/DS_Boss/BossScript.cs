@@ -22,6 +22,8 @@ public class BossScript : MonoBehaviour
     [Header("States")]
     public bool isDead;
     public bool isAttacking;
+    public bool isInRangeForCurAttack;
+    public float curAttackRange;
 
     // UI
     [Header("UI References")]
@@ -49,6 +51,41 @@ public class BossScript : MonoBehaviour
 
     private void Update()
     {
+
+        // just for simple movement, move towards player
+
+        if (!isDead)
+        {
+            AlignOrientation((targetRef.position-transform.position).normalized);
+
+
+            // move
+            float distanceSqrMag = (targetRef.position - transform.position).sqrMagnitude;
+            if ( distanceSqrMag> 2.5f * 2.5f && distanceSqrMag<8f*8f)
+            {
+                if (animator.GetFloat("MovementY") < 1f)
+                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") + 0.1f);
+                else if (animator.GetFloat("MovementY") > 1f)
+                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") - 0.01f);
+
+            }
+            else if (distanceSqrMag > 8f * 8f)
+            {
+                if (animator.GetFloat("MovementY") < 2f)
+                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") + 0.1f);
+            }
+            else
+            {
+                if (animator.GetFloat("MovementY") > 0f)
+                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") - 0.1f);
+            }
+        }
+
+
+
+
+
+        //
         if (HealthFG_CatchUp_UI.fillAmount > HealthFG_UI.fillAmount && catchUp_Timer>0.8f)
         {
             HealthFG_CatchUp_UI.fillAmount -= catchUpUI_Speed;
@@ -58,6 +95,13 @@ public class BossScript : MonoBehaviour
         catchUp_Timer += Time.deltaTime;
     }
 
+
+    #region Movement Script
+
+
+
+
+    #endregion
 
 
     #region take damage and die section

@@ -4802,7 +4802,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 816990343}
   m_LocalRotation: {x: -0, y: 0.91170025, z: -0, w: 0.410856}
-  m_LocalPosition: {x: 189.972, y: 2.935, z: 94.185}
+  m_LocalPosition: {x: 181.98, y: 2.935, z: 101.25}
   m_LocalScale: {x: 1.5242, y: 1.5242, z: 1.5242}
   m_Children:
   - {fileID: 8398142427292035780}
@@ -15726,7 +15726,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7272840260667526081}
-  m_LocalRotation: {x: -0.000000421299, y: -0.042158965, z: -0.0041437857, w: 0.9991023}
+  m_LocalRotation: {x: -0.00000042129903, y: -0.042158965, z: -0.004143786, w: 0.9991023}
   m_LocalPosition: {x: 0.09700623, y: -0.00000089521836, z: -0.00000039353594}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -18521,10 +18521,10 @@ Animator:
   m_GameObject: {fileID: 4816436877130602711}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 5400b384e9c5e384bb6fe854456f5092, type: 3}
-  m_Controller: {fileID: 9100000, guid: 9b02c2cd36d1927488c15fba49a3d870, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0e7fbf491be398d45b275bfecb5f40a2, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -22838,6 +22838,8 @@ GameObject:
   - component: {fileID: 4816436877130602713}
   - component: {fileID: 4816436877130602712}
   - component: {fileID: 4816436877130602714}
+  - component: {fileID: 4816436877130602715}
+  - component: {fileID: 4816436877130602716}
   m_Layer: 9
   m_Name: Paladin_Boss
   m_TagString: Boss
@@ -22893,6 +22895,44 @@ CapsuleCollider:
   m_Height: 1.7203199
   m_Direction: 1
   m_Center: {x: 0, y: 0.87108254, z: 0}
+--- !u!54 &4816436877130602715
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4816436877130602711}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!195 &4816436877130602716
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4816436877130602711}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &4818209415836877849
 GameObject:
   m_ObjectHideFlags: 0
@@ -26609,7 +26649,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1458404740606999458}
-  m_LocalRotation: {x: -0.00006283205, y: 0.0312606, z: -0.016955834, w: 0.9993674}
+  m_LocalRotation: {x: -0.000062832056, y: 0.0312606, z: -0.016955836, w: 0.9993674}
   m_LocalPosition: {x: 0.2555788, y: -0.003973108, z: -0.008270896}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -29561,7 +29601,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1696167161834924974}
-  m_LocalRotation: {x: 0.000000018564487, y: -0.01617309, z: 0.0077722026, w: 0.999839}
+  m_LocalRotation: {x: 0.000000018564489, y: -0.01617309, z: 0.007772203, w: 0.999839}
   m_LocalPosition: {x: 0.12499452, y: -0.016497532, z: 0.00026470062}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
