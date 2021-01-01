@@ -18,5 +18,5 @@ MonoBehaviour:
   animatorStateName: Slash2
   hasCooldown: 0
   cooldown: 0
-  rangeNeeded: 3
+  rangeNeeded: 5
   VFX_Prefab: {fileID: 0}

@@ -28,7 +28,8 @@ public class BossScript : MonoBehaviour
     public bool isInRangeForCurAttack;
     public float curAttackRange=4f;
     float defaultRange = 4f;
-    public bool attackSet; 
+    public bool attackSet;
+    
 
     //[Header("Debug")]
 
@@ -119,7 +120,11 @@ public class BossScript : MonoBehaviour
                 HealthFG_CatchUp_UI.fillAmount = HealthFG_UI.fillAmount;
         }
         catchUp_Timer += Time.deltaTime;
+
+
+        
     }
+
 
 
     #region Movement Script
@@ -132,10 +137,6 @@ public class BossScript : MonoBehaviour
     #region set attacks from boss behaviors
     public void SetBossAttack(Attack_SO at)
     {
-        if (at == null)
-            Debug.Log("Received Attack ref is null");
-        else
-            Debug.Log("Received attack ref is not null: received: "+at.attackname);
 
         isInRangeForCurAttack = false;
         curAttackRange = at.rangeNeeded;
@@ -144,7 +145,7 @@ public class BossScript : MonoBehaviour
             Debug.Log("fuck");
 
         attackSet = true;
-        Debug.Log("Boss attack set");
+        //Debug.Log("Boss attack set");
     }
 
     public void ClearBossAttack()
@@ -154,7 +155,19 @@ public class BossScript : MonoBehaviour
         curAttackRange = defaultRange;
         attackSet = false;
         isAttacking = false;
+
+        shouldAlign = true;
         //Debug.Log("BossAttack Cleared");
+    }
+
+    void DisableAlign()
+    {
+        shouldAlign = false;
+    }
+
+    void EnableAlign()
+    {
+        shouldAlign = true;
     }
 
 

@@ -73,14 +73,15 @@ public class PaladinBoss : MonoBehaviour
         {
             UpdateAttacksData();
             BossCoolDown();
-            if(!isOnAttackCooldown && !bossScriptRef.attackSet)
+            if(!isOnAttackCooldown && !bossScriptRef.attackSet && !bossScriptRef.isAttacking)
                 AttackDecisions();
 
             // if attacks are set
-            if (bossScriptRef.attackSet && bossScriptRef.isInRangeForCurAttack)
+            if (bossScriptRef.attackSet && bossScriptRef.isInRangeForCurAttack && !bossScriptRef.isAttacking && !isOnAttackCooldown)
             {
-                Debug.Log("Called do attack.");
-                DoAttack();
+                float angle = Vector3.Angle(transform.forward, (bossScriptRef.targetRef.position - transform.position).normalized);
+                if(angle<20)
+                    DoAttack();
             }
         }
 

@@ -18,5 +18,5 @@ MonoBehaviour:
   animatorStateName: JumpAttack
   hasCooldown: 1
   cooldown: 15
-  rangeNeeded: 6
+  rangeNeeded: 9
   VFX_Prefab: {fileID: 0}

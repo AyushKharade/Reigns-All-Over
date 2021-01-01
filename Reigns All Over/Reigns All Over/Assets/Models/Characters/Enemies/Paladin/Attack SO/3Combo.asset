@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackname: 3Combo
   damage: 30
+  canStun: 0
   animatorStateName: 3Combo
   hasCooldown: 1
   cooldown: 20
-  rangeNeeded: 4
+  rangeNeeded: 7
   VFX_Prefab: {fileID: 0}
