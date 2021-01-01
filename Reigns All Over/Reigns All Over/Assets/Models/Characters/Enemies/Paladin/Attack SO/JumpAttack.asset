@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackname: JumpAttack
   damage: 40
-  animatorStateName: 
+  canStun: 0
+  animatorStateName: JumpAttack
   hasCooldown: 1
   cooldown: 15
   rangeNeeded: 6

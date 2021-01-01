@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackname: Slash2
   damage: 20
-  animatorStateName: 
+  canStun: 0
+  animatorStateName: Slash2
   hasCooldown: 0
   cooldown: 0
   rangeNeeded: 3

@@ -18,6 +18,7 @@ public class BossScript : MonoBehaviour
     public int health;
     int maxHealth;
     float alignSpeed;
+    public bool shouldAlign;           // controlled by animation events and conditions, etc.
 
     [Header("States")]
     public bool isDead;
@@ -27,8 +28,9 @@ public class BossScript : MonoBehaviour
     public bool isInRangeForCurAttack;
     public float curAttackRange=4f;
     float defaultRange = 4f;
+    public bool attackSet; 
 
-    [Header("Debug")]
+    //[Header("Debug")]
 
     // UI
     [Header("UI References")]
@@ -38,6 +40,10 @@ public class BossScript : MonoBehaviour
     public Text BossNameUI;
     public float catchUpUI_Speed = 0.1f;
     float catchUp_Timer = 0f;
+
+
+    [Header("Sound Ref")]
+    public AudioClip footstepSound;
 
     // Start is called before the first frame update
     void Start()
@@ -52,46 +58,53 @@ public class BossScript : MonoBehaviour
         HealthFG_UI.fillAmount = health;
         HealthFG_CatchUp_UI.fillAmount = health;
         BossNameUI.text = profileRef.bName;
+
+        //sound
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
     {
-        if (attackRef = null)
+        if (attackRef == null)
             curAttackRange = defaultRange;
         // just for simple movement, move towards player
 
         if (!isDead)
         {
+            if(shouldAlign)
+                AlignOrientation((targetRef.position-transform.position).normalized);
 
-            AlignOrientation((targetRef.position-transform.position).normalized);
-
-
-            // move
             float distanceSqrMag = (targetRef.position - transform.position).sqrMagnitude;
 
-            if ( distanceSqrMag> curAttackRange * curAttackRange && distanceSqrMag<8f*8f)        // walk
+            if (!isAttacking)
             {
-                if (animator.GetFloat("MovementY") < 1f)
-                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") + 0.05f);
-                else if (animator.GetFloat("MovementY") > 1f)
-                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") - 0.01f);
+                // move
 
-            }
-            else if (distanceSqrMag > 8f * 8f)                                                     // sprint
-            {
-                if (animator.GetFloat("MovementY") < 2f)
-                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") + 0.05f);
-            }
-            else                                                                                   // stop
-            {
-                if (animator.GetFloat("MovementY") > 0f)
-                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") - 0.04f);
+                if (distanceSqrMag > curAttackRange * curAttackRange && distanceSqrMag < 8f * 8f)        // walk
+                {
+                    if (animator.GetFloat("MovementY") < 1f)
+                        animator.SetFloat("MovementY", animator.GetFloat("MovementY") + 0.05f);
+                    else if (animator.GetFloat("MovementY") > 1f)
+                        animator.SetFloat("MovementY", animator.GetFloat("MovementY") - 0.01f);
+
+                }
+                else if (distanceSqrMag > 8f * 8f)                                                     // sprint
+                {
+                    if (animator.GetFloat("MovementY") < 2f)
+                        animator.SetFloat("MovementY", animator.GetFloat("MovementY") + 0.05f);
+                }
+                else                                                                                   // stop
+                {
+                    if (animator.GetFloat("MovementY") > 0f)
+                        animator.SetFloat("MovementY", animator.GetFloat("MovementY") - 0.04f);
+                }
             }
 
-            if (distanceSqrMag <= curAttackRange*curAttackRange)
+            if (distanceSqrMag <= curAttackRange * curAttackRange)
                 isInRangeForCurAttack = true;
             else
                 isInRangeForCurAttack = false;
+
         }
 
 
@@ -115,6 +128,57 @@ public class BossScript : MonoBehaviour
 
 
     #endregion
+
+    #region set attacks from boss behaviors
+    public void SetBossAttack(Attack_SO at)
+    {
+        if (at == null)
+            Debug.Log("Received Attack ref is null");
+        else
+            Debug.Log("Received attack ref is not null: received: "+at.attackname);
+
+        isInRangeForCurAttack = false;
+        curAttackRange = at.rangeNeeded;
+        attackRef = at;
+        if (attackRef == null)
+            Debug.Log("fuck");
+
+        attackSet = true;
+        Debug.Log("Boss attack set");
+    }
+
+    public void ClearBossAttack()
+    {
+        isInRangeForCurAttack = false;
+        attackRef = null;
+        curAttackRange = defaultRange;
+        attackSet = false;
+        isAttacking = false;
+        //Debug.Log("BossAttack Cleared");
+    }
+
+
+    #endregion
+
+    // anim event for boss attack
+    public void AttackTarget()
+    {
+        // if certain angle and distance
+
+        float dist = (targetRef.position - transform.position).sqrMagnitude;
+        float angle = Vector3.Angle(transform.forward, (targetRef.position - transform.position).normalized);
+
+        if (dist <= curAttackRange*curAttackRange && angle < 15)
+            targetRef.GetComponent<PlayerAttributes>().DealDamage(attackRef.damage, transform.forward);
+        else
+            Debug.Log("Attaacking failed");
+        // cur attack can stun, do stun
+
+
+        // clear old attack
+        //ClearBossAttack();
+    }
+
 
 
     #region take damage and die section
@@ -175,4 +239,13 @@ public class BossScript : MonoBehaviour
 
     #endregion
 
+
+    #region audio
+    AudioSource audioSource;
+    public void PlayFootStep()
+    {
+        audioSource.PlayOneShot(footstepSound);
+    }
+
+    #endregion
 }
