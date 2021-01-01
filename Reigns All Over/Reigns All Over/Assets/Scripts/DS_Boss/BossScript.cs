@@ -22,8 +22,13 @@ public class BossScript : MonoBehaviour
     [Header("States")]
     public bool isDead;
     public bool isAttacking;
+
+    public Attack_SO attackRef;
     public bool isInRangeForCurAttack;
-    public float curAttackRange;
+    public float curAttackRange=4f;
+    float defaultRange = 4f;
+
+    [Header("Debug")]
 
     // UI
     [Header("UI References")]
@@ -51,34 +56,42 @@ public class BossScript : MonoBehaviour
 
     private void Update()
     {
-
+        if (attackRef = null)
+            curAttackRange = defaultRange;
         // just for simple movement, move towards player
 
         if (!isDead)
         {
+
             AlignOrientation((targetRef.position-transform.position).normalized);
 
 
             // move
             float distanceSqrMag = (targetRef.position - transform.position).sqrMagnitude;
-            if ( distanceSqrMag> 2.5f * 2.5f && distanceSqrMag<8f*8f)
+
+            if ( distanceSqrMag> curAttackRange * curAttackRange && distanceSqrMag<8f*8f)        // walk
             {
                 if (animator.GetFloat("MovementY") < 1f)
-                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") + 0.1f);
+                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") + 0.05f);
                 else if (animator.GetFloat("MovementY") > 1f)
                     animator.SetFloat("MovementY", animator.GetFloat("MovementY") - 0.01f);
 
             }
-            else if (distanceSqrMag > 8f * 8f)
+            else if (distanceSqrMag > 8f * 8f)                                                     // sprint
             {
                 if (animator.GetFloat("MovementY") < 2f)
-                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") + 0.1f);
+                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") + 0.05f);
             }
-            else
+            else                                                                                   // stop
             {
                 if (animator.GetFloat("MovementY") > 0f)
-                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") - 0.1f);
+                    animator.SetFloat("MovementY", animator.GetFloat("MovementY") - 0.04f);
             }
+
+            if (distanceSqrMag <= curAttackRange*curAttackRange)
+                isInRangeForCurAttack = true;
+            else
+                isInRangeForCurAttack = false;
         }
 
 
@@ -136,6 +149,8 @@ public class BossScript : MonoBehaviour
     void KillBoss()
     {
         Debug.Log("Boss is dead");
+        animator.SetTrigger("isDead");
+        isDead = true;
     }
     #endregion
 

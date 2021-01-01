@@ -22859,6 +22859,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d54f2da49c88d84f9c90e4a06bf322d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lst:
+  - {fileID: 11400000, guid: 2c80696577922444b8e9bbbb56317a57, type: 2}
+  - {fileID: 11400000, guid: 943d911b247d2834c98bf2eb8e441acd, type: 2}
+  - {fileID: 11400000, guid: 37af1ffecba760c4a8daef16b9cbb3c6, type: 2}
+  - {fileID: 11400000, guid: cb0161f55294bba458b1400cbb4a4dd2, type: 2}
+  - {fileID: 11400000, guid: c4578ceb6ba2d504fbdd416774a8a64d, type: 2}
+  AttackLst: []
 --- !u!114 &4816436877130602713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22876,6 +22883,9 @@ MonoBehaviour:
   health: 0
   isDead: 0
   isAttacking: 0
+  attackRef: {fileID: 0}
+  isInRangeForCurAttack: 0
+  curAttackRange: 4
   bossHP_Parent: {fileID: 1058733314}
   HealthFG_UI: {fileID: 884536925}
   HealthFG_CatchUp_UI: {fileID: 1192819086}
