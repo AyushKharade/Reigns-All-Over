@@ -15,7 +15,10 @@ public class Attack_SO : ScriptableObject
     public string animatorStateName;
     public bool hasCooldown;
     public float cooldown;
-    public float rangeNeeded;
+
+
+    public float rangeNeeded; // to initiate attack
+    public float rangeToDamagetarget;       // attacks can be done from further away but damage only happens on this range
 
 
     [Header("References")]

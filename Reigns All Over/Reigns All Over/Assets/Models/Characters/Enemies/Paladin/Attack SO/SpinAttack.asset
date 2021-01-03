@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35311b7e5b8eed94b8f961b197a80ab7, type: 3}
   m_Name: SpinAttack
   m_EditorClassIdentifier: 
-  attackname: 
+  attackname: SpinAttack
   damage: 0
   canStun: 0
-  animatorStateName: 
-  hasCooldown: 0
-  cooldown: 0
-  rangeNeeded: 0
+  animatorStateName: SpinAttack
+  hasCooldown: 1
+  cooldown: 16
+  rangeNeeded: 6
   VFX_Prefab: {fileID: 0}

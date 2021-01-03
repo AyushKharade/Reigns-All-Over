@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackname: QuickHit
   damage: 15
-  canStun: 0
-  animatorStateName: 
-  hasCooldown: 0
-  cooldown: 0
-  rangeNeeded: 0
+  canStun: 1
+  animatorStateName: QuickHit
+  hasCooldown: 1
+  cooldown: 7.5
+  rangeNeeded: 2
   VFX_Prefab: {fileID: 0}

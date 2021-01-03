@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35311b7e5b8eed94b8f961b197a80ab7, type: 3}
   m_Name: SpiningJumpAttack
   m_EditorClassIdentifier: 
-  attackname: SpiningJumpAttack
+  attackname: SpinningJumpAttack
   damage: 25
-  animatorStateName: 
+  canStun: 1
+  animatorStateName: SpinningJumpAttack
   hasCooldown: 1
-  cooldown: 10
+  cooldown: 22
   rangeNeeded: 4
   VFX_Prefab: {fileID: 0}
