@@ -229,11 +229,11 @@ public class BossScript : MonoBehaviour
             animator.SetTrigger("Turn180");
 
         // can choose to shield until next attack
-        //int no = Random.Range(0, 100);
-        //if (no < chanceToBlock)
-        //{
-        //    StartBlocking();
-        //}
+        int no = Random.Range(0, 100);
+        if (no < chanceToBlock)
+        {
+            StartBlocking();
+        }
     }
 
 
@@ -284,8 +284,14 @@ public class BossScript : MonoBehaviour
         // if any buffs that reduce damage.
         float dmgMultiplier = 1f;                // if npc has any debuffs that makes it take more damage.
 
-        if (Vector3.Angle(dir, transform.forward) < 30)
-            dmgMultiplier = 1.5f;
+        float angle = Vector3.Angle(dir, transform.forward);
+        if (angle<30)
+            dmgMultiplier += 1f;
+        if (isBlocking && angle > 30)
+        {
+            dmgMultiplier -= 0.75f;
+            // playshield sound
+        }
 
 
         //total damage to take
@@ -384,13 +390,10 @@ public class BossScript : MonoBehaviour
 
     }
 
-    public void ToggleUpperBodyLayer_Control(int val)
-    {
-        if (val == 0)
-            disableUpperBodyLayer = false;           // means allow upperbody layer control now
-        else
-            disableUpperBodyLayer = true;
-    }
+    public void  EnableUpperBodyControl() { disableUpperBodyLayer = false; Debug.Log("Called anim event to enable upperbody again"); }
+    public void DisableUpperBodyControl() { disableUpperBodyLayer = true; }
+
+    
     #endregion
 
     #region audio

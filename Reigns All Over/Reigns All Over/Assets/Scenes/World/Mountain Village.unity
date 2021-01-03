@@ -22864,6 +22864,7 @@ MonoBehaviour:
   isOnAttackCooldown: 0
   randomCooldownLowRange: 4
   randomCooldownHighRange: 8
+  secondPhaseHP_Percent: 50
   lst:
   - {fileID: 11400000, guid: 2c80696577922444b8e9bbbb56317a57, type: 2}
   - {fileID: 11400000, guid: 7e637b3827bc92f4aa6461a4c966cc99, type: 2}
@@ -22891,12 +22892,14 @@ MonoBehaviour:
   profileRef: {fileID: 11400000, guid: 18443be3f2674144dbbc928e3ce6d4ee, type: 2}
   health: 0
   shouldAlign: 1
-  chanceToBlock: 100
+  chanceToBlock: 80
   isDead: 0
   isAttacking: 0
   isTargetDead: 0
   isBlocking: 0
   isCatchingBreath: 0
+  disableUpperBodyLayer: 0
+  catchBreathMultiplier: 1
   attackRef: {fileID: 0}
   isInRangeForCurAttack: 0
   curAttackRange: 4

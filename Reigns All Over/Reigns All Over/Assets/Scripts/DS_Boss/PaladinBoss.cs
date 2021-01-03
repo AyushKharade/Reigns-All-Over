@@ -81,6 +81,8 @@ public class PaladinBoss : MonoBehaviour
                 MonitorForSecondPhase();
 
             UpdateAttacksData();
+            CancelBlockingIfNeeded();
+
             BossCoolDown();
             if(!isOnAttackCooldown && !bossScriptRef.attackSet && !bossScriptRef.isAttacking)
                 AttackDecisions();
@@ -114,6 +116,18 @@ public class PaladinBoss : MonoBehaviour
                 if (at.attackSO.hasCooldown)
                     at.ExpendAttack();
             }
+        }
+    }
+
+    /// <summary>
+    /// Looks at how much time there is left for cooldown to finish, in the last second, disable it.
+    /// </summary>
+    void CancelBlockingIfNeeded()
+    {
+        if (bossScriptRef.isBlocking)
+        {
+            if (bossCooldownTimer >= (bossCooldown - 1f))
+                bossScriptRef.EndBlocking();
         }
     }
 
@@ -261,11 +275,18 @@ public class PaladinBoss : MonoBehaviour
 
     void StartSecondPhase()
     {
+        if (bossScriptRef.isAttacking)
+            bossScriptRef.ClearBossAttack();
+
+
         // PlaySound and start anim, etc.
         animator.SetTrigger("StartPhase2");
         startedSecondPhase = true;
         animator.SetFloat("AnimSpeed", 1.2f);
-        bossScriptRef.disableUpperBodyLayer=true;
+        bossScriptRef.DisableUpperBodyControl();
+
+        // reduce times he can block
+        bossScriptRef.chanceToBlock = 40f;
 
         // boost catchbreath Speed by x percent
         bossScriptRef.catchBreathMultiplier = 0.65f;
