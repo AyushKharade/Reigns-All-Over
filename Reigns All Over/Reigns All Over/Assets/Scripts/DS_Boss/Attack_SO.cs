@@ -20,6 +20,7 @@ public class Attack_SO : ScriptableObject
     public float rangeNeeded; // to initiate attack
     public float rangeToDamagetarget;       // attacks can be done from further away but damage only happens on this range
 
+    public float catchUpTime;               // leave at zero if no catch up;
 
     [Header("References")]
     public GameObject VFX_Prefab;

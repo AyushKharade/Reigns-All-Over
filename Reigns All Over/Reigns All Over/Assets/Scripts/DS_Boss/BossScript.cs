@@ -19,10 +19,14 @@ public class BossScript : MonoBehaviour
     int maxHealth;
     float alignSpeed;
     public bool shouldAlign;           // controlled by animation events and conditions, etc, if false, boss wont align towards target.
+    public float chanceToBlock;        // chance that the boss will raise their shields
 
     [Header("States")]
     public bool isDead;
     public bool isAttacking;
+    public bool isTargetDead;
+    public bool isBlocking;
+    public bool isCatchingBreath;              // after every attack the boss will wait x seconds, when this is true, boss will not move or align
 
     public Attack_SO attackRef;                  // references to the current attack that the boss will be doing
     public bool isInRangeForCurAttack;           
@@ -70,7 +74,7 @@ public class BossScript : MonoBehaviour
             curAttackRange = defaultRange;
         // just for simple movement, move towards player
 
-        if (!isDead)
+        if (!isDead && !isCatchingBreath)
         {
             if(shouldAlign)
                 AlignOrientation((targetRef.position-transform.position).normalized);
@@ -79,6 +83,7 @@ public class BossScript : MonoBehaviour
             if (!isAttacking)
             {
                 BossMovement();
+                UpperBodyLayer_Control();
             }
 
         }
@@ -178,6 +183,8 @@ public class BossScript : MonoBehaviour
 
     public void ClearBossAttack()
     {
+        float bossCatchUpTime = attackRef.catchUpTime;
+
         isInRangeForCurAttack = false;
         attackRef = null;
         curAttackRange = defaultRange;
@@ -185,22 +192,56 @@ public class BossScript : MonoBehaviour
         isAttacking = false;
 
         shouldAlign = true;
-        //Debug.Log("BossAttack Cleared");
 
+        // once attack ends, depending on the attack made, the boss will catch breath and not move / align for a while (read value from attack so)
+        if (bossCatchUpTime > 0)
+        {
+            isCatchingBreath = true;
+            Invoke("DisableBossCatchUp", bossCatchUpTime);
+
+            if (animator.GetFloat("MovementY") != 0) animator.SetFloat("MovementY", 0f);
+            if (animator.GetFloat("MovementX") != 0) animator.SetFloat("MovementX", 0f);
+        }
+        else
+            DisableBossCatchUp();
+
+
+
+        // turn around to face player if player is behind.
+        //if (Vector3.Angle(transform.forward, (targetRef.position- transform.position) )> 35)
+        //    animator.SetTrigger("Turn180");
+    }
+
+    /// <summary>
+    /// Boss will stop catching their breath and get back to fighting
+    /// </summary>
+    void DisableBossCatchUp()
+    {
+        isCatchingBreath = false;
+        
         // turn around to face player if player is behind.
         if (Vector3.Angle(transform.forward, (targetRef.position- transform.position) )> 35)
             animator.SetTrigger("Turn180");
+
+        // can choose to shield until next attack
+        //int no = Random.Range(0, 100);
+        //if (no < chanceToBlock)
+        //{
+        //    StartBlocking();
+        //}
     }
 
-    void DisableAlign()
-    {
-        shouldAlign = false;
+
+    public void StartBlocking() {
+        isBlocking = true;
+        animator.SetBool("ShieldUp", true);
+    }
+    public void EndBlocking() {
+        isBlocking = false;
+        animator.SetBool("ShieldUp", false);
     }
 
-    void EnableAlign()
-    {
-        shouldAlign = true;
-    }
+
 
 
     #endregion
@@ -213,15 +254,21 @@ public class BossScript : MonoBehaviour
         float dist = (targetRef.position - transform.position).sqrMagnitude;
         float angle = Vector3.Angle(transform.forward, (targetRef.position - transform.position).normalized);
 
-        if (dist <= curDamageRange*curDamageRange && angle < 15)
+        if (dist <= curDamageRange * curDamageRange && angle < 15)
+        {
             targetRef.GetComponent<PlayerAttributes>().DealDamage(attackRef.damage, transform.forward);
+            // if target dies, outcome, include finisher anim too :P
+
+
+        }
         else
             Debug.Log("Attaacking failed");
+     
+        
+        
         // cur attack can stun, do stun
 
 
-        // clear old attack
-        //ClearBossAttack();
     }
 
 
@@ -248,11 +295,18 @@ public class BossScript : MonoBehaviour
         UpdateHealth_UI();
 
 
+        // hurt anim
+        if (!isAttacking)
+        {
+            animator.SetTrigger("Hurt");
+            if (Vector3.Angle(dir, transform.forward) < 35)       // means a backstab
+                animator.SetFloat("HurtValue", 1f);
+            else
+                animator.SetFloat("HurtValue", 0f);
+        }
+
 
         return (int)dmgToTake;
-
-
-
     }
 
     void KillBoss()
@@ -282,8 +336,48 @@ public class BossScript : MonoBehaviour
     }
 
 
+    void DisableAlign()
+    {
+        shouldAlign = false;
+    }
+
+    void EnableAlign()
+    {
+        shouldAlign = true;
+    }
+
     #endregion
 
+
+    #region anim events & anim layers
+
+    /// <summary>
+    /// depending on states of the boss, this later controls the 2nd layer which is responsible for shield, parry and hurt anims
+    /// </summary>
+    void UpperBodyLayer_Control()
+    {
+        // turn on & off upper body layer whenever
+
+        bool upperLayerEnable=true;
+
+        if (isAttacking || isDead)
+            upperLayerEnable = false;
+
+
+        // smoothly enable / disable layers
+        if (upperLayerEnable)
+        {
+            if (animator.GetLayerWeight(1) < 1f)
+                animator.SetLayerWeight(1,animator.GetLayerWeight(1) + 0.04f);
+        }
+        else
+        {
+            if (animator.GetLayerWeight(1) > 0f)
+                animator.SetLayerWeight(1, animator.GetLayerWeight(1) - 0.08f);
+        }
+
+    }
+    #endregion
 
     #region audio
     AudioSource audioSource;

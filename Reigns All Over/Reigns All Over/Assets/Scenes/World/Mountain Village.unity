@@ -7948,7 +7948,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1184919766
 Transform:
   m_ObjectHideFlags: 0
@@ -22893,9 +22893,11 @@ MonoBehaviour:
   shouldAlign: 1
   isDead: 0
   isAttacking: 0
+  isTargetDead: 0
   attackRef: {fileID: 0}
   isInRangeForCurAttack: 0
   curAttackRange: 4
+  curDamageRange: 0
   attackSet: 0
   bossHP_Parent: {fileID: 1058733314}
   HealthFG_UI: {fileID: 884536925}
