@@ -186,6 +186,10 @@ public class BossScript : MonoBehaviour
 
         shouldAlign = true;
         //Debug.Log("BossAttack Cleared");
+
+        // turn around to face player if player is behind.
+        if (Vector3.Angle(transform.forward, (targetRef.position- transform.position) )> 35)
+            animator.SetTrigger("Turn180");
     }
 
     void DisableAlign()
