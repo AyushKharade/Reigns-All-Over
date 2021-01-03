@@ -389,12 +389,14 @@ public class Combat : MonoBehaviour
             {
                 animator.SetLayerWeight(2, 1);
                 animator.SetBool("SprintAttack", true);
+                animator.SetFloat("attackAnimValue", attackAnimValue);
                 attacking = true;
                 chained = false; chainAttack = false; chainWindowOpen = false;                    // just incase they were left on
-                combo = 1;
+
+                if (attackAnimValue == 0) combo = 2; else combo = 5;                 // since these attacks cost a lot so do lot damage
 
                 // turn on sword dmg
-                EquippedWeapon.GetComponent<Weapon>().doDMG = true;
+                //EquippedWeapon.GetComponent<Weapon>().doDMG = true;
                 PAttributesRef.ReduceStamina(sprintAttackCost);
             }
             else

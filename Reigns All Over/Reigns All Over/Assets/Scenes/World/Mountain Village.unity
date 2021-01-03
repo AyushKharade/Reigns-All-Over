@@ -20716,7 +20716,7 @@ MonoBehaviour:
   xOffset_Aim: 0
   yOffset_Aim: 0
   heavyAttackCost: 4
-  sprintAttackCost: 15
+  sprintAttackCost: 18
   HandWeaponSlot: {fileID: 2639881461886172789}
   SheathSlot: {fileID: 103805946764050275}
   EquippedWeapon: {fileID: 892731007017073656}
@@ -22891,9 +22891,12 @@ MonoBehaviour:
   profileRef: {fileID: 11400000, guid: 18443be3f2674144dbbc928e3ce6d4ee, type: 2}
   health: 0
   shouldAlign: 1
+  chanceToBlock: 100
   isDead: 0
   isAttacking: 0
   isTargetDead: 0
+  isBlocking: 0
+  isCatchingBreath: 0
   attackRef: {fileID: 0}
   isInRangeForCurAttack: 0
   curAttackRange: 4

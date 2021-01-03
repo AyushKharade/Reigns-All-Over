@@ -19,4 +19,6 @@ MonoBehaviour:
   hasCooldown: 0
   cooldown: 0
   rangeNeeded: 0
+  rangeToDamagetarget: 0
+  catchUpTime: 2
   VFX_Prefab: {fileID: 0}

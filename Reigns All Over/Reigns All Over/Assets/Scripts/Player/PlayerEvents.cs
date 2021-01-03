@@ -175,4 +175,10 @@ public class PlayerEvents : MonoBehaviour
     public void Archer_HideHeldArrow() { CombatRef.HeldArrow.SetActive(false); }
     public void Archer_ShowHeldArrow() { CombatRef.HeldArrow.SetActive(true); }
 
+
+
+    public void EnableSwordDamage()
+    {
+        Debug.Log("SwordDMG function called");
+        CombatRef.EquippedWeapon.GetComponent<Weapon>().doDMG = true; }
 }
