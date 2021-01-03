@@ -28,6 +28,7 @@ public class BossScript : MonoBehaviour
     public bool isBlocking;
     public bool isCatchingBreath;              // after every attack the boss will wait x seconds, when this is true, boss will not move or align
     public bool disableUpperBodyLayer;
+    public bool playerDefeated;
 
     [Header("Buff & Debuff abilities")]
     public float catchBreathMultiplier = 1f;
@@ -79,7 +80,7 @@ public class BossScript : MonoBehaviour
             curAttackRange = defaultRange;
         // just for simple movement, move towards player
 
-        if (!isDead && !isCatchingBreath)
+        if (!isDead && !isCatchingBreath && !playerDefeated)
         {
             if(shouldAlign)
                 AlignOrientation((targetRef.position-transform.position).normalized);
@@ -259,19 +260,26 @@ public class BossScript : MonoBehaviour
         float dist = (targetRef.position - transform.position).sqrMagnitude;
         float angle = Vector3.Angle(transform.forward, (targetRef.position - transform.position).normalized);
 
+        bool playerKilled=false;
+
         if (dist <= curDamageRange * curDamageRange && angle < 15)
-        {
-            targetRef.GetComponent<PlayerAttributes>().DealDamage(attackRef.damage, transform.forward);
-            // if target dies, outcome, include finisher anim too :P
+            playerKilled=targetRef.GetComponent<PlayerAttributes>().DealDamage(attackRef.damage, transform.forward);
 
-
-        }
-        else
-            Debug.Log("Attaacking failed");
-     
-        
-        
         // cur attack can stun, do stun
+
+        // if target dies, outcome, include finisher anim too :P
+
+        // if certain angle --> do finisher
+
+        // Victory anim.
+        if (playerKilled)
+        {
+            playerDefeated = true;
+            animator.SetTrigger("PlayerDead");
+            //animator.SetFloat("VictoryAnimValue", Random.Range(0, 100f));
+            animator.SetFloat("VictoryAnimValue", 100);
+            animator.SetLayerWeight(2, 1);
+        }
 
 
     }
@@ -325,6 +333,7 @@ public class BossScript : MonoBehaviour
         Debug.Log("Boss is dead");
         animator.SetTrigger("isDead");
         isDead = true;
+        animator.SetLayerWeight(1, 0);
     }
     #endregion
 
@@ -380,7 +389,7 @@ public class BossScript : MonoBehaviour
         if (upperLayerEnable)
         {
             if (animator.GetLayerWeight(1) < 1f)
-                animator.SetLayerWeight(1,animator.GetLayerWeight(1) + 0.04f);
+                animator.SetLayerWeight(1,animator.GetLayerWeight(1) + 0.06f);
         }
         else
         {

@@ -155,11 +155,13 @@ public class PlayerAttributes : MonoBehaviour
 
 
     // Health Related
-    /// <summary>
-    /// General Damage from Environment, make a new function for enemies that includes a direction of attack,
-    /// </summary>
-    /// <param name="dmg"> How much damage to deal.</param>
-    public void DealDamage(float dmg, Vector3 dir)
+   /// <summary>
+   /// Use to deal damage to the player, specific a direction to see if player can block it
+   /// </summary>
+   /// <param name="dmg">damage amount in float</param>
+   /// <param name="dir">direction of the attack</param>
+   /// <returns>returns true if this attack killed the player</returns>
+    public bool DealDamage(float dmg, Vector3 dir)
     {
         if (!MovementRef.isDead && !invincible && !dodgeInvincible)
         {
@@ -202,9 +204,10 @@ public class PlayerAttributes : MonoBehaviour
             {
                 health = 0;
                 KillPlayer();
+                return true;
             }
         }
-      
+        return false;
     }
 
     /// <summary>

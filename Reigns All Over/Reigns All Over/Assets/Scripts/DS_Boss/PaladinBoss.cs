@@ -75,7 +75,7 @@ public class PaladinBoss : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!bossScriptRef.isDead)
+        if (!bossScriptRef.isDead || !bossScriptRef.playerDefeated)
         {
             if(!startedSecondPhase)
                 MonitorForSecondPhase();
