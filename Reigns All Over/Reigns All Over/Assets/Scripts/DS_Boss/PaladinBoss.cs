@@ -43,6 +43,9 @@ public class PaladinBoss : MonoBehaviour
     public float randomCooldownLowRange=2f;
     public float randomCooldownHighRange=5f;
 
+    [Header("Second Phase")]
+    public float secondPhaseHP_Percent=30;                 // at what percent remaining health will the second phase trigger.
+    bool startedSecondPhase;
     [Header("List of all attacks")]
     public List<Attack_SO> lst = new List<Attack_SO>();
     
@@ -64,6 +67,9 @@ public class PaladinBoss : MonoBehaviour
         // set a random available attack from the list.
         //Attack_SO at = GetAvailableAttack();
         bossScriptRef.attackRef = lst[0];
+
+
+        animator.SetFloat("AnimSpeed", 1f);
     }
 
     // Update is called once per frame
@@ -71,6 +77,9 @@ public class PaladinBoss : MonoBehaviour
     {
         if (!bossScriptRef.isDead)
         {
+            if(!startedSecondPhase)
+                MonitorForSecondPhase();
+
             UpdateAttacksData();
             BossCoolDown();
             if(!isOnAttackCooldown && !bossScriptRef.attackSet && !bossScriptRef.isAttacking)
@@ -240,8 +249,38 @@ public class PaladinBoss : MonoBehaviour
         }
         //bossScriptRef.ClearBossAttack();
     }
+
+
+    #region Phase 2
+
+    void MonitorForSecondPhase()
+    {
+        if (bossScriptRef.health <= bossScriptRef.profileRef.health * (secondPhaseHP_Percent / 100f))
+            StartSecondPhase();
+    }
+
+    void StartSecondPhase()
+    {
+        // PlaySound and start anim, etc.
+        animator.SetTrigger("StartPhase2");
+        startedSecondPhase = true;
+        animator.SetFloat("AnimSpeed", 1.2f);
+        bossScriptRef.disableUpperBodyLayer=true;
+
+        // boost catchbreath Speed by x percent
+        bossScriptRef.catchBreathMultiplier = 0.65f;
+
+        // reset HP:
+        bossScriptRef.health = (int)(bossScriptRef.profileRef.health * 0.75f);
+        bossScriptRef.UpdateHealth_UI();
+    }
+    #endregion
 }
 
+
+
+
+//######################################################### class
 [System.Serializable]
 public class Attack
 {

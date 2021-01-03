@@ -179,6 +179,5 @@ public class PlayerEvents : MonoBehaviour
 
     public void EnableSwordDamage()
     {
-        Debug.Log("SwordDMG function called");
         CombatRef.EquippedWeapon.GetComponent<Weapon>().doDMG = true; }
 }

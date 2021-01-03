@@ -27,6 +27,11 @@ public class BossScript : MonoBehaviour
     public bool isTargetDead;
     public bool isBlocking;
     public bool isCatchingBreath;              // after every attack the boss will wait x seconds, when this is true, boss will not move or align
+    public bool disableUpperBodyLayer;
+
+    [Header("Buff & Debuff abilities")]
+    public float catchBreathMultiplier = 1f;
+
 
     public Attack_SO attackRef;                  // references to the current attack that the boss will be doing
     public bool isInRangeForCurAttack;           
@@ -197,7 +202,7 @@ public class BossScript : MonoBehaviour
         if (bossCatchUpTime > 0)
         {
             isCatchingBreath = true;
-            Invoke("DisableBossCatchUp", bossCatchUpTime);
+            Invoke("DisableBossCatchUp", bossCatchUpTime*catchBreathMultiplier);
 
             if (animator.GetFloat("MovementY") != 0) animator.SetFloat("MovementY", 0f);
             if (animator.GetFloat("MovementX") != 0) animator.SetFloat("MovementX", 0f);
@@ -329,9 +334,10 @@ public class BossScript : MonoBehaviour
     }
 
 
-    void UpdateHealth_UI()
+    public void UpdateHealth_UI()
     {
         HealthFG_UI.fillAmount = ((health * 1f) / maxHealth);
+        if (HealthFG_CatchUp_UI.fillAmount < HealthFG_UI.fillAmount) HealthFG_CatchUp_UI.fillAmount = HealthFG_UI.fillAmount;
         catchUp_Timer = 0f;
     }
 
@@ -360,7 +366,7 @@ public class BossScript : MonoBehaviour
 
         bool upperLayerEnable=true;
 
-        if (isAttacking || isDead)
+        if (isAttacking || isDead || disableUpperBodyLayer)
             upperLayerEnable = false;
 
 
@@ -376,6 +382,14 @@ public class BossScript : MonoBehaviour
                 animator.SetLayerWeight(1, animator.GetLayerWeight(1) - 0.08f);
         }
 
+    }
+
+    public void ToggleUpperBodyLayer_Control(int val)
+    {
+        if (val == 0)
+            disableUpperBodyLayer = false;           // means allow upperbody layer control now
+        else
+            disableUpperBodyLayer = true;
     }
     #endregion
 
