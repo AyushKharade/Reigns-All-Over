@@ -18,5 +18,6 @@ MonoBehaviour:
   animatorStateName: SpinningJumpAttack
   hasCooldown: 1
   cooldown: 22
-  rangeNeeded: 4
+  rangeNeeded: 7
+  rangeToDamagetarget: 4
   VFX_Prefab: {fileID: 0}

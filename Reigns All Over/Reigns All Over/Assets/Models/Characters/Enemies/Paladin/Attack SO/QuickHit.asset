@@ -18,5 +18,6 @@ MonoBehaviour:
   animatorStateName: QuickHit
   hasCooldown: 1
   cooldown: 7.5
-  rangeNeeded: 2
+  rangeNeeded: 2.5
+  rangeToDamagetarget: 2
   VFX_Prefab: {fileID: 0}
