@@ -4697,6 +4697,148 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 805903587}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &807503485
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 807503488}
+  - component: {fileID: 807503487}
+  - component: {fileID: 807503486}
+  m_Layer: 0
+  m_Name: BossMusicObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &807503486
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 807503485}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &807503487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 807503485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55c76ff9128f25349b47bff972c3f3ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  paladinBossMusic1: {fileID: 8300000, guid: 596b8b949c8d6e1439d14f4aed9e094a, type: 3}
+  paladinBossMusic2: {fileID: 8300000, guid: 05fc6ac8fa03a8142823bb1319d95c9d, type: 3}
+--- !u!4 &807503488
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 807503485}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 141.6075, y: 10.237888, z: 158.6635}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 16
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &812524543
 GameObject:
   m_ObjectHideFlags: 0
@@ -22876,6 +23018,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a55d414b4c5cff141b153371b91f729c, type: 2}
   - {fileID: 11400000, guid: c4578ceb6ba2d504fbdd416774a8a64d, type: 2}
   AttackLst: []
+  BossMusicObjRef: {fileID: 807503485}
 --- !u!114 &4816436877130602713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22890,6 +23033,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetRef: {fileID: 2639881460173671276}
   profileRef: {fileID: 11400000, guid: 18443be3f2674144dbbc928e3ce6d4ee, type: 2}
+  bossType: 0
   health: 0
   shouldAlign: 1
   chanceToBlock: 80
@@ -22899,6 +23043,7 @@ MonoBehaviour:
   isBlocking: 0
   isCatchingBreath: 0
   disableUpperBodyLayer: 0
+  playerDefeated: 0
   catchBreathMultiplier: 1
   attackRef: {fileID: 0}
   isInRangeForCurAttack: 0

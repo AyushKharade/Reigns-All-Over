@@ -52,6 +52,10 @@ public class PaladinBoss : MonoBehaviour
     [Header("Tracking all attacks")]
     public List<Attack> AttackLst = new List<Attack>();
 
+    [Header("Boss Music Ref")]
+    public GameObject BossMusicObjRef;
+    BossMusic BossMusicRef;
+
     //referneces
     BossScript bossScriptRef;
     Animator animator;
@@ -67,6 +71,9 @@ public class PaladinBoss : MonoBehaviour
         // set a random available attack from the list.
         //Attack_SO at = GetAvailableAttack();
         bossScriptRef.attackRef = lst[0];
+        BossMusicRef = BossMusicObjRef.GetComponent<BossMusic>();
+        BossMusicRef.SetAudioClip(BossMusicRef.paladinBossMusic1,true,1f);
+        BossMusicRef.PlayCurrentClip();
 
 
         animator.SetFloat("AnimSpeed", 1f);
@@ -284,6 +291,9 @@ public class PaladinBoss : MonoBehaviour
         startedSecondPhase = true;
         animator.SetFloat("AnimSpeed", 1.2f);
         bossScriptRef.DisableUpperBodyControl();
+
+        BossMusicRef.SetAudioClip(BossMusicRef.paladinBossMusic2, true, 1f);
+        BossMusicRef.PlayCurrentClip();
 
         // reduce times he can block
         bossScriptRef.chanceToBlock = 40f;

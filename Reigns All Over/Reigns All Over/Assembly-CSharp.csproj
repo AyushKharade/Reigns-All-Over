@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\DS_Boss\Attack_SO.cs" />
+    <Compile Include="Assets\Scripts\DS_Boss\BossMusic.cs" />
     <Compile Include="Assets\Scripts\DS_Boss\BossProfile.cs" />
     <Compile Include="Assets\Scripts\DS_Boss\BossScript.cs" />
     <Compile Include="Assets\Scripts\DS_Boss\PaladinBoss.cs" />
