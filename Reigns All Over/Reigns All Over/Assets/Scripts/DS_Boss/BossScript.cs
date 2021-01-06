@@ -15,6 +15,8 @@ public class BossScript : MonoBehaviour
 
     [Header("Dynamic data")]
     public BossProfile profileRef;
+    public enum BossType { Paladin, Mutant, SkeletonMage};
+    public BossType bossType = new BossType();
     public int health;
     int maxHealth;
     float alignSpeed;
@@ -29,6 +31,7 @@ public class BossScript : MonoBehaviour
     public bool isCatchingBreath;              // after every attack the boss will wait x seconds, when this is true, boss will not move or align
     public bool disableUpperBodyLayer;
     public bool playerDefeated;
+    bool alwaysOrientTargetTowardsItself;             // if true, target will always orient towards itself
 
     [Header("Buff & Debuff abilities")]
     public float catchBreathMultiplier = 1f;
@@ -95,8 +98,26 @@ public class BossScript : MonoBehaviour
         }
 
 
+        if (alwaysOrientTargetTowardsItself)
+        {
+            OrientTarget(targetRef, (transform.position - targetRef.position));
+            OrientTarget(transform, (targetRef.position-transform.position));
 
-        
+            // also maintain the distance
+            // target distance = 3.5f
+            Vector3 towardsTargetDir = (targetRef.position - transform.position).normalized;
+            float distance = Vector3.Distance(transform.position, targetRef.position);
+            if ( distance > 1.5f)
+            {
+                //Debug.Log("Moving closer (curdistance: "+distance+")");
+                transform.Translate(towardsTargetDir * -1f * Time.deltaTime);
+            }
+            else if (distance < 1.0f)
+            {
+                //Debug.Log("Moving away from (curdistance: " + distance + ")");
+                transform.Translate(towardsTargetDir * 1f * Time.deltaTime);
+            }
+        }
 
 
 
@@ -268,21 +289,50 @@ public class BossScript : MonoBehaviour
         // cur attack can stun, do stun
 
         // if target dies, outcome, include finisher anim too :P
-
         // if certain angle --> do finisher
 
         // Victory anim.
         if (playerKilled)
         {
-            playerDefeated = true;
-            animator.SetTrigger("PlayerDead");
-            //animator.SetFloat("VictoryAnimValue", Random.Range(0, 100f));
-            animator.SetFloat("VictoryAnimValue", 100);
-            animator.SetLayerWeight(2, 1);
+            // if boss is paladin and player is facing the boss, do the finisher animation
+            if (bossType == BossType.Paladin && Vector3.Angle(targetRef.forward, (transform.position - targetRef.position)) < 30
+                &&
+                targetRef.GetComponent<Combat>().fightStyle==Combat.CurrentFightStyle.Melee
+                && targetRef.GetComponent<Combat>().inCombat)
+            {
+                playerDefeated = true;
+                targetRef.GetComponent<Animator>().SetTrigger("PaladinBossKill");
+                animator.SetLayerWeight(2, 1);
+                animator.SetTrigger("Finisher");
+                alwaysOrientTargetTowardsItself = true;
+
+                // if too far move close
+                if (Vector3.Distance(transform.position, targetRef.position) > 3)
+                {
+                }
+            }
+            else
+            {
+                Debug.Log("Player wasnt looking at boss: "+ Vector3.Angle(targetRef.forward, (transform.position - targetRef.position)));
+                DefeatPlayer();
+            }
         }
 
 
     }
+
+    public void DefeatPlayer()
+    {
+        playerDefeated = true;
+        animator.SetTrigger("PlayerDead");
+        animator.SetFloat("VictoryAnimValue", Random.Range(0, 100f));
+        animator.SetLayerWeight(2, 1);
+
+        alwaysOrientTargetTowardsItself = false;
+        Debug.Log("caled player defeat");
+
+    }
+
 
 
 
@@ -346,6 +396,15 @@ public class BossScript : MonoBehaviour
         //set quaternion to this dir
         lookDirection = Quaternion.LookRotation(dir, Vector3.up);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, alignSpeed);
+    }
+
+    void OrientTarget(Transform target, Vector3 dir)
+    {
+        Quaternion lookDirection;
+
+        //set quaternion to this dir
+        lookDirection = Quaternion.LookRotation(dir, Vector3.up);
+        target.rotation = Quaternion.RotateTowards(target.rotation, lookDirection, alignSpeed);
     }
 
 
