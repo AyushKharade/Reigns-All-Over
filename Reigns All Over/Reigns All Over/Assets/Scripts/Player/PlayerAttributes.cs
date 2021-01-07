@@ -114,7 +114,10 @@ public class PlayerAttributes : MonoBehaviour
             }
             else
             {
-                stamina += staminaRegenRate * Time.deltaTime;
+                float rateModifier = 1f;
+                if (CombatRef.isBlocking) rateModifier -= 0.5f;
+
+                stamina += staminaRegenRate *rateModifier* Time.deltaTime;
             }
         }
     }

@@ -365,7 +365,7 @@ public class Combat : MonoBehaviour
         attackDirection = Dir;
         attackAnimValue = type;
 
-        attackStaminaCost = combo * heavyAttackCost * attackAnimValue;            // calculate heavy attack stamina cost
+        attackStaminaCost = combo * heavyAttackCost; //* attackAnimValue;            // calculate heavy attack stamina cost
         if (!attacking)
         {
 
