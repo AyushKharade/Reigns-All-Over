@@ -17,6 +17,7 @@ public class Combat : MonoBehaviour
     public bool attacking;             // if any attack is being performed.
     public bool isBlocking;
     public bool isStunned;
+    public bool isStunnedKnockedDown;
     public bool canDodgeFromStun;
 
 
@@ -171,25 +172,33 @@ public class Combat : MonoBehaviour
     // stunned modes
     public void StunPlayer(float stunValue)
     {
-        if(attacking)
-            InteruptAttack();
-        InteruptArchery();
-        if(isCastingSpell)
-            InteruptSpellCast();
+        if (!MovementRef.isDodging)
+        {
+            if (stunValue >= 1f)
+                isStunnedKnockedDown = true;
 
-        isStunned = true;
 
-        animator.SetTrigger("Stunned");
-        animator.SetFloat("StunValue",stunValue);
+            if (attacking)
+                InteruptAttack();
+            InteruptArchery();
+            if (isCastingSpell)
+                InteruptSpellCast();
 
-        MovementRef.controlLock = true;
-        PAttributesRef.ReduceStamina(0);
+            isStunned = true;
+
+            animator.SetTrigger("Stunned");
+            animator.SetFloat("StunValue", stunValue);
+
+            MovementRef.controlLock = true;
+            PAttributesRef.ReduceStamina(0);
+        }
     }
 
     public void EndPlayerStun()
     {
         MovementRef.controlLock = false;
         isStunned = false;
+        isStunnedKnockedDown = false;
     }
 
     /// <summary>

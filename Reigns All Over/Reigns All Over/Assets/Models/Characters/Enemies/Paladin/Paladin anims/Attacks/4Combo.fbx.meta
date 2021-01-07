@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 7d5ed08e3a2e5ce4cb88b1fb2de223a3
+guid: 22a9d2c9a48f96d49877840ecb83ea9c
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: Paladin_SpinAttack
+    second: 4 Combo
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,13 +35,13 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Paladin_SpinAttack
+      name: 4 Combo
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 39
+      lastFrame: 109
       wrapMode: 0
-      orientationOffsetY: -9.01
+      orientationOffsetY: -60.19
       level: 0
       cycleOffset: 0
       loop: 0
@@ -59,14 +59,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.41033
-        functionName: AttackTarget
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0.95758927
+      - time: 0.97098213
         functionName: ClearBossAttack
         data: 
         objectReferenceParameter: {instanceID: 0}

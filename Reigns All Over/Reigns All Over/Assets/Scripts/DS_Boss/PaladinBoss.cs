@@ -46,6 +46,7 @@ public class PaladinBoss : MonoBehaviour
 
     [Header("Second Phase")]
     public float secondPhaseHP_Percent=30;                 // at what percent remaining health will the second phase trigger.
+    public float secondPhaseHP_RaiseTo = 60;
     bool startedSecondPhase;
     [Header("List of all attacks")]
     public List<Attack_SO> lst = new List<Attack_SO>();
@@ -176,6 +177,12 @@ public class PaladinBoss : MonoBehaviour
         bossCooldown = Random.Range(randomCooldownLowRange, randomCooldownHighRange);
     }
 
+    void SetBossOnCooldown(float time)
+    {
+        isOnAttackCooldown = true;
+        bossCooldown = time;
+    }
+
     // increments cooldown times and checks when cooldown has finished
     void UpdateAttacksData()
     {
@@ -216,6 +223,9 @@ public class PaladinBoss : MonoBehaviour
         {
             if (at.attackSO.attackname.CompareTo(attackName) == 0)
             {
+                if (at.attackSO.isSecondPhaseAttack && !startedSecondPhase)
+                    return false;
+
                 if (at.isReady)
                     return true;
                 else
@@ -248,27 +258,43 @@ public class PaladinBoss : MonoBehaviour
         float distance = (bossScriptRef.targetRef.position - transform.position).sqrMagnitude;
         // make decisions based on available attacks and distance to player.
 
-        if (isAttackAvailable("3Combo"))
+        // if really close do stun attacks if available
+        bool attackSet=false;
+        if (distance < (3.2f * 3.2f) && Random.Range(0,100)<80)
         {
-            // set it in boss script, it will be done as soon as player is in range.
-            bossScriptRef.SetBossAttack(GetAttack("3Combo").attackSO);
+            if (isAttackAvailable("HardKick") && isAttackAvailable("QuickHit"))
+            {
+                bool trueOrFalse = (Random.value > 0.5f);
+                if (trueOrFalse) bossScriptRef.SetBossAttack(GetAttack("HardKick").attackSO);
+                else bossScriptRef.SetBossAttack(GetAttack("QuickHit").attackSO);
+                attackSet = true;
+            }
+            else if (isAttackAvailable("HardKick")) { bossScriptRef.SetBossAttack(GetAttack("HardKick").attackSO); attackSet = true; }
+            else if (isAttackAvailable("QuickHit")) { bossScriptRef.SetBossAttack(GetAttack("QuickHit").attackSO); attackSet = true; }
         }
-        else if (isAttackAvailable("JumpAttack"))
-        {
-            bossScriptRef.SetBossAttack(GetAttack("JumpAttack").attackSO);
-        }
-        else
-        {
-            bool trueOrFalse = (Random.value > 0.5f);
 
-            if(trueOrFalse)
-                bossScriptRef.SetBossAttack(GetAttack("Slash1").attackSO);
+        else if (!attackSet)
+        {
+            if (isAttackAvailable("3Combo"))
+            {
+                bossScriptRef.SetBossAttack(GetAttack("3Combo").attackSO);
+            }
+            else if (isAttackAvailable("JumpAttack"))
+            {
+                bossScriptRef.SetBossAttack(GetAttack("JumpAttack").attackSO);
+            }
             else
-                bossScriptRef.SetBossAttack(GetAttack("Slash2").attackSO);
+            {
+                bool trueOrFalse = (Random.value > 0.5f);
+
+                if (trueOrFalse)
+                    bossScriptRef.SetBossAttack(GetAttack("Slash1").attackSO);
+                else
+                    bossScriptRef.SetBossAttack(GetAttack("Slash2").attackSO);
+
+            }
 
         }
-
-
 
     }
 
@@ -280,12 +306,18 @@ public class PaladinBoss : MonoBehaviour
     {
         animator.SetTrigger(bossScriptRef.attackRef.animatorStateName);
         bossScriptRef.isAttacking=true;
-        SetBossOnCooldown();
+
+
+        if (!GetAttack(bossScriptRef.attackRef.name).attackSO.overrideBossCooldown)
+            SetBossOnCooldown();
+        else
+            SetBossOnCooldown(GetAttack(bossScriptRef.attackRef.name).attackSO.overrideBossCooldownTime);
+
+
         if (GetAttack(bossScriptRef.attackRef.name).attackSO.hasCooldown)
         {
             GetAttack(bossScriptRef.attackRef.name).ExpendAttack();
         }
-        //bossScriptRef.ClearBossAttack();
     }
 
 
@@ -319,7 +351,7 @@ public class PaladinBoss : MonoBehaviour
         bossScriptRef.catchBreathMultiplier = 0.65f;
 
         // reset HP:
-        bossScriptRef.health = (int)(bossScriptRef.profileRef.health * 0.75f);
+        bossScriptRef.health = (int)(bossScriptRef.profileRef.health * (secondPhaseHP_RaiseTo/100f));
         bossScriptRef.UpdateHealth_UI();
     }
     #endregion

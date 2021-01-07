@@ -283,7 +283,8 @@ public class BossScript : MonoBehaviour
         float angle = Vector3.Angle(transform.forward, (targetRef.position - transform.position).normalized);
 
         bool playerKilled=false;
-
+        float hitAngle = 15f;
+        if (attackRef.overrideHitAngle) hitAngle = attackRef.overrideHitAngleValue;
         if (dist <= curDamageRange * curDamageRange && angle < 15)
         {
             playerKilled = targetRef.GetComponent<PlayerAttributes>().DealDamage(attackRef.damage, transform.forward);
@@ -305,7 +306,8 @@ public class BossScript : MonoBehaviour
             if (bossType == BossType.Paladin && Vector3.Angle(targetRef.forward, (transform.position - targetRef.position)) < 30
                 &&
                 targetRef.GetComponent<Combat>().fightStyle==Combat.CurrentFightStyle.Melee
-                && targetRef.GetComponent<Combat>().inCombat)
+                && targetRef.GetComponent<Combat>().inCombat
+                && !targetRef.GetComponent<Combat>().isStunnedKnockedDown)
             {
                 playerDefeated = true;
                 targetRef.GetComponent<Animator>().SetTrigger("PaladinBossKill");
