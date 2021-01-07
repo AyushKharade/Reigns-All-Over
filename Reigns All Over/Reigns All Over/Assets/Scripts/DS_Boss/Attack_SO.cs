@@ -12,6 +12,7 @@ public class Attack_SO : ScriptableObject
     public string attackname;
     public int damage;
     public bool canStun;
+    public float stunValue;
     public string animatorStateName;
     public bool hasCooldown;
     public float cooldown;

@@ -280,7 +280,7 @@ public class PlayerMovement : MonoBehaviour
         {
             isRunning = true;
 
-            if (!isDodging && !CombatRef.attacking && !CombatRef.isBlocking)
+            if (!isDodging && !CombatRef.attacking && !CombatRef.isBlocking && !CombatRef.isStunned)
                 AlignOrientation(dir);
             else if (allowDodgeOrient)
             {

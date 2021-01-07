@@ -112,7 +112,7 @@ public class PlayerAttributes : MonoBehaviour
                     staminaTimer = 0;
                 }
             }
-            else
+            else if(!CombatRef.isStunned)
             {
                 float rateModifier = 1f;
                 if (CombatRef.isBlocking) rateModifier -= 0.5f;

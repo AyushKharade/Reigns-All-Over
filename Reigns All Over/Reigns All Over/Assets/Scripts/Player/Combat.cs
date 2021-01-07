@@ -16,6 +16,10 @@ public class Combat : MonoBehaviour
 
     public bool attacking;             // if any attack is being performed.
     public bool isBlocking;
+    public bool isStunned;
+    public bool canDodgeFromStun;
+
+
     public bool isCastingSpell;
     /// <summary>
     /// If you blocked recently, opportunity to reposte attack.
@@ -131,6 +135,14 @@ public class Combat : MonoBehaviour
         SmoothSwitchAttacks();
         UpdateAimReticle();
 
+
+
+        // debug
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            StunPlayer(2f);
+        }
+
     }
 
     [HideInInspector]public float blockImpactAnimTimer=0f;
@@ -152,6 +164,32 @@ public class Combat : MonoBehaviour
             blockImpactAnimTimer = 0f;
 
 
+    }
+
+
+
+    // stunned modes
+    public void StunPlayer(float stunValue)
+    {
+        if(attacking)
+            InteruptAttack();
+        InteruptArchery();
+        if(isCastingSpell)
+            InteruptSpellCast();
+
+        isStunned = true;
+
+        animator.SetTrigger("Stunned");
+        animator.SetFloat("StunValue",stunValue);
+
+        MovementRef.controlLock = true;
+        PAttributesRef.ReduceStamina(0);
+    }
+
+    public void EndPlayerStun()
+    {
+        MovementRef.controlLock = false;
+        isStunned = false;
     }
 
     /// <summary>
@@ -237,7 +275,8 @@ public class Combat : MonoBehaviour
         }
 
         // blocking controls
-        if (ready && Input.GetKey(KeyCode.X) && !MovementRef.isDodging && !MovementRef.isDead && MovementRef.isGrounded && !PAttributesRef.blockRecovery)
+        if (ready && Input.GetKey(KeyCode.X) && !MovementRef.isDodging && !MovementRef.isDead && MovementRef.isGrounded && !PAttributesRef.blockRecovery
+            && !isStunned)
         {
             isBlocking = true;
             animator.SetBool("Blocking",true);

@@ -285,8 +285,14 @@ public class BossScript : MonoBehaviour
         bool playerKilled=false;
 
         if (dist <= curDamageRange * curDamageRange && angle < 15)
-            playerKilled=targetRef.GetComponent<PlayerAttributes>().DealDamage(attackRef.damage, transform.forward);
+        {
+            playerKilled = targetRef.GetComponent<PlayerAttributes>().DealDamage(attackRef.damage, transform.forward);
 
+            if(attackRef.canStun && !playerKilled)
+            {
+                targetRef.GetComponent<Combat>().StunPlayer(attackRef.stunValue);
+            }
+        }
         // cur attack can stun, do stun
 
         // if target dies, outcome, include finisher anim too :P
