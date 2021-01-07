@@ -614,7 +614,7 @@ RectTransform:
   - {fileID: 1192819085}
   - {fileID: 884536924}
   m_Father: {fileID: 1058733314}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -7080,8 +7080,9 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 97033103}
+  - {fileID: 1399993552}
   - {fileID: 812524544}
+  - {fileID: 97033103}
   m_Father: {fileID: 816990344}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9476,6 +9477,81 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1392909912}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1399993551
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1399993552}
+  - component: {fileID: 1399993554}
+  - component: {fileID: 1399993553}
+  m_Layer: 0
+  m_Name: Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1399993552
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399993551}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.2556375, y: 0.048871875, z: 0.10025}
+  m_Children: []
+  m_Father: {fileID: 1058733314}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -318.9, y: -350.4}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1399993553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399993551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.392}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1399993554
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399993551}
+  m_CullTransparentMesh: 0
 --- !u!1001 &1403660220
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20912,6 +20988,9 @@ MonoBehaviour:
   ready: 0
   attacking: 0
   isBlocking: 0
+  isStunned: 0
+  isStunnedKnockedDown: 0
+  canDodgeFromStun: 0
   isCastingSpell: 0
   blockTime: 0
   chained: 0
@@ -23083,6 +23162,7 @@ MonoBehaviour:
   randomCooldownLowRange: 4
   randomCooldownHighRange: 8
   secondPhaseHP_Percent: 25
+  secondPhaseHP_RaiseTo: 60
   lst:
   - {fileID: 11400000, guid: 2c80696577922444b8e9bbbb56317a57, type: 2}
   - {fileID: 11400000, guid: 7e637b3827bc92f4aa6461a4c966cc99, type: 2}
@@ -23093,6 +23173,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 42173acfcbd67f14cae812a76209fde4, type: 2}
   - {fileID: 11400000, guid: a55d414b4c5cff141b153371b91f729c, type: 2}
   - {fileID: 11400000, guid: c4578ceb6ba2d504fbdd416774a8a64d, type: 2}
+  - {fileID: 11400000, guid: dc15a1858722ae340b59c7c6058fa293, type: 2}
   AttackLst: []
   BossMusicObjRef: {fileID: 807503485}
 --- !u!114 &4816436877130602713
@@ -23113,6 +23194,7 @@ MonoBehaviour:
   health: 0
   shouldAlign: 1
   chanceToBlock: 80
+  bossCooldownTimeRemaining: 0
   isDead: 0
   isAttacking: 0
   isTargetDead: 0

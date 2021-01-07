@@ -14,11 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackname: JumpAttack
   damage: 40
-  canStun: 0
   animatorStateName: JumpAttack
+  isSecondPhaseAttack: 0
+  canStun: 1
+  stunValue: 2
+  blockStunValue: 2
   hasCooldown: 1
   cooldown: 15
+  overrideBossCooldown: 0
+  overrideBossCooldownTime: 0
+  catchUpTime: 1.5
+  overrideHitAngle: 0
+  overrideHitAngleValue: 0
   rangeNeeded: 9
   rangeToDamagetarget: 4
-  catchUpTime: 1.5
+  chainAttack: {fileID: 0}
+  canChain: 0
+  chainChance: 0
   VFX_Prefab: {fileID: 0}

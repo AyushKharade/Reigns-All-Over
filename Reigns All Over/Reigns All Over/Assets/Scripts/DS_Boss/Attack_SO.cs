@@ -17,6 +17,7 @@ public class Attack_SO : ScriptableObject
     [Header("Stun ")]
     public bool canStun;
     public float stunValue;
+    public float blockStunValue;               // if player was blocking
 
     [Header("Cooldowns")]
     public bool hasCooldown;

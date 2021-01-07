@@ -14,11 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackname: Slash2
   damage: 20
-  canStun: 0
   animatorStateName: Slash2
+  isSecondPhaseAttack: 0
+  canStun: 0
+  stunValue: 0
+  blockStunValue: 0
   hasCooldown: 0
   cooldown: 0
+  overrideBossCooldown: 0
+  overrideBossCooldownTime: 0
+  catchUpTime: 0.5
+  overrideHitAngle: 1
+  overrideHitAngleValue: 25
   rangeNeeded: 4
   rangeToDamagetarget: 3.5
-  catchUpTime: 0.5
+  chainAttack: {fileID: 11400000, guid: a55d414b4c5cff141b153371b91f729c, type: 2}
+  canChain: 1
+  chainChance: 40
   VFX_Prefab: {fileID: 0}

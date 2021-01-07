@@ -23,6 +23,8 @@ public class BossScript : MonoBehaviour
     public bool shouldAlign;           // controlled by animation events and conditions, etc, if false, boss wont align towards target.
     public float chanceToBlock;        // chance that the boss will raise their shields
 
+    [HideInInspector] public float bossCooldownTimeRemaining;
+
     [Header("States")]
     public bool isDead;
     public bool isAttacking;
@@ -209,35 +211,67 @@ public class BossScript : MonoBehaviour
         //Debug.Log("Boss attack set");
     }
 
+    // anim event
+    public void ChainAttackChance()
+    {
+        if (attackRef.canChain)
+        {
+            if (Random.Range(0, 100) < attackRef.chainChance)
+            {
+                animator.SetBool("ChainAttack", true);
+                Attack_SO temp = attackRef.chainAttack;
+                attackRef = temp;
+                willChain = true;
+            }
+            else
+            {
+                willChain = false;
+                animator.SetBool("ChainAttack", false);
+
+            }
+        }
+    }
+
+    bool willChain = false;
+
     public void ClearBossAttack()
     {
-        float bossCatchUpTime = attackRef.catchUpTime;
 
-        isInRangeForCurAttack = false;
-        attackRef = null;
-        curAttackRange = defaultRange;
-        attackSet = false;
-        isAttacking = false;
 
-        shouldAlign = true;
-
-        // once attack ends, depending on the attack made, the boss will catch breath and not move / align for a while (read value from attack so)
-        if (bossCatchUpTime > 0)
+        if (!willChain)
         {
-            isCatchingBreath = true;
-            Invoke("DisableBossCatchUp", bossCatchUpTime*catchBreathMultiplier);
+            float bossCatchUpTime = attackRef.catchUpTime;
 
-            if (animator.GetFloat("MovementY") != 0) animator.SetFloat("MovementY", 0f);
-            if (animator.GetFloat("MovementX") != 0) animator.SetFloat("MovementX", 0f);
+            isInRangeForCurAttack = false;
+            attackRef = null;
+            curAttackRange = defaultRange;
+            attackSet = false;
+            isAttacking = false;
+
+            shouldAlign = true;
+
+            // once attack ends, depending on the attack made, the boss will catch breath and not move / align for a while (read value from attack so)
+            if (bossCatchUpTime > 0)
+            {
+                isCatchingBreath = true;
+                Invoke("DisableBossCatchUp", bossCatchUpTime * catchBreathMultiplier);
+
+                if (animator.GetFloat("MovementY") != 0) animator.SetFloat("MovementY", 0f);
+                if (animator.GetFloat("MovementX") != 0) animator.SetFloat("MovementX", 0f);
+            }
+            else
+                DisableBossCatchUp();
+
+            animator.SetBool("ChainAttack", false);
+            willChain = false;
+
         }
         else
-            DisableBossCatchUp();
+        {
+            animator.SetBool("ChainAttack", false);
+            willChain = false;
+        }
 
-
-
-        // turn around to face player if player is behind.
-        //if (Vector3.Angle(transform.forward, (targetRef.position- transform.position) )> 35)
-        //    animator.SetTrigger("Turn180");
     }
 
     /// <summary>
@@ -253,7 +287,7 @@ public class BossScript : MonoBehaviour
 
         // can choose to shield until next attack
         int no = Random.Range(0, 100);
-        if (no < chanceToBlock)
+        if (no < chanceToBlock && bossCooldownTimeRemaining>2f)
         {
             StartBlocking();
         }

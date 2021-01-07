@@ -14,11 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackname: SpinAttack
   damage: 0
-  canStun: 0
   animatorStateName: SpinAttack
+  isSecondPhaseAttack: 0
+  canStun: 1
+  stunValue: 1
+  blockStunValue: 0
   hasCooldown: 1
   cooldown: 16
+  overrideBossCooldown: 0
+  overrideBossCooldownTime: 0
+  catchUpTime: 1
+  overrideHitAngle: 1
+  overrideHitAngleValue: 25
   rangeNeeded: 6
   rangeToDamagetarget: 3.5
-  catchUpTime: 1
+  chainAttack: {fileID: 0}
+  canChain: 0
+  chainChance: 0
   VFX_Prefab: {fileID: 0}

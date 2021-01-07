@@ -14,10 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackname: QuickHit
   damage: 15
-  canStun: 1
   animatorStateName: QuickHit
+  isSecondPhaseAttack: 0
+  canStun: 1
+  stunValue: 0
+  blockStunValue: 0
   hasCooldown: 1
-  cooldown: 7.5
+  cooldown: 15
+  overrideBossCooldown: 1
+  overrideBossCooldownTime: 1.5
+  catchUpTime: 0.2
+  overrideHitAngle: 0
+  overrideHitAngleValue: 0
   rangeNeeded: 2.5
   rangeToDamagetarget: 2
+  chainAttack: {fileID: 0}
+  canChain: 0
+  chainChance: 0
   VFX_Prefab: {fileID: 0}

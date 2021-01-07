@@ -12,17 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35311b7e5b8eed94b8f961b197a80ab7, type: 3}
   m_Name: 4Combo
   m_EditorClassIdentifier: 
-  attackname: 
-  damage: 0
+  attackname: 4Combo
+  damage: 15
+  animatorStateName: 4Combo
+  isSecondPhaseAttack: 1
   canStun: 0
   stunValue: 0
-  animatorStateName: 
-  hasCooldown: 0
-  cooldown: 0
+  blockStunValue: 0
+  hasCooldown: 1
+  cooldown: 30
   overrideBossCooldown: 0
   overrideBossCooldownTime: 0
-  isSecondPhaseAttack: 0
-  rangeNeeded: 0
-  rangeToDamagetarget: 0
-  catchUpTime: 0
+  catchUpTime: 2.8
+  overrideHitAngle: 0
+  overrideHitAngleValue: 0
+  rangeNeeded: 6
+  rangeToDamagetarget: 5
+  chainAttack: {fileID: 0}
+  canChain: 0
+  chainChance: 0
   VFX_Prefab: {fileID: 0}

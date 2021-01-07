@@ -14,11 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackname: SpinningJumpAttack
   damage: 25
-  canStun: 1
   animatorStateName: SpinningJumpAttack
+  isSecondPhaseAttack: 0
+  canStun: 1
+  stunValue: 1
+  blockStunValue: 0
   hasCooldown: 1
   cooldown: 22
+  overrideBossCooldown: 0
+  overrideBossCooldownTime: 0
+  catchUpTime: 3
+  overrideHitAngle: 0
+  overrideHitAngleValue: 0
   rangeNeeded: 7
   rangeToDamagetarget: 4
-  catchUpTime: 3
+  chainAttack: {fileID: 0}
+  canChain: 0
+  chainChance: 0
   VFX_Prefab: {fileID: 0}

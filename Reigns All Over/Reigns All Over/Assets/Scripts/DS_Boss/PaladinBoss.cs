@@ -163,6 +163,7 @@ public class PaladinBoss : MonoBehaviour
         if (isOnAttackCooldown)
         {
             bossCooldownTimer += Time.deltaTime;
+            bossScriptRef.bossCooldownTimeRemaining = bossCooldown - bossCooldownTimer;
             if (bossCooldownTimer >= bossCooldown)
             {
                 bossCooldownTimer = 0f;
@@ -250,7 +251,9 @@ public class PaladinBoss : MonoBehaviour
     }
 
 
+    bool stunAttackOnCooldown;
 
+    void RemoveStunAttackCooldown() { stunAttackOnCooldown = false; }
     //
     void AttackDecisions()
     {
@@ -262,23 +265,46 @@ public class PaladinBoss : MonoBehaviour
         bool attackSet=false;
         if (distance < (3.2f * 3.2f) && Random.Range(0,100)<80)
         {
-            if (isAttackAvailable("HardKick") && isAttackAvailable("QuickHit"))
+            if (stunAttackOnCooldown && isAttackAvailable("HardKick") && isAttackAvailable("QuickHit"))
             {
                 bool trueOrFalse = (Random.value > 0.5f);
                 if (trueOrFalse) bossScriptRef.SetBossAttack(GetAttack("HardKick").attackSO);
                 else bossScriptRef.SetBossAttack(GetAttack("QuickHit").attackSO);
                 attackSet = true;
+                stunAttackOnCooldown = true;
+                Invoke("RemoveStunAttackCooldown", 5f);
             }
             else if (isAttackAvailable("HardKick")) { bossScriptRef.SetBossAttack(GetAttack("HardKick").attackSO); attackSet = true; }
             else if (isAttackAvailable("QuickHit")) { bossScriptRef.SetBossAttack(GetAttack("QuickHit").attackSO); attackSet = true; }
+
+            if (attackSet) {
+                stunAttackOnCooldown = true;
+                Invoke("RemoveStunAttackCooldown", 5f);
+            }
         }
 
         else if (!attackSet)
         {
-            if (isAttackAvailable("3Combo"))
+            // check if can do combo
+            if (isAttackAvailable("3Combo") || isAttackAvailable("4Combo"))
             {
-                bossScriptRef.SetBossAttack(GetAttack("3Combo").attackSO);
+                if (isAttackAvailable("3Combo") && isAttackAvailable("4Combo"))
+                {
+                    bool trueOrFalse = (Random.value > 0.5f);
+
+                    if (trueOrFalse)
+                        bossScriptRef.SetBossAttack(GetAttack("3Combo").attackSO);
+                    else
+                        bossScriptRef.SetBossAttack(GetAttack("4Combo").attackSO);
+                }
+                else if(isAttackAvailable("4Combo"))
+                    bossScriptRef.SetBossAttack(GetAttack("4Combo").attackSO);
+                else if(isAttackAvailable("3Combo"))
+                    bossScriptRef.SetBossAttack(GetAttack("3Combo").attackSO);
+
+
             }
+            // check jump attack
             else if (isAttackAvailable("JumpAttack"))
             {
                 bossScriptRef.SetBossAttack(GetAttack("JumpAttack").attackSO);

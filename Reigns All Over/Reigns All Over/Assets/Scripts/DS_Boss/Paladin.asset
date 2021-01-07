@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 138388fdb364c394cb8b9783d26404de, type: 3}
   m_Name: Paladin
   m_EditorClassIdentifier: 
-  bName: Paladin sad but whole
+  bName: Arch-Knight Of Luthadel
   health: 200
   moveSpeed: 3
   runSpeed: 4

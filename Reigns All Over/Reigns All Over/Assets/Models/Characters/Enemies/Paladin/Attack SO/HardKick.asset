@@ -14,10 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackname: HardKick
   damage: 10
-  canStun: 1
   animatorStateName: HardKick
+  isSecondPhaseAttack: 0
+  canStun: 1
+  stunValue: 1
+  blockStunValue: 0
   hasCooldown: 1
-  cooldown: 10
+  cooldown: 20
+  overrideBossCooldown: 1
+  overrideBossCooldownTime: 3
+  catchUpTime: 0.2
+  overrideHitAngle: 0
+  overrideHitAngleValue: 0
   rangeNeeded: 3
   rangeToDamagetarget: 3
+  chainAttack: {fileID: 11400000, guid: a55d414b4c5cff141b153371b91f729c, type: 2}
+  canChain: 1
+  chainChance: 35
   VFX_Prefab: {fileID: 0}
