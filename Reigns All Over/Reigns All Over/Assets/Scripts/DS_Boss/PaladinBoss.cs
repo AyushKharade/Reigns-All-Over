@@ -36,6 +36,7 @@ using UnityEngine;
 public class PaladinBoss : MonoBehaviour
 {
     [Header("variables & states")]
+
     public float bossCooldown;
     float bossCooldownTimer;
     public bool isOnAttackCooldown;
@@ -72,34 +73,36 @@ public class PaladinBoss : MonoBehaviour
         //Attack_SO at = GetAvailableAttack();
         bossScriptRef.attackRef = lst[0];
         BossMusicRef = BossMusicObjRef.GetComponent<BossMusic>();
-        BossMusicRef.SetAudioClip(BossMusicRef.paladinBossMusic1,true,1f);
-        BossMusicRef.PlayCurrentClip();
-
+        
 
         animator.SetFloat("AnimSpeed", 1f);
+        bossScriptRef.bossHP_Parent.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!bossScriptRef.isDead || !bossScriptRef.playerDefeated)
+        if (bossScriptRef.fightEngaged)
         {
-            if(!startedSecondPhase)
-                MonitorForSecondPhase();
-
-            UpdateAttacksData();
-            CancelBlockingIfNeeded();
-
-            BossCoolDown();
-            if(!isOnAttackCooldown && !bossScriptRef.attackSet && !bossScriptRef.isAttacking)
-                AttackDecisions();
-
-            // if attacks are set
-            if (bossScriptRef.attackSet && bossScriptRef.isInRangeForCurAttack && !bossScriptRef.isAttacking && !isOnAttackCooldown)
+            if (!bossScriptRef.isDead || !bossScriptRef.playerDefeated)
             {
-                float angle = Vector3.Angle(transform.forward, (bossScriptRef.targetRef.position - transform.position).normalized);
-                if(angle<20)
-                    DoAttack();
+                if (!startedSecondPhase)
+                    MonitorForSecondPhase();
+
+                UpdateAttacksData();
+                CancelBlockingIfNeeded();
+
+                BossCoolDown();
+                if (!isOnAttackCooldown && !bossScriptRef.attackSet && !bossScriptRef.isAttacking)
+                    AttackDecisions();
+
+                // if attacks are set
+                if (bossScriptRef.attackSet && bossScriptRef.isInRangeForCurAttack && !bossScriptRef.isAttacking && !isOnAttackCooldown)
+                {
+                    float angle = Vector3.Angle(transform.forward, (bossScriptRef.targetRef.position - transform.position).normalized);
+                    if (angle < 20)
+                        DoAttack();
+                }
             }
         }
 
@@ -124,6 +127,20 @@ public class PaladinBoss : MonoBehaviour
                     at.ExpendAttack();
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.L) && !bossScriptRef.fightEngaged)
+        {
+            EngageBossFight();
+        }
+    }
+
+    public void EngageBossFight()
+    {
+        bossScriptRef.fightEngaged = true;
+        bossScriptRef.bossHP_Parent.gameObject.SetActive(true);
+        BossMusicRef.SetAudioClip(BossMusicRef.paladinBossMusic1, true, 1f);
+        BossMusicRef.PlayCurrentClip();
+
     }
 
     /// <summary>

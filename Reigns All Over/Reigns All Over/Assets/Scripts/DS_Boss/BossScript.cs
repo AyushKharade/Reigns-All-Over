@@ -32,6 +32,7 @@ public class BossScript : MonoBehaviour
     public bool disableUpperBodyLayer;
     public bool playerDefeated;
     bool alwaysOrientTargetTowardsItself;             // if true, target will always orient towards itself
+    public bool fightEngaged;
 
     [Header("Buff & Debuff abilities")]
     public float catchBreathMultiplier = 1f;
@@ -83,7 +84,7 @@ public class BossScript : MonoBehaviour
             curAttackRange = defaultRange;
         // just for simple movement, move towards player
 
-        if (!isDead && !isCatchingBreath && !playerDefeated)
+        if (!isDead && !isCatchingBreath && !playerDefeated && fightEngaged)
         {
             if(shouldAlign)
                 AlignOrientation((targetRef.position-transform.position).normalized);
