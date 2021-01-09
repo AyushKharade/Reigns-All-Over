@@ -252,8 +252,10 @@ public class PaladinBoss : MonoBehaviour
 
 
     bool stunAttackOnCooldown;
+    bool comboAttackOnCooldown;
 
     void RemoveStunAttackCooldown() { stunAttackOnCooldown = false; }
+    void RemoveComboAttackCooldown() { comboAttackOnCooldown = false; }
     //
     void AttackDecisions()
     {
@@ -296,12 +298,22 @@ public class PaladinBoss : MonoBehaviour
                         bossScriptRef.SetBossAttack(GetAttack("3Combo").attackSO);
                     else
                         bossScriptRef.SetBossAttack(GetAttack("4Combo").attackSO);
-                }
-                else if(isAttackAvailable("4Combo"))
-                    bossScriptRef.SetBossAttack(GetAttack("4Combo").attackSO);
-                else if(isAttackAvailable("3Combo"))
-                    bossScriptRef.SetBossAttack(GetAttack("3Combo").attackSO);
 
+                    comboAttackOnCooldown = true;
+                    Invoke("RemoveComboAttackCooldown", 5f);
+                }
+                else if (isAttackAvailable("4Combo"))
+                {
+                    bossScriptRef.SetBossAttack(GetAttack("4Combo").attackSO);
+                    comboAttackOnCooldown = true;
+                    Invoke("RemoveComboAttackCooldown", 5f);
+                }
+                else if (isAttackAvailable("3Combo"))
+                {
+                    bossScriptRef.SetBossAttack(GetAttack("3Combo").attackSO);
+                    comboAttackOnCooldown = true;
+                    Invoke("RemoveComboAttackCooldown", 5f);
+                }
 
             }
             // check jump attack
