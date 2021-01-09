@@ -469,12 +469,6 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: Stunned
     m_EventTreshold: 0
-  - m_ConditionMode: 2
-    m_ConditionEvent: isDodging
-    m_EventTreshold: 0
-  - m_ConditionMode: 1
-    m_ConditionEvent: isGrounded
-    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 7104032531996859574}
   m_Solo: 0
@@ -4774,14 +4768,6 @@ BlendTree:
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1.3
-    m_CycleOffset: 0
-    m_DirectBlendParameter: Locomotion
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 512db7c09f1ecd24aa783375a03e5964, type: 3}
-    m_Threshold: 0.5
-    m_Position: {x: 0, y: 0}
-    m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: Locomotion
     m_Mirror: 0

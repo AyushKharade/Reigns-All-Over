@@ -141,7 +141,7 @@ public class Combat : MonoBehaviour
         // debug
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            StunPlayer(1f,transform.forward*1f);
+            StunPlayer(0f,transform.forward*1f);
         }
 
     }
@@ -172,15 +172,15 @@ public class Combat : MonoBehaviour
     // stunned modes
     public void StunPlayer(float stunValue, Vector3 stunDir)
     {
-        if (!MovementRef.isDodging)
+        if (!PAttributesRef.dodgeInvincible)
         {
             if (stunValue >= 1f)
                 isStunnedKnockedDown = true;
 
-
             if (attacking)
                 InteruptAttack();
             InteruptArchery();
+
             if (isCastingSpell)
                 InteruptSpellCast();
 
@@ -188,11 +188,24 @@ public class Combat : MonoBehaviour
 
             animator.SetTrigger("Stunned");
             animator.SetFloat("StunValue", stunValue);
+            
 
             if (Vector3.Angle(stunDir, transform.forward) < 90)
                 animator.SetFloat("StunDir", 1f);
             else
                 animator.SetFloat("StunDir", 0f);
+
+            if (MovementRef.isDodging)
+            {
+                
+                if(animator.GetFloat("DodgeRoll")==0)
+                    animator.SetFloat("StunDir", 1);
+                else
+                    animator.SetFloat("StunDir", 0);
+
+            }
+
+
 
             MovementRef.controlLock = true;
             PAttributesRef.ReduceStamina(0);
@@ -205,6 +218,8 @@ public class Combat : MonoBehaviour
         MovementRef.controlLock = false;
         isStunned = false;
         isStunnedKnockedDown = false;
+        MovementRef.UnDodge();
+
     }
 
     /// <summary>
@@ -263,7 +278,7 @@ public class Combat : MonoBehaviour
     void CombatControls()
     {
 
-        if (Input.GetKeyDown(KeyCode.E) && !MovementRef.isDead)
+        if (Input.GetKeyDown(KeyCode.E) && !MovementRef.isDead && !isStunned && !isStunnedKnockedDown)
         {
             if (inCombat && !MovementRef.isDodging && MovementRef.isGrounded && !attacking && !isCastingSpell)
             {

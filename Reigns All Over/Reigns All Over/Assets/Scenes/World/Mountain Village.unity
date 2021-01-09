@@ -23176,6 +23176,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a55d414b4c5cff141b153371b91f729c, type: 2}
   - {fileID: 11400000, guid: c4578ceb6ba2d504fbdd416774a8a64d, type: 2}
   - {fileID: 11400000, guid: dc15a1858722ae340b59c7c6058fa293, type: 2}
+  - {fileID: 11400000, guid: bb4b4cdd6749758459ed4167f4dc944e, type: 2}
   AttackLst: []
   BossMusicObjRef: {fileID: 807503485}
   playerCloseRangeTimer: 0
@@ -23213,6 +23214,7 @@ MonoBehaviour:
   attackRef: {fileID: 0}
   isInRangeForCurAttack: 0
   curAttackRange: 4
+  curAttackCloseRangeLimit: 4
   curDamageRange: 0
   attackSet: 0
   bossHP_Parent: {fileID: 1058733314}

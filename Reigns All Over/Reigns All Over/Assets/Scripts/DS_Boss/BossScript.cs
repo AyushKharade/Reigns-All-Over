@@ -43,6 +43,7 @@ public class BossScript : MonoBehaviour
     public Attack_SO attackRef;                  // references to the current attack that the boss will be doing
     public bool isInRangeForCurAttack;           
     public float curAttackRange=4f;
+    public float curAttackCloseRangeLimit=4f;
     public float curDamageRange;
     float defaultRange = 4f;
     public bool attackSet;                       // boolean to show whether an attack was set from the boss behavior script
@@ -160,7 +161,7 @@ public class BossScript : MonoBehaviour
             if (animator.GetFloat("MovementY") < 2f)
                 animator.SetFloat("MovementY", animator.GetFloat("MovementY") + 0.05f);
         }
-        else if (distanceSqrMag < (curAttackRange-1.5f)*(curAttackRange-1.5f))  // && has space behind               // walk backward if too close
+        else if (distanceSqrMag < (curAttackCloseRangeLimit)*(curAttackCloseRangeLimit))  // && has space behind               // walk backward if too close
         {
 
             // if has space behind, move back, else go towards center?
@@ -204,6 +205,7 @@ public class BossScript : MonoBehaviour
 
         isInRangeForCurAttack = false;
         curAttackRange = at.rangeNeeded;
+        curAttackCloseRangeLimit = at.rangeTooCloseVal;
         curDamageRange = at.rangeToDamagetarget;
         attackRef = at;
         
@@ -236,10 +238,9 @@ public class BossScript : MonoBehaviour
 
     public void ClearBossAttack()
     {
-
-
         if (!willChain)
         {
+
             float bossCatchUpTime = attackRef.catchUpTime;
 
             isInRangeForCurAttack = false;
@@ -280,6 +281,7 @@ public class BossScript : MonoBehaviour
     void DisableBossCatchUp()
     {
         isCatchingBreath = false;
+        
         
         // turn around to face player if player is behind.
         if (Vector3.Angle(transform.forward, (targetRef.position- transform.position) )> 35)
@@ -372,7 +374,9 @@ public class BossScript : MonoBehaviour
         animator.SetLayerWeight(2, 1);
 
         alwaysOrientTargetTowardsItself = false;
-        Debug.Log("caled player defeat");
+
+        if (animator.GetFloat("MovementY") != 0) animator.SetFloat("MovementY", 0f);
+        if (animator.GetFloat("MovementX") != 0) animator.SetFloat("MovementX", 0f);
 
     }
 
@@ -438,7 +442,7 @@ public class BossScript : MonoBehaviour
     public void AlignOrientation(Vector3 dir)
     {
         Quaternion lookDirection;
-
+        dir.y = 0f;
         //set quaternion to this dir
         lookDirection = Quaternion.LookRotation(dir, Vector3.up);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, lookDirection, alignSpeed);

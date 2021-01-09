@@ -125,10 +125,16 @@ public class PaladinBoss : MonoBehaviour
 
 
 
-
-
-
-
+        // if too close or too far for too long, reset selected attack
+        if (playerLongRangeTimer > 5f && isAttackAvailable("RangedMagicAttack"))
+        {
+            AttackDecisions();
+        }
+        if (playerCloseRangeTimer > 5f && (isAttackAvailable("QuickHit") || isAttackAvailable("HardKick")))
+        {
+            AttackDecisions();
+            playerCloseRangeTimer = 0f;
+        }
 
 
 
@@ -178,7 +184,7 @@ public class PaladinBoss : MonoBehaviour
     {
         bossScriptRef.fightEngaged = true;
         bossScriptRef.bossHP_Parent.gameObject.SetActive(true);
-        BossMusicRef.SetAudioClip(BossMusicRef.paladinBossMusic1, true, 1f);
+        BossMusicRef.SetAudioClip(BossMusicRef.paladinBossMusic1, true, 0.4f);
         BossMusicRef.PlayCurrentClip();
 
     }
@@ -252,6 +258,8 @@ public class PaladinBoss : MonoBehaviour
             Attack newAttack=new Attack();
             newAttack.attackSO = at;
             newAttack.cooldownTimeLimit = at.cooldown;
+            if(at.availableFromStart)
+                newAttack.isReady = true;
             AttackLst.Add(newAttack);
         }
     }
@@ -304,7 +312,15 @@ public class PaladinBoss : MonoBehaviour
 
         // if really close do stun attacks if available
         bool attackSet=false;
-        if (distance < (3.2f * 3.2f) && Random.Range(0,100)<80)
+        if (playerLongRangeTimer > 4f || distance>9f*9f)
+        {
+            if (isAttackAvailable("RangedMagicAttack"))
+            {
+                attackSet = true;
+                bossScriptRef.SetBossAttack(GetAttack("RangedMagicAttack").attackSO);
+            }
+        }
+        if (distance < (3.2f * 3.2f) && Random.Range(0,100)<80 && !attackSet)
         {
             if (stunAttackOnCooldown && isAttackAvailable("HardKick") && isAttackAvailable("QuickHit"))
             {
@@ -395,6 +411,9 @@ public class PaladinBoss : MonoBehaviour
         {
             GetAttack(bossScriptRef.attackRef.name).ExpendAttack();
         }
+
+        playerCloseRangeTimer = 0f;
+        playerLongRangeTimer = 0f;
     }
 
 
@@ -440,6 +459,13 @@ public class PaladinBoss : MonoBehaviour
         GameObject spell = Instantiate(spellcastPrefab,animator.GetBoneTransform(HumanBodyBones.LeftHand).position,Quaternion.identity);
         spell.transform.GetChild(0).GetComponent<PaladinSpell>().target = bossScriptRef.targetRef;
         spell.transform.GetChild(0).transform.LookAt(bossScriptRef.targetRef.position);
+        spell.transform.GetChild(0).GetComponent<PaladinSpell>().Paladinref = transform;
+
+        if (startedSecondPhase)
+        {
+            float newScale = spell.transform.GetChild(0).localScale.x * 0.5f;
+            spell.transform.GetChild(0).localScale = new Vector3(newScale, newScale, newScale);
+                }
     }
 }
 

@@ -19,6 +19,7 @@ MonoBehaviour:
   canStun: 1
   stunValue: 2
   blockStunValue: 2
+  availableFromStart: 0
   hasCooldown: 1
   cooldown: 15
   overrideBossCooldown: 0
@@ -27,6 +28,7 @@ MonoBehaviour:
   overrideHitAngle: 0
   overrideHitAngleValue: 0
   rangeNeeded: 9
+  rangeTooCloseVal: 7
   rangeToDamagetarget: 4
   chainAttack: {fileID: 0}
   canChain: 0

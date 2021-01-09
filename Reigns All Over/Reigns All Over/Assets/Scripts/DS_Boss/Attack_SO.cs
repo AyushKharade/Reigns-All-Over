@@ -20,6 +20,7 @@ public class Attack_SO : ScriptableObject
     public float blockStunValue;               // if player was blocking
 
     [Header("Cooldowns")]
+    public bool availableFromStart;                // if yes this attack is available to the boss at the start of the fight
     public bool hasCooldown;
     public float cooldown;
     public bool overrideBossCooldown;
@@ -33,6 +34,7 @@ public class Attack_SO : ScriptableObject
 
     [Header("Range")]
     public float rangeNeeded; // to initiate attack
+    public float rangeTooCloseVal; // if player is too close, boss will make distance
     public float rangeToDamagetarget;       // attacks can be done from further away but damage only happens on this range
 
 

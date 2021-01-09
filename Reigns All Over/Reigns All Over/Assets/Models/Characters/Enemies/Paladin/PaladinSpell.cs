@@ -8,6 +8,7 @@ public class PaladinSpell : MonoBehaviour
 
     [HideInInspector]public Transform target;
     [HideInInspector]public Transform camRef;
+    [HideInInspector] public Transform Paladinref;
 
     public float moveSpeed=7.5f;
     public float moveSpeedIncrRate=3f;
@@ -20,11 +21,20 @@ public class PaladinSpell : MonoBehaviour
     public float targetY_Offset = 0.3f;
 
     public float damage;
-    
+
+    [Header("Audio")]
+    public AudioClip castSound;
+    public AudioClip hitSound;
+    public AudioClip detonateSound;
+    public float volume = 0.6f;
+    AudioSource audioSource;
+
 
     void Start()
     {
-        Destroy(transform.parent.gameObject, 10f);   
+        Destroy(transform.parent.gameObject, 10f);
+        audioSource = GetComponent<AudioSource>();
+        audioSource.PlayOneShot(castSound,volume);
     }
 
     // Update is called once per frame
@@ -95,7 +105,12 @@ public class PaladinSpell : MonoBehaviour
         if (playerInRadius && doDamage)
         {
             Vector3 towardsDir = (targetRef.position - transform.position).normalized;
-            targetRef.GetComponent<PlayerAttributes>().DealDamage(damage,towardsDir );
+            bool killed=targetRef.GetComponent<PlayerAttributes>().DealDamage(damage,towardsDir );
+            if (killed)
+            {
+                Paladinref.GetComponent<BossScript>().DefeatPlayer();
+                return;
+            }
 
 
             Vector3 dir = towardsDir;
@@ -115,32 +130,40 @@ public class PaladinSpell : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         //Debug.Log("Spell collided with "+other.name);
+        audioSource.PlayOneShot(hitSound,volume);
         bool detonate = true;
         if (other.CompareTag("Player"))
         {
             detonate = false;
-            other.GetComponent<PlayerAttributes>().DealDamage(damage, transform.forward);
-
-            bool throwPlayer = false;
-            if (Vector3.Angle(transform.forward, target.forward) > 50 && other.GetComponent<Combat>().isBlocking)
-                other.GetComponent<Combat>().StunPlayer(0f, transform.forward);
+            bool killed=other.GetComponent<PlayerAttributes>().DealDamage(damage, transform.forward);
+            if (killed)
+            {
+                Paladinref.GetComponent<BossScript>().DefeatPlayer();
+            }
             else
             {
-                other.GetComponent<Combat>().StunPlayer(2f, transform.forward);
-                throwPlayer = true;
-            }
-            // joke
-            Vector3 dir = transform.forward;
-            dir.y += 2f;
+                bool throwPlayer = false;
+                if (Vector3.Angle(transform.forward, target.forward) > 50 && other.GetComponent<Combat>().isBlocking)
+                    other.GetComponent<Combat>().StunPlayer(0f, transform.forward);
+                else
+                {
+                    other.GetComponent<Combat>().StunPlayer(2f, transform.forward);
+                    throwPlayer = true;
+                }
+                // joke
+                Vector3 dir = transform.forward;
+                dir.y += 2f;
 
-            if (!other.GetComponent<PlayerMovement>().isDodging && throwPlayer)
-                other.GetComponent<Rigidbody>().AddForce(dir * 25f, ForceMode.Impulse);
+                if (!other.GetComponent<PlayerMovement>().isDodging && throwPlayer)
+                    other.GetComponent<Rigidbody>().AddForce(dir * 25f, ForceMode.Impulse);
+            }
         }
 
         if (!other.CompareTag("Boss") && !other.CompareTag("Weapon"))
         {
             Detonate(detonate,other.transform);
-            Destroy(transform.parent.gameObject);
+            transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+            Destroy(transform.parent.gameObject,2f);
         }
     }
     

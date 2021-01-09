@@ -38,7 +38,7 @@ public class PlayerAttributes : MonoBehaviour
     bool onManaRegenDelay;
     float manaRegenTimer;
     [HideInInspector] public bool invincible;
-    [HideInInspector] public bool dodgeInvincible;
+    public bool dodgeInvincible;
 
     /// <summary>
     /// if you get hit from behind while blocking, you wont be able to block for the next 'x' seconds.

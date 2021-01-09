@@ -14,11 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackname: 3Combo
   damage: 30
-  canStun: 0
   animatorStateName: 3Combo
+  isSecondPhaseAttack: 0
+  canStun: 0
+  stunValue: 0
+  blockStunValue: 0
+  availableFromStart: 0
   hasCooldown: 1
   cooldown: 20
-  rangeNeeded: 7
-  rangeToDamagetarget: 4
+  overrideBossCooldown: 0
+  overrideBossCooldownTime: 0
   catchUpTime: 2
+  overrideHitAngle: 0
+  overrideHitAngleValue: 0
+  rangeNeeded: 7
+  rangeTooCloseVal: 3
+  rangeToDamagetarget: 4
+  chainAttack: {fileID: 0}
+  canChain: 0
+  chainChance: 0
   VFX_Prefab: {fileID: 0}
