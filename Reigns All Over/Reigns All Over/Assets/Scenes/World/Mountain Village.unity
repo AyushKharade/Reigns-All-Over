@@ -3253,7 +3253,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 503527026}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 161.74, y: 4.27, z: -38.32}
+  m_LocalPosition: {x: 199.787, y: 4.27, z: -69.995}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 151544990}
@@ -18436,7 +18436,7 @@ GameObject:
   - component: {fileID: 1906025901}
   m_Layer: 0
   m_Name: SteelSword
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22040,7 +22040,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2639881461444282203}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 161.7, y: 3.4, z: -39.1}
+  m_LocalPosition: {x: 199.6, y: 3.4, z: -70.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2639881460173671276}
@@ -23161,6 +23161,8 @@ MonoBehaviour:
   isOnAttackCooldown: 0
   randomCooldownLowRange: 4
   randomCooldownHighRange: 8
+  spellcastPrefab: {fileID: 6800175244597890580, guid: e490d28d7862b6a4cbe9dfa442ad5555,
+    type: 3}
   secondPhaseHP_Percent: 25
   secondPhaseHP_RaiseTo: 60
   lst:
@@ -23176,6 +23178,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dc15a1858722ae340b59c7c6058fa293, type: 2}
   AttackLst: []
   BossMusicObjRef: {fileID: 807503485}
+  playerCloseRangeTimer: 0
+  closeRangeTimerDistance: 3.8
+  playerLongRangeTimer: 0
+  longRangeTimerDistance: 5
 --- !u!114 &4816436877130602713
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -44,6 +44,10 @@ public class PaladinBoss : MonoBehaviour
     public float randomCooldownLowRange=2f;
     public float randomCooldownHighRange=5f;
 
+    [Header("Prefabs and references")]
+    public GameObject spellcastPrefab;
+
+
     [Header("Second Phase")]
     public float secondPhaseHP_Percent=30;                 // at what percent remaining health will the second phase trigger.
     public float secondPhaseHP_RaiseTo = 60;
@@ -61,6 +65,13 @@ public class PaladinBoss : MonoBehaviour
     //referneces
     BossScript bossScriptRef;
     Animator animator;
+
+    // counters / other variables
+    [Header("Distance to player tracker")]
+    public float playerCloseRangeTimer;
+    public float closeRangeTimerDistance=3.8f;                // if player is too close to the boss for too long, can do something
+    public float playerLongRangeTimer;
+    public float longRangeTimerDistance=8f;                 // if player is running away from boss for too long, long range attacks
 
     // Start is called before the first frame update
     void Start()
@@ -104,6 +115,8 @@ public class PaladinBoss : MonoBehaviour
                     if (angle < 20)
                         DoAttack();
                 }
+
+                UpdatePlayerDistances();
             }
         }
 
@@ -133,7 +146,30 @@ public class PaladinBoss : MonoBehaviour
         {
             EngageBossFight();
         }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            PaladinSpellCast();
+        }
     }
+
+
+    void UpdatePlayerDistances()
+    {
+        float dist = (transform.position - bossScriptRef.targetRef.position).sqrMagnitude;
+
+        if (dist < closeRangeTimerDistance*closeRangeTimerDistance)
+            playerCloseRangeTimer += Time.deltaTime;
+        else
+            playerCloseRangeTimer = 0f;
+
+        if (dist > longRangeTimerDistance*longRangeTimerDistance)
+            playerLongRangeTimer += Time.deltaTime;
+        else
+            playerLongRangeTimer = 0f;
+    }
+
+
 
     public void EngageBossFight()
     {
@@ -393,6 +429,15 @@ public class PaladinBoss : MonoBehaviour
         bossScriptRef.UpdateHealth_UI();
     }
     #endregion
+
+
+
+    void PaladinSpellCast()
+    {
+        GameObject spell = Instantiate(spellcastPrefab,animator.GetBoneTransform(HumanBodyBones.LeftHand).position,Quaternion.identity);
+        spell.transform.GetChild(0).GetComponent<PaladinSpell>().target = bossScriptRef.targetRef;
+        spell.transform.GetChild(0).transform.LookAt(bossScriptRef.targetRef.position);
+    }
 }
 
 
