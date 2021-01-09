@@ -65,6 +65,7 @@ public class PaladinBoss : MonoBehaviour
     //referneces
     BossScript bossScriptRef;
     Animator animator;
+    Transform camRef;
 
     // counters / other variables
     [Header("Distance to player tracker")]
@@ -89,6 +90,8 @@ public class PaladinBoss : MonoBehaviour
 
         animator.SetFloat("AnimSpeed", 1f);
         bossScriptRef.bossHP_Parent.gameObject.SetActive(false);
+
+        camRef = GameObject.FindGameObjectWithTag("MainCamera").transform.parent;
     }
 
     // Update is called once per frame

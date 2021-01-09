@@ -109,16 +109,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  moveSpeed: 18
-  moveSpeedIncrRate: 8
+  camRef: {fileID: 0}
+  moveSpeed: 12
+  moveSpeedIncrRate: 18
   alignSpeed: 4.5
-  distanceToAllowAlign: 4
+  distanceToAllowAlign: 5
   shipSailed: 0
+  detonationRadius: 5
   targetY_Offset: 0.2
   damage: 10
-  canStun: 1
-  stunValue: 3
-  stunValueBlocking: 0
 --- !u!199 &5488989572103078757
 ParticleSystemRenderer:
   serializedVersion: 6
