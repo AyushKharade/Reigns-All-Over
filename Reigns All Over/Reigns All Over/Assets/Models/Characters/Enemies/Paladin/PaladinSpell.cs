@@ -73,12 +73,21 @@ public class PaladinSpell : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             other.GetComponent<PlayerAttributes>().DealDamage(damage,transform.forward);
-            other.GetComponent<Combat>().StunPlayer(2f);
 
+            bool throwPlayer=false;
+            if (Vector3.Angle(transform.forward, target.forward) > 50 && other.GetComponent<Combat>().isBlocking)
+                other.GetComponent<Combat>().StunPlayer(0f, transform.forward);
+            else
+            {
+                other.GetComponent<Combat>().StunPlayer(2f, transform.forward);
+                throwPlayer = true;
+            }
             // joke
             Vector3 dir = transform.forward;
             dir.y += 2f;
-            other.GetComponent<Rigidbody>().AddForce(dir * 25f, ForceMode.Impulse);
+
+            if(!other.GetComponent<PlayerMovement>().isDodging && throwPlayer)
+                other.GetComponent<Rigidbody>().AddForce(dir * 25f, ForceMode.Impulse);
         }
 
         if(!other.CompareTag("Boss") && !other.CompareTag("Weapon"))

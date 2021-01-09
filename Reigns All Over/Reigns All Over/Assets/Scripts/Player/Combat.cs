@@ -141,7 +141,7 @@ public class Combat : MonoBehaviour
         // debug
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            StunPlayer(2f);
+            StunPlayer(1f,transform.forward*1f);
         }
 
     }
@@ -170,7 +170,7 @@ public class Combat : MonoBehaviour
 
 
     // stunned modes
-    public void StunPlayer(float stunValue)
+    public void StunPlayer(float stunValue, Vector3 stunDir)
     {
         if (!MovementRef.isDodging)
         {
@@ -189,8 +189,14 @@ public class Combat : MonoBehaviour
             animator.SetTrigger("Stunned");
             animator.SetFloat("StunValue", stunValue);
 
+            if (Vector3.Angle(stunDir, transform.forward) < 90)
+                animator.SetFloat("StunDir", 1f);
+            else
+                animator.SetFloat("StunDir", 0f);
+
             MovementRef.controlLock = true;
             PAttributesRef.ReduceStamina(0);
+            animator.SetBool("Hurting", false);
         }
     }
 

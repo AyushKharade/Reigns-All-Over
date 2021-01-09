@@ -325,7 +325,7 @@ public class BossScript : MonoBehaviour
 
             if(attackRef.canStun && !playerKilled)
             {
-                targetRef.GetComponent<Combat>().StunPlayer(attackRef.stunValue);
+                targetRef.GetComponent<Combat>().StunPlayer(attackRef.stunValue,transform.forward);
             }
         }
         // cur attack can stun, do stun
@@ -427,6 +427,9 @@ public class BossScript : MonoBehaviour
         animator.SetTrigger("isDead");
         isDead = true;
         animator.SetLayerWeight(1, 0);
+
+        GetComponent<Rigidbody>().isKinematic = true;
+        GetComponent<CapsuleCollider>().enabled = false;
     }
     #endregion
 
