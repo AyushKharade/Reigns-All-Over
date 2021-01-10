@@ -38,7 +38,7 @@ ModelImporter:
       name: StunFromFront_Falling
       takeName: mixamo.com
       internalID: 0
-      firstFrame: 0
+      firstFrame: 9.7
       lastFrame: 45
       wrapMode: 0
       orientationOffsetY: -35.02

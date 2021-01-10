@@ -27,7 +27,7 @@ MonoBehaviour:
   catchUpTime: 0.1
   overrideHitAngle: 0
   overrideHitAngleValue: 0
-  rangeNeeded: 25
+  rangeNeeded: 35
   rangeTooCloseVal: 15
   rangeToDamagetarget: 6
   chainAttack: {fileID: 0}

@@ -46,6 +46,7 @@ public class PaladinBoss : MonoBehaviour
 
     [Header("Prefabs and references")]
     public GameObject spellcastPrefab;
+    public GameObject spellcastSpecialPrefab;
 
 
     [Header("Second Phase")]
@@ -72,6 +73,7 @@ public class PaladinBoss : MonoBehaviour
     public float playerCloseRangeTimer;
     public float closeRangeTimerDistance=3.8f;                // if player is too close to the boss for too long, can do something
     public float playerLongRangeTimer;
+    [HideInInspector]public float longRangeTimeForRangedAttack=4f;
     public float longRangeTimerDistance=8f;                 // if player is running away from boss for too long, long range attacks
 
     // Start is called before the first frame update
@@ -126,7 +128,7 @@ public class PaladinBoss : MonoBehaviour
 
 
         // if too close or too far for too long, reset selected attack
-        if (playerLongRangeTimer > 5f && isAttackAvailable("RangedMagicAttack"))
+        if (playerLongRangeTimer > longRangeTimeForRangedAttack && isAttackAvailable("RangedMagicAttack"))
         {
             AttackDecisions();
         }
@@ -142,14 +144,14 @@ public class PaladinBoss : MonoBehaviour
 
 
         // debug
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            foreach (Attack at in AttackLst)
-            {
-                if (at.attackSO.hasCooldown)
-                    at.ExpendAttack();
-            }
-        }
+        //if (Input.GetKeyDown(KeyCode.O))
+        //{
+         //   foreach (Attack at in AttackLst)
+          //  {
+          //      if (at.attackSO.hasCooldown)
+          //          at.ExpendAttack();
+          //  }
+        //}
 
         if (Input.GetKeyDown(KeyCode.L) && !bossScriptRef.fightEngaged)
         {
@@ -158,7 +160,8 @@ public class PaladinBoss : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            PaladinSpellCast();
+            //PaladinSpellCast();
+            PaladinSpecialSpellCast();
         }
     }
 
@@ -312,7 +315,12 @@ public class PaladinBoss : MonoBehaviour
 
         // if really close do stun attacks if available
         bool attackSet=false;
-        if (playerLongRangeTimer > 4f || distance>9f*9f)
+        if (isAttackAvailable("SpecialAttack") && false)
+        {
+            attackSet = true;
+            bossScriptRef.SetBossAttack(GetAttack("SpecialAttack").attackSO);
+        }
+        if ((playerLongRangeTimer > 4f || distance>9f*9f) && !attackSet)
         {
             if (isAttackAvailable("RangedMagicAttack"))
             {
@@ -430,6 +438,7 @@ public class PaladinBoss : MonoBehaviour
         if (bossScriptRef.isAttacking)
             bossScriptRef.ClearBossAttack();
 
+        longRangeTimeForRangedAttack = 2.5f;
 
         // PlaySound and start anim, etc.
         animator.SetTrigger("StartPhase2");
@@ -437,7 +446,7 @@ public class PaladinBoss : MonoBehaviour
         animator.SetFloat("AnimSpeed", 1.2f);
         bossScriptRef.DisableUpperBodyControl();
 
-        BossMusicRef.SetAudioClip(BossMusicRef.paladinBossMusic2, true, 1f);
+        BossMusicRef.SetAudioClip(BossMusicRef.paladinBossMusic2, true, 0.4f);
         BossMusicRef.PlayCurrentClip();
 
         // reduce times he can block
@@ -463,9 +472,19 @@ public class PaladinBoss : MonoBehaviour
 
         if (startedSecondPhase)
         {
-            float newScale = spell.transform.GetChild(0).localScale.x * 0.5f;
+            float newScale = spell.transform.GetChild(0).localScale.x * 1.5f;
             spell.transform.GetChild(0).localScale = new Vector3(newScale, newScale, newScale);
-                }
+
+        }
+    }
+
+    void PaladinSpecialSpellCast()
+    {
+        GameObject spell = Instantiate(spellcastSpecialPrefab, transform.position, Quaternion.identity);
+
+        spell.transform.GetChild(0).GetComponent<PaladinSpecialSpell>().SetDirection((bossScriptRef.targetRef.position - transform.position).normalized);
+        spell.transform.GetChild(0).GetComponent<PaladinSpecialSpell>().Paladinref = transform;
+        spell.transform.GetChild(0).GetComponent<PaladinSpecialSpell>().camRef = camRef;
     }
 }
 

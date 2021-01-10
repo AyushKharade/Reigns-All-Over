@@ -136,6 +136,9 @@ public class BossScript : MonoBehaviour
         catchUp_Timer += Time.deltaTime;
 
 
+        // debug 
+        if (Input.GetKeyDown(KeyCode.J))
+            DealDamage(30, transform.forward * -1f);
         
     }
 

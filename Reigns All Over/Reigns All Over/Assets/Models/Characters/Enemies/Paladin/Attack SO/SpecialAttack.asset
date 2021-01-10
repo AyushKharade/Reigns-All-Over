@@ -12,13 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35311b7e5b8eed94b8f961b197a80ab7, type: 3}
   m_Name: SpecialAttack
   m_EditorClassIdentifier: 
-  attackname: 
-  damage: 0
+  attackname: SpecialAttack
+  damage: 45
+  animatorStateName: SpecialAttack
+  isSecondPhaseAttack: 1
   canStun: 0
-  animatorStateName: 
-  hasCooldown: 0
-  cooldown: 0
-  rangeNeeded: 0
+  stunValue: 0
+  blockStunValue: 0
+  availableFromStart: 0
+  hasCooldown: 1
+  cooldown: 30
+  overrideBossCooldown: 0
+  overrideBossCooldownTime: 0
+  catchUpTime: 3
+  overrideHitAngle: 0
+  overrideHitAngleValue: 0
+  rangeNeeded: 35
+  rangeTooCloseVal: 25
   rangeToDamagetarget: 0
-  catchUpTime: 2
+  chainAttack: {fileID: 0}
+  canChain: 0
+  chainChance: 0
   VFX_Prefab: {fileID: 0}
