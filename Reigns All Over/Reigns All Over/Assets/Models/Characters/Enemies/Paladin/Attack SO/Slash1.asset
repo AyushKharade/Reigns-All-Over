@@ -33,4 +33,5 @@ MonoBehaviour:
   chainAttack: {fileID: 11400000, guid: cb0161f55294bba458b1400cbb4a4dd2, type: 2}
   canChain: 1
   chainChance: 60
+  allowSwordTrail: 1
   VFX_Prefab: {fileID: 0}

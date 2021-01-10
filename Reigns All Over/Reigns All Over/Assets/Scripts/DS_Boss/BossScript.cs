@@ -38,6 +38,8 @@ public class BossScript : MonoBehaviour
 
     [Header("Buff & Debuff abilities")]
     public float catchBreathMultiplier = 1f;
+    public GameObject SwordParticleSys_Trail;
+    public GameObject SwordParticleSys_Glow;
 
 
     public Attack_SO attackRef;                  // references to the current attack that the boss will be doing
@@ -79,6 +81,8 @@ public class BossScript : MonoBehaviour
 
         //sound
         audioSource = GetComponent<AudioSource>();
+
+        DisableSwordTrailVFX();
     }
 
     private void Update()
@@ -243,6 +247,7 @@ public class BossScript : MonoBehaviour
     {
         if (!willChain)
         {
+            DisableSwordTrailVFX();
 
             float bossCatchUpTime = attackRef.catchUpTime;
 
@@ -307,6 +312,20 @@ public class BossScript : MonoBehaviour
         isBlocking = false;
         animator.SetBool("ShieldUp", false);
     }
+
+
+
+    public void EnableSwordTrailVFX()
+    {
+        //SwordParticleSys_Trail.SetActive(true);
+        SwordParticleSys_Trail.GetComponent<ParticleSystem>().Play() ;
+    }
+    public void DisableSwordTrailVFX()
+    {
+        //SwordParticleSys_Trail.SetActive(false);
+        SwordParticleSys_Trail.GetComponent<ParticleSystem>().Stop();
+    }
+
 
 
 
@@ -430,7 +449,7 @@ public class BossScript : MonoBehaviour
 
     void KillBoss()
     {
-        Debug.Log("Boss is dead");
+        DisableSwordTrailVFX();
         animator.SetTrigger("isDead");
         isDead = true;
         animator.SetLayerWeight(1, 0);

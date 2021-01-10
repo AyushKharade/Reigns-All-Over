@@ -43,6 +43,9 @@ public class Attack_SO : ScriptableObject
     public bool canChain;
     public float chainChance;
 
+    [Header("Effects")]
+    public bool allowSwordTrail;
+
     [Header("References")]
     public GameObject VFX_Prefab;
 

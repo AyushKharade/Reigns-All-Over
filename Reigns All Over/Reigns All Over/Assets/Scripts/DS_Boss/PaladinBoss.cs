@@ -47,6 +47,7 @@ public class PaladinBoss : MonoBehaviour
     [Header("Prefabs and references")]
     public GameObject spellcastPrefab;
     public GameObject spellcastSpecialPrefab;
+    
 
 
     [Header("Second Phase")]
@@ -160,11 +161,12 @@ public class PaladinBoss : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            //PaladinSpellCast();
-            PaladinSpecialSpellCast();
+            PaladinSpellCast();
+            //PaladinSpecialSpellCast();
         }
     }
 
+    
 
     void UpdatePlayerDistances()
     {
@@ -405,6 +407,10 @@ public class PaladinBoss : MonoBehaviour
     /// </summary>
     void DoAttack()
     {
+        if(bossScriptRef.attackRef.allowSwordTrail)
+            bossScriptRef.EnableSwordTrailVFX();
+
+
         animator.SetTrigger(bossScriptRef.attackRef.animatorStateName);
         bossScriptRef.isAttacking=true;
 

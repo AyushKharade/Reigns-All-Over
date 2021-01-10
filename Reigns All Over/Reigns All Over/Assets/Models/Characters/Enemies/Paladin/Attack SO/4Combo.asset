@@ -27,10 +27,11 @@ MonoBehaviour:
   catchUpTime: 2.8
   overrideHitAngle: 0
   overrideHitAngleValue: 0
-  rangeNeeded: 6
-  rangeTooCloseVal: 3
-  rangeToDamagetarget: 5
+  rangeNeeded: 4
+  rangeTooCloseVal: 2
+  rangeToDamagetarget: 3
   chainAttack: {fileID: 0}
   canChain: 0
   chainChance: 0
+  allowSwordTrail: 1
   VFX_Prefab: {fileID: 0}
