@@ -19,7 +19,7 @@ public class PlayerUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PAttributesRef = transform.GetChild(1).GetComponent<PlayerAttributes>();
+        PAttributesRef = transform.GetChild(0).GetComponent<PlayerAttributes>();
 
         // store all images in respective mana image slots.
         foreach (Transform T in manaSlotParent)

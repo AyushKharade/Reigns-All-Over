@@ -38,7 +38,7 @@ public class PlayerAttributes : MonoBehaviour
     bool onManaRegenDelay;
     float manaRegenTimer;
     [HideInInspector] public bool invincible;
-    [HideInInspector] public bool dodgeInvincible;
+    public bool dodgeInvincible;
 
     /// <summary>
     /// if you get hit from behind while blocking, you wont be able to block for the next 'x' seconds.
@@ -112,9 +112,12 @@ public class PlayerAttributes : MonoBehaviour
                     staminaTimer = 0;
                 }
             }
-            else
+            else if(!CombatRef.isStunned)
             {
-                stamina += staminaRegenRate * Time.deltaTime;
+                float rateModifier = 1f;
+                if (CombatRef.isBlocking) rateModifier -= 0.5f;
+
+                stamina += staminaRegenRate *rateModifier* Time.deltaTime;
             }
         }
     }
@@ -155,11 +158,13 @@ public class PlayerAttributes : MonoBehaviour
 
 
     // Health Related
-    /// <summary>
-    /// General Damage from Environment, make a new function for enemies that includes a direction of attack,
-    /// </summary>
-    /// <param name="dmg"> How much damage to deal.</param>
-    public void DealDamage(float dmg, Vector3 dir)
+   /// <summary>
+   /// Use to deal damage to the player, specific a direction to see if player can block it
+   /// </summary>
+   /// <param name="dmg">damage amount in float</param>
+   /// <param name="dir">direction of the attack</param>
+   /// <returns>returns true if this attack killed the player</returns>
+    public bool DealDamage(float dmg, Vector3 dir)
     {
         if (!MovementRef.isDead && !invincible && !dodgeInvincible)
         {
@@ -195,14 +200,17 @@ public class PlayerAttributes : MonoBehaviour
                 CombatRef.InteruptAttack();
             if (CombatRef.isCastingSpell)
                 CombatRef.InteruptSpellCast();
+            if (CombatRef.archerBowDraw)
+                CombatRef.InteruptArchery();
 
             if (health <= 0)
             {
                 health = 0;
                 KillPlayer();
+                return true;
             }
         }
-      
+        return false;
     }
 
     /// <summary>

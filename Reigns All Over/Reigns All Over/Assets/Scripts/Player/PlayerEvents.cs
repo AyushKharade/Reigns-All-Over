@@ -172,4 +172,12 @@ public class PlayerEvents : MonoBehaviour
         CombatRef.nextShotReady = true;
     }
 
+    public void Archer_HideHeldArrow() { CombatRef.HeldArrow.SetActive(false); }
+    public void Archer_ShowHeldArrow() { CombatRef.HeldArrow.SetActive(true); }
+
+
+
+    public void EnableSwordDamage()
+    {
+        CombatRef.EquippedWeapon.GetComponent<Weapon>().doDMG = true; }
 }

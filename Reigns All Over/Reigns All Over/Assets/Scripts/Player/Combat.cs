@@ -16,6 +16,11 @@ public class Combat : MonoBehaviour
 
     public bool attacking;             // if any attack is being performed.
     public bool isBlocking;
+    public bool isStunned;
+    public bool isStunnedKnockedDown;
+    public bool canDodgeFromStun;
+
+
     public bool isCastingSpell;
     /// <summary>
     /// If you blocked recently, opportunity to reposte attack.
@@ -77,6 +82,7 @@ public class Combat : MonoBehaviour
 
     public GameObject EquippedBow;
     public GameObject SheathedBow;
+    public GameObject HeldArrow;
 
     [Header("Equipped Spells")]
     public Transform CastHandRef;
@@ -93,6 +99,7 @@ public class Combat : MonoBehaviour
     PlayerAttributes PAttributesRef;
     PlayerEvents PEventsRef;
     Animator animator;
+    [HideInInspector]public Animator bowAnimator;
 
     GameObject mainCam;
     #endregion
@@ -108,11 +115,16 @@ public class Combat : MonoBehaviour
         PAttributesRef = GetComponent<PlayerAttributes>();
         PEventsRef = GetComponent<PlayerEvents>();
 
-        fightStyle = CurrentFightStyle.Archery;                       // for now to test archery
-        animator.SetBool("usingArchery", true);
+        //fightStyle = CurrentFightStyle.Archery;                       // for now to test archery
+        //animator.SetBool("usingArchery", true);
         UnEquipBow();
 
-        mainCam = Camera.main.gameObject;
+        //mainCam = Camera.main.gameObject;
+        mainCam = MovementRef.CamRef.gameObject;
+
+        bowAnimator = EquippedBow.transform.GetChild(0).GetComponent<Animator>();
+
+
     }
 
     void Update()
@@ -123,6 +135,14 @@ public class Combat : MonoBehaviour
         SmoothSwitchOffCombatLayers();
         SmoothSwitchAttacks();
         UpdateAimReticle();
+
+
+
+        // debug
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            StunPlayer(0f,transform.forward*1f);
+        }
 
     }
 
@@ -144,6 +164,61 @@ public class Combat : MonoBehaviour
         else
             blockImpactAnimTimer = 0f;
 
+
+    }
+
+
+
+    // stunned modes
+    public void StunPlayer(float stunValue, Vector3 stunDir)
+    {
+        if (!PAttributesRef.dodgeInvincible)
+        {
+            if (stunValue >= 1f)
+                isStunnedKnockedDown = true;
+
+            if (attacking)
+                InteruptAttack();
+            InteruptArchery();
+
+            if (isCastingSpell)
+                InteruptSpellCast();
+
+            isStunned = true;
+
+            animator.SetTrigger("Stunned");
+            animator.SetFloat("StunValue", stunValue);
+            
+
+            if (Vector3.Angle(stunDir, transform.forward) < 90)
+                animator.SetFloat("StunDir", 1f);
+            else
+                animator.SetFloat("StunDir", 0f);
+
+            if (MovementRef.isDodging)
+            {
+                
+                if(animator.GetFloat("DodgeRoll")==0)
+                    animator.SetFloat("StunDir", 1);
+                else
+                    animator.SetFloat("StunDir", 0);
+
+            }
+
+
+
+            MovementRef.controlLock = true;
+            PAttributesRef.ReduceStamina(0);
+            animator.SetBool("Hurting", false);
+        }
+    }
+
+    public void EndPlayerStun()
+    {
+        MovementRef.controlLock = false;
+        isStunned = false;
+        isStunnedKnockedDown = false;
+        MovementRef.UnDodge();
 
     }
 
@@ -203,7 +278,7 @@ public class Combat : MonoBehaviour
     void CombatControls()
     {
 
-        if (Input.GetKeyDown(KeyCode.E) && !MovementRef.isDead)
+        if (Input.GetKeyDown(KeyCode.E) && !MovementRef.isDead && !isStunned && !isStunnedKnockedDown)
         {
             if (inCombat && !MovementRef.isDodging && MovementRef.isGrounded && !attacking && !isCastingSpell)
             {
@@ -230,7 +305,8 @@ public class Combat : MonoBehaviour
         }
 
         // blocking controls
-        if (ready && Input.GetKey(KeyCode.X) && !MovementRef.isDodging && !MovementRef.isDead && MovementRef.isGrounded && !PAttributesRef.blockRecovery)
+        if (ready && Input.GetKey(KeyCode.X) && !MovementRef.isDodging && !MovementRef.isDead && MovementRef.isGrounded && !PAttributesRef.blockRecovery
+            && !isStunned)
         {
             isBlocking = true;
             animator.SetBool("Blocking",true);
@@ -281,6 +357,8 @@ public class Combat : MonoBehaviour
                 if(archerDrawTime<1f)
                     archerDrawTime += Time.deltaTime;
                 animator.SetBool("BowShooting",true);
+                bowAnimator.SetBool("BowDraw", true);
+
             }
             if (Input.GetMouseButtonUp(0) && archerDrawTime >= 0.3f)
             {
@@ -297,37 +375,48 @@ public class Combat : MonoBehaviour
         }
     }
 
+    public GameObject aimingAt;
+
     /// <summary>
     /// Shooter arrow where aiming, use hold time for shot strength and damage.
     /// </summary>
     /// <param name="holdTime"></param>
     public void ShootArrow(float holdTime)
     {
-        //GameObject arrow = Instantiate(equippedArrowPrefab, arrowShootPoint.position, Quaternion.identity);
-        Vector3 centerShootPos = transform.position;
-        centerShootPos.y = arrowShootPoint.position.y;
-        //GameObject arrow = Instantiate(equippedArrowPrefab, centerShootPos, Quaternion.identity);
-        GameObject arrow = Instantiate(equippedArrowPrefab, mainCam.transform.position, Quaternion.identity);
+        
+        GameObject arrow = Instantiate(equippedArrowPrefab, arrowShootPoint.position, Quaternion.identity);
+        // set damage based on holdTime.
+  
+        // find the direction of the shot
+        Vector3 shotDirection=Vector3.zero;
+        Ray ray = mainCam.GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 500f))
+            shotDirection = (hit.point - arrowShootPoint.position).normalized;
+        else
+            shotDirection = (ray.GetPoint(500f) - arrowShootPoint.position).normalized;
 
-        //arrow.transform.localScale = new Vector3(arrow.transform.localScale.x * 7f, arrow.transform.localScale.x * 7f, arrow.transform.localScale.x * 7f);
-        Vector3 shotDirection = mainCam.transform.forward;
-        //Vector3 shotDirection = transform.forward;
-        //shotDirection.y = mainCam.transform.position.y;
 
         arrow.transform.LookAt(shotDirection);
-        //arrow.transform.LookAt(Vector3.up);
         arrow.GetComponent<Arrow>().shotDirection = shotDirection;
 
         shotDirection.y += 0.025f;
         nextShotReady = false;
 
-        //launch
-        arrow.GetComponent<Rigidbody>().AddForce(shotDirection.normalized*arrowShotForce,ForceMode.Impulse);
-
+        arrow.GetComponent<Rigidbody>().AddForce(shotDirection*arrowShotForce,ForceMode.Impulse);
         Destroy(arrow.gameObject, 4f);
+
+        // bow anims
+        bowAnimator.SetBool("BowShoot",true);
+        bowAnimator.SetBool("BowDraw",false);
+        Invoke("ResetBowAnimAfterShot",0.1f);
     }
 
 
+    void ResetBowAnimAfterShot()
+    {
+        bowAnimator.SetBool("BowShoot", false);
+    }
 
 
 
@@ -345,7 +434,7 @@ public class Combat : MonoBehaviour
         attackDirection = Dir;
         attackAnimValue = type;
 
-        attackStaminaCost = combo * heavyAttackCost * attackAnimValue;            // calculate heavy attack stamina cost
+        attackStaminaCost = combo * heavyAttackCost; //* attackAnimValue;            // calculate heavy attack stamina cost
         if (!attacking)
         {
 
@@ -369,12 +458,14 @@ public class Combat : MonoBehaviour
             {
                 animator.SetLayerWeight(2, 1);
                 animator.SetBool("SprintAttack", true);
+                animator.SetFloat("attackAnimValue", attackAnimValue);
                 attacking = true;
                 chained = false; chainAttack = false; chainWindowOpen = false;                    // just incase they were left on
-                combo = 1;
+
+                if (attackAnimValue == 0) combo = 2; else combo = 5;                 // since these attacks cost a lot so do lot damage
 
                 // turn on sword dmg
-                EquippedWeapon.GetComponent<Weapon>().doDMG = true;
+                //EquippedWeapon.GetComponent<Weapon>().doDMG = true;
                 PAttributesRef.ReduceStamina(sprintAttackCost);
             }
             else
@@ -517,11 +608,16 @@ public class Combat : MonoBehaviour
     {
         archerBowDraw = false;
         animator.SetBool("BowDraw", false);
+        bowAnimator.SetBool("BowDraw", false);
+        bowAnimator.SetBool("BowShoot", false);
         animator.ResetTrigger("BowShot");
         animator.SetBool("BowShooting", false);
         archerDrawTime = 0f;
         //nextShotReady = false;
         nextShotReady = true;
+
+        PEventsRef.Archer_HideHeldArrow();
+        GetComponent<PlayerIK_Controller>().useIK = false;
     }
 
     /// <summary>

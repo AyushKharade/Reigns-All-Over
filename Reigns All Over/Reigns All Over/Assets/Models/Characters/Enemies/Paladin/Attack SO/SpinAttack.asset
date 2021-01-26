@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35311b7e5b8eed94b8f961b197a80ab7, type: 3}
+  m_Name: SpinAttack
+  m_EditorClassIdentifier: 
+  attackname: SpinAttack
+  damage: 0
+  animatorStateName: SpinAttack
+  isSecondPhaseAttack: 0
+  canStun: 1
+  stunValue: 1
+  blockStunValue: 0
+  availableFromStart: 0
+  hasCooldown: 1
+  cooldown: 16
+  overrideBossCooldown: 0
+  overrideBossCooldownTime: 0
+  catchUpTime: 1
+  overrideHitAngle: 1
+  overrideHitAngleValue: 25
+  rangeNeeded: 6
+  rangeTooCloseVal: 3
+  rangeToDamagetarget: 3.5
+  chainAttack: {fileID: 0}
+  canChain: 0
+  chainChance: 0
+  allowSwordTrail: 1
+  VFX_Prefab: {fileID: 0}

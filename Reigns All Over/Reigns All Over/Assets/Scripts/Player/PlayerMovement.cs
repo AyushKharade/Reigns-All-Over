@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     public float walkSpeed;
     public float runSpeed;
     public float sprintCostRate = 10f;
+    public float dodgeCost = 15f;
     public float alignSpeed;
 
     // Private Variables
@@ -40,6 +41,7 @@ public class PlayerMovement : MonoBehaviour
     // script References
     Combat CombatRef;
     PlayerAttributes PAttributesRef;
+    PlayerEvents PEventsRef;
 
     void Start()
     {
@@ -48,15 +50,17 @@ public class PlayerMovement : MonoBehaviour
 
         CombatRef = GetComponent<Combat>();
         PAttributesRef = GetComponent<PlayerAttributes>();
+        PEventsRef = GetComponent<PlayerEvents>();
+        PEventsRef.Archer_HideHeldArrow();
     }
 
     void Update()
     {
         // to make camera follow on jumps and fall
-        if(CombatRef.archerBowDraw)
-            TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z+2.25f);
-        else
-            TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        //if(CombatRef.archerBowDraw)
+        //    TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z+2.25f);
+        //else
+        //    TargetRef.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 
         CheckGrounded();
 
@@ -81,19 +85,19 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
 
     [HideInInspector]public Vector3 PlayerDirection = Vector3.zero;
- 
+
     void PMovement()
     {
         // Movement Input --------------------------------------------------------------------
         // Front & Back.
         if (Input.GetKey(KeyCode.W))                                                     // Takes in player input and set PlayerDirection
             PlayerDirection += TargetRef.forward;
-        else if(Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.S))
             PlayerDirection += TargetRef.forward * -1;
         // Sideways
         if (Input.GetKey(KeyCode.A))
             PlayerDirection += TargetRef.right * -1;
-        else if(Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
             PlayerDirection += TargetRef.right;
         //--------------------------------------------------------------------------------------
         // Sprint -- works with way less conditions but put them so that we dont lose stamina when we hold the sprint button when we cant sprint
@@ -112,7 +116,7 @@ public class PlayerMovement : MonoBehaviour
         {
             isSprinting = false;
 
-        } 
+        }
         //---------------------------------------------------------------------------------------
 
 
@@ -134,8 +138,12 @@ public class PlayerMovement : MonoBehaviour
             GetComponent<Rigidbody>().AddForce(50f * Vector3.up, ForceMode.Impulse);
         }
         else if (Input.GetKeyDown(KeyCode.Space) && CombatRef.inCombat && !isDodging && CombatRef.ready && isGrounded)
-            Dodge(PlayerDirection);       // get a direction dodge.
-
+        {
+            if(PAttributesRef.stamina>=dodgeCost)
+                Dodge(PlayerDirection);       // get a direction dodge.
+            else
+                PlayerHolder.GetComponent<PlayerUI>().WarnNoStaminaUI();
+        }
         // orient dodging                   --> basically orient slowly towards direction of dodge so front roll looks smooth
         if (isDodging && doDodgeAlign && !allowDodgeOrient)
         {
@@ -185,19 +193,22 @@ public class PlayerMovement : MonoBehaviour
                     animator.SetBool("BowDraw", true);
                     CombatRef.Get_XY_Movement_Anim_Values();
 
-                    //testing shotdirection
-                    Vector3 camEnd = CamRef.GetComponent<Camera>().ViewportToWorldPoint(new Vector3(0.5f,0.5f,0f));
-                    Vector3 shotDirection = (camEnd - CombatRef.aimReticleParent.transform.position).normalized;
 
-
+                    DebugDrawArcheryLines();
                     
-                    Debug.DrawRay(CamRef.transform.position, CamRef.transform.forward,Color.red);
                 }
                 else
                 {
                     animator.SetBool("BowDraw",false);
+                    CombatRef.bowAnimator.SetBool("BowDraw", false);
                     animator.SetBool("BowShooting",false);
                     CombatRef.archerBowDraw = false;
+                    CombatRef.archerDrawTime = 0f;
+
+                    PEventsRef.Archer_HideHeldArrow();
+
+                    //set head IK
+                    GetComponent<PlayerIK_Controller>().useIK = false;
                 }
             }
 
@@ -208,6 +219,28 @@ public class PlayerMovement : MonoBehaviour
         
     }
 
+
+    public Transform aimSphereRef;
+
+    void DebugDrawArcheryLines()
+    {
+        // place this sphere where we are aiming at.
+        Ray ray = CamRef.GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 500f))
+        {
+            aimSphereRef.position = hit.point;
+            //set head IK
+            GetComponent<PlayerIK_Controller>().useIK = true;
+            GetComponent<PlayerIK_Controller>().lookTarget = hit.point;
+            GetComponent<PlayerIK_Controller>().spineLookAtForward = CamRef.transform.forward;
+        }
+        else
+        {
+            GetComponent<PlayerIK_Controller>().lookTarget = ray.GetPoint(500f);
+
+        }
+    }
 
 
 
@@ -247,7 +280,7 @@ public class PlayerMovement : MonoBehaviour
         {
             isRunning = true;
 
-            if (!isDodging && !CombatRef.attacking && !CombatRef.isBlocking)
+            if (!isDodging && !CombatRef.attacking && !CombatRef.isBlocking && !CombatRef.isStunned)
                 AlignOrientation(dir);
             else if (allowDodgeOrient)
             {
@@ -304,7 +337,7 @@ public class PlayerMovement : MonoBehaviour
         if (CombatRef.fightStyle == Combat.CurrentFightStyle.Archery)
             CombatRef.InteruptArchery();
 
-        PAttributesRef.ReduceStamina(0);         // its fine if we have zero stamina we can roll, just dont let player regen a lot of stamina
+        PAttributesRef.ReduceStamina(dodgeCost);         
 
 
         //animator.SetLayerWeight(1, 0);       // switch off combat layer until then.    // attempting to switch off smoothly
